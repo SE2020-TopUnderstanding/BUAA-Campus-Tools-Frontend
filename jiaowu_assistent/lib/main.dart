@@ -2,6 +2,7 @@ import 'package:jiaowuassistent/pages/HomePage.dart';
 import 'package:jiaowuassistent/pages/PersonalPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiaowuassistent/pages/WelcomePage.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.grey,
       ),
-      home: new MyHomePage(),
+      home: new WelcomePage(),
     );
   }
 }
