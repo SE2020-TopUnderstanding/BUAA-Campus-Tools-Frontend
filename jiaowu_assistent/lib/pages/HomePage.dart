@@ -1,7 +1,8 @@
 import 'package:jiaowuassistent/Pages/PersonalPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:jiaowuassistent/pages/FirstPage.dart';
+import 'package:jiaowuassistent/pages/FunctionsPage.dart';
 class MyHomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MyHomePageState();
@@ -27,6 +28,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: new PageView(
         children: <Widget>[
+          FirstPage(),
+          FunctionsPage(),
           PersonalPage(),
         ],
         controller: _controller,
