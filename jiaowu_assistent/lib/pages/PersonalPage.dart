@@ -10,6 +10,7 @@ class PersonalPage extends StatelessWidget {
       backgroundColor: Colors.green[100],
       appBar: AppBar(
         elevation: 0,
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: <Widget>[
