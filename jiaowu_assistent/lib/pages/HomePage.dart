@@ -32,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           FirstPage(),
           FunctionsPage(),
+          ScorePage(),
           PersonalPage(),
         ],
         controller: _controller,
