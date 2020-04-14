@@ -36,6 +36,10 @@ class ScorePage extends StatelessWidget {
     }
     return new Scaffold(
         appBar: new AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           title: new Text('成绩查询'),
           backgroundColor: Colors.lightBlue,
           automaticallyImplyLeading: false,
