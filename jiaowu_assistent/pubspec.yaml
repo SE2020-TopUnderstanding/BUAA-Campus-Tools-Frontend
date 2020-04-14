@@ -27,6 +27,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_cupertino_date_picker: ^1.0.12
+  intl_translation: ^0.17.2
 
 
 # For information on the generic Dart part of this file, see the

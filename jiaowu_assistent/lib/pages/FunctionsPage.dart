@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiaowuassistent/pages/EmptyRoomPage.dart';
 import 'package:jiaowuassistent/pages/ScorePage.dart';
 
 class FunctionsPage extends StatelessWidget {
-
+  
   // 图标函数，其中page 参数需要给出页面函数
-  Column _block(BuildContext context, Icon icon, Text text, StatelessWidget page) {
+
+  Column _block(BuildContext context, Icon icon, Text text, Widget page) {
+
     return Column(
       children: <Widget>[
         Container(
@@ -43,7 +46,9 @@ class FunctionsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _block(context, Icon(Icons.school, size: 40,), Text("成绩查询"), ScorePage()),
-                _block(context, Icon(Icons.business, size: 40,), Text("空教室查询"), ScorePage()),
+
+                _block(context, Icon(Icons.business, size: 40,), Text("空教室查询"), EmptyRoomPage()),
+                
                 _block(context, Icon(Icons.check_circle_outline, size: 40,), Text("课程中心查询"), ScorePage()),
               ],
             ),
