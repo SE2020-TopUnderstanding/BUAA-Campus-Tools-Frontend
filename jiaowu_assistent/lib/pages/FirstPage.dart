@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class FirstPage extends StatelessWidget{
+class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -16,7 +16,8 @@ class FirstPage extends StatelessWidget{
           color: Colors.white,
         ),
         child: new Center(
-          child: new Text('这里是主页，默认显示当周课表，目前尚未完成。',
+          child: new Text(
+            '这里是主页，默认显示当周课表，目前尚未完成。',
             style: TextStyle(
               fontSize: 32,
               decoration: TextDecoration.none,
@@ -25,6 +26,5 @@ class FirstPage extends StatelessWidget{
         ),
       ),
     );
-
   }
 }

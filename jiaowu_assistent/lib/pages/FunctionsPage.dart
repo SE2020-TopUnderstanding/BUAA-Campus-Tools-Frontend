@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class FunctionsPage extends StatelessWidget{
+class FunctionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -16,7 +16,8 @@ class FunctionsPage extends StatelessWidget{
           color: Colors.white,
         ),
         child: new Center(
-          child: new Text('这里是查询入口，目前尚未完成。',
+          child: new Text(
+            '这里是查询入口，目前尚未完成。',
             style: TextStyle(
               fontSize: 32,
               decoration: TextDecoration.none,
