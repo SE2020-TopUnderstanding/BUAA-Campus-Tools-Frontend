@@ -7,8 +7,9 @@ class PersonalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
@@ -16,21 +17,33 @@ class PersonalPage extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.all(32.0),
-            color: Colors.green[100],
+            color: Colors.white,
             child: Row(
               children: <Widget>[
-                Expanded(child: ListTile(
-                  title: Text("用户昵称", style: TextStyle(fontSize: 25),),
-                  subtitle: Text("学号"),
-                ),),
-                SizedBox(width: 100,),
-                CircleAvatar(backgroundImage: AssetImage("assets/images/head.png"), radius: 40,),
+                Expanded(
+                  child: ListTile(
+                    title: Text(
+                      "用户昵称",
+                      style: TextStyle(fontSize: 25),
+                    ),
+                    subtitle: Text("学号"),
+                  ),
+                ),
+                SizedBox(
+                  width: 100,
+                ),
+                CircleAvatar(
+                  backgroundImage: AssetImage("assets/images/head.png"),
+                  radius: 40,
+                ),
               ],
             ),
           ),
-          SizedBox(height: 40,),
+          SizedBox(
+            height: 40,
+          ),
           Container(
-            color: Colors.green[100],
+            color: Colors.white,
             child: ListTile(
               leading: Icon(Icons.help_outline),
               title: Text("帮助中心"),
@@ -38,7 +51,7 @@ class PersonalPage extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.green[100],
+            color: Colors.white,
             child: ListTile(
               leading: Icon(Icons.monetization_on),
               title: Text("主页设计"),
@@ -46,7 +59,7 @@ class PersonalPage extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.green[100],
+            color: Colors.white,
             child: ListTile(
               leading: Icon(Icons.settings),
               title: Text("设置"),
