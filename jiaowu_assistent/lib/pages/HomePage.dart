@@ -64,17 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             activeIcon: Icon(
-              Icons.score,
-              color: _bottomNavigationSelectColor,
-            ),
-            icon: Icon(
-              Icons.score,
-              color: _bottomNavigationColor,
-            ),
-            title: Text("成绩"),
-          ),
-          BottomNavigationBarItem(
-            activeIcon: Icon(
               Icons.person,
               color: _bottomNavigationSelectColor,
             ),
