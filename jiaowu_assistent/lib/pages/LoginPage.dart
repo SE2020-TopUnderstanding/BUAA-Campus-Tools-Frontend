@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/FirstPage.dart';
 import 'package:jiaowuassistent/pages/HomePage.dart';
-class LoginPage extends StatelessWidget{
+
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -11,19 +12,19 @@ class LoginPage extends StatelessWidget{
         title: new Text("登录"),
         backgroundColor: Colors.lightBlue,
       ),
-      body : new LoginPageBody(),
+      body: new LoginPageBody(),
     );
   }
 }
 
-class LoginPageBody extends StatefulWidget{
+class LoginPageBody extends StatefulWidget {
   @override
-  _LoginPageStateBody createState(){
+  _LoginPageStateBody createState() {
     return _LoginPageStateBody();
   }
 }
 
-class _LoginPageStateBody extends State<LoginPageBody>{
+class _LoginPageStateBody extends State<LoginPageBody> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -34,9 +35,13 @@ class _LoginPageStateBody extends State<LoginPageBody>{
             children: <Widget>[
               SizedBox(height: 0),
               new InputIDWidget(),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               new InputPassWordWidget(),
-              SizedBox(height: 50,),
+              SizedBox(
+                height: 50,
+              ),
               new LoginButtonWidget(),
             ],
           ),
@@ -45,7 +50,6 @@ class _LoginPageStateBody extends State<LoginPageBody>{
     );
   }
 }
-
 
 class InputIDWidget extends StatelessWidget {
   @override
@@ -71,6 +75,7 @@ class InputIDWidget extends StatelessWidget {
     );
   }
 }
+
 //输入密码
 class InputPassWordWidget extends StatelessWidget {
   @override
@@ -97,6 +102,7 @@ class InputPassWordWidget extends StatelessWidget {
     );
   }
 }
+
 //登录按钮
 class LoginButtonWidget extends StatelessWidget {
   @override
@@ -108,19 +114,20 @@ class LoginButtonWidget extends StatelessWidget {
       child: new RaisedButton(
         color: Colors.lightBlue,
         shape: RoundedRectangleBorder(
-          borderRadius:BorderRadius.all(Radius.circular(30)),
+          borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
         child: Text(
           '登录',
           textAlign: TextAlign.center,
-          style: TextStyle(letterSpacing: 20,
+          style: TextStyle(
+              letterSpacing: 20,
               fontWeight: FontWeight.bold,
               fontSize: 24,
-              color: Colors.black54
-          ),
+              color: Colors.black54),
         ),
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => MyHomePage()));
         },
       ),
     );

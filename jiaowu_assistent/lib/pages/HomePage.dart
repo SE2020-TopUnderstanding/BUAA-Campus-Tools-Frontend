@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/FirstPage.dart';
 import 'package:jiaowuassistent/pages/FunctionsPage.dart';
+import 'package:jiaowuassistent/pages/ScorePage.dart';
+
 class MyHomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MyHomePageState();
@@ -35,24 +37,43 @@ class _MyHomePageState extends State<MyHomePage> {
         controller: _controller,
 //        onPageChanged: onPageChanged,
       ),
-
-      bottomNavigationBar: new BottomNavigationBar(items: [
-        BottomNavigationBarItem(
-          activeIcon: Icon(Icons.date_range, color: _bottomNavigationSelectColor,),
-          icon: Icon(Icons.date_range, color: _bottomNavigationColor,),
-          title: Text("课表"),
-        ),
-        BottomNavigationBarItem(
-            activeIcon: Icon(Icons.list, color: _bottomNavigationSelectColor,),
-            icon: Icon(Icons.list, color: _bottomNavigationColor,),
+      bottomNavigationBar: new BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            activeIcon: Icon(
+              Icons.date_range,
+              color: _bottomNavigationSelectColor,
+            ),
+            icon: Icon(
+              Icons.date_range,
+              color: _bottomNavigationColor,
+            ),
+            title: Text("课表"),
+          ),
+          BottomNavigationBarItem(
+            activeIcon: Icon(
+              Icons.list,
+              color: _bottomNavigationSelectColor,
+            ),
+            icon: Icon(
+              Icons.list,
+              color: _bottomNavigationColor,
+            ),
             title: Text("分类"),
-        ),
-        BottomNavigationBarItem(
-            activeIcon: Icon(Icons.person, color: _bottomNavigationSelectColor,),
-            icon: Icon(Icons.person, color: _bottomNavigationColor,),
+          ),
+          BottomNavigationBarItem(
+            activeIcon: Icon(
+              Icons.person,
+              color: _bottomNavigationSelectColor,
+            ),
+            icon: Icon(
+              Icons.person,
+              color: _bottomNavigationColor,
+            ),
             title: Text("个人中心"),
-        ),
-      ],
+          ),
+
+        ],
         onTap: onTap,
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
@@ -66,5 +87,4 @@ class _MyHomePageState extends State<MyHomePage> {
       _currentIndex = index;
     });
   }
-
 }
