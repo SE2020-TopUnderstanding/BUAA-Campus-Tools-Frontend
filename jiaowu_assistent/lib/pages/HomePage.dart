@@ -32,7 +32,6 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           FirstPage(),
           FunctionsPage(),
-          ScorePage(),
           PersonalPage(),
         ],
         controller: _controller,
@@ -61,17 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
               color: _bottomNavigationColor,
             ),
             title: Text("分类"),
-          ),
-          BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.score,
-              color: _bottomNavigationSelectColor,
-            ),
-            icon: Icon(
-              Icons.score,
-              color: _bottomNavigationColor,
-            ),
-            title: Text("成绩"),
           ),
           BottomNavigationBarItem(
             activeIcon: Icon(
