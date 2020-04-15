@@ -1,6 +1,7 @@
 import 'package:jiaowuassistent/Pages/PersonalPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiaowuassistent/pages/CourseTablePage.dart';
 import 'package:jiaowuassistent/pages/FirstPage.dart';
 import 'package:jiaowuassistent/pages/FunctionsPage.dart';
 import 'package:jiaowuassistent/pages/ScorePage.dart';
@@ -30,7 +31,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: new PageView(
         children: <Widget>[
-          FirstPage(),
+          //FirstPage(),
+          CourseTablePage(),
           FunctionsPage(),
           PersonalPage(),
         ],
