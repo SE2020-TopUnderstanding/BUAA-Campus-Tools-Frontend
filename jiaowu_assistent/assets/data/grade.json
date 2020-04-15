@@ -1,0 +1,12 @@
+[
+  {
+    "course_name": "计算机网络",
+    "credit": 2.0,
+    "score": 99
+  },
+  {
+    "course_name": "软件工程",
+    "credit": 1.5,
+    "score": 90
+  }
+]
