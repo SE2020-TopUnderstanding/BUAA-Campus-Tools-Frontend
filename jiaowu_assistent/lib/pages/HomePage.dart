@@ -34,7 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
           //FirstPage(),
           CourseTablePage(),
           FunctionsPage(),
-          ScorePage(),
           PersonalPage(),
         ],
         controller: _controller,
