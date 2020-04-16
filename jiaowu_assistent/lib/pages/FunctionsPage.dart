@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiaowuassistent/pages/CourseCenterPage.dart';
 import 'package:jiaowuassistent/pages/EmptyRoomPage.dart';
 import 'package:jiaowuassistent/pages/ScorePage.dart';
 import 'package:jiaowuassistent/pages/CourseTablePage.dart';
@@ -51,7 +52,7 @@ class FunctionsPage extends StatelessWidget {
 
                 _block(context, Icon(Icons.business, size: 40,), Text("空教室查询"), EmptyRoomPage()),
                 
-                _block(context, Icon(Icons.check_circle_outline, size: 40,), Text("课程中心查询"), ScorePage()),
+                _block(context, Icon(Icons.check_circle_outline, size: 40,), Text("课程中心查询"), CourseCenterPage()),
               ],
             ),
             SizedBox(height: 40,),
