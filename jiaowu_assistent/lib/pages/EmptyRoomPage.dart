@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 
+import 'package:jiaowuassistent/pages/CourseTablePage.dart';
+
 class EmptyRoomPage extends StatefulWidget {
   @override
   _DateTimeDemoState createState() => _DateTimeDemoState();
