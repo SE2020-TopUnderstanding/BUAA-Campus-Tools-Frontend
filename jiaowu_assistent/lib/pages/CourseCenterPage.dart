@@ -1,25 +1,67 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'dart:async';
 
 class CourseCenterPage extends StatefulWidget {
   @override
   _CourseCenterPageState createState() => _CourseCenterPageState();
 }
 
+Map<String, List<Map>> courseData = {
+  "计网": [
+    {"ddl": "2010-10-11", "homework": "团队作业", "state": "已提交"}
+  ],
+  "软工": [
+    {"ddl": "2010-10-9", "homework": "团队作业", "state": "已提交"},
+    {"ddl": "2010-10-10", "homework": "个人作业", "state": "已提交"},
+    {"ddl": "2010-10-12", "homework": "最后一次作业", "state": "未提交"},
+    {"ddl": "2010-10-13", "homework": "团队作业", "state": "未提交"}
+  ]
+};
+
+class DDL {
+  String time;
+  String text;
+  String status;
+
+  DDL(String time, String text, String status) {
+    this.time = time;
+    this.text = text;
+    this.status = status;
+  }
+}
+
+class Course {
+  String name;
+  List<DDL> deadLine;
+
+  Course(String name) {
+    this.name = name;
+    this.deadLine = new List();
+  }
+}
+
 class _CourseCenterPageState extends State<CourseCenterPage> {
   List<int> mList; //组成一个int类型数组，用来控制索引
+  List<Course> courses;
   List<ExpandStateBean> courseList;
 
   _CourseCenterPageState() {
     mList = new List();
     courseList = new List();
+    courses = new List();
     //遍历两个List进行赋值
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < courseData.length; i++) {
       mList.add(i);
       courseList.add(ExpandStateBean(i, false)); //item初始状态为闭着的
     }
+    courseData.keys.forEach((k) {
+      Course c = new Course(k);
+      courseData[k].forEach((d) {
+        DDL ddl = new DDL(d['ddl'], d['homework'], d['state']);
+        c.deadLine.add(ddl);
+      });
+      courses.add(c);
+    });
   }
 
   //修改展开与闭合的内部方法
@@ -33,6 +75,34 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
         }
       });
     });
+  }
+
+  _getDataRows(int index) {
+    List<DataRow> dataRows = [];
+    for (int i = 0; i < courses[index].deadLine.length; i++) {
+      dataRows.add(DataRow(
+        cells: [
+          DataCell(
+            Icon(courses[index].deadLine[i].status == '已提交'
+                ? Icons.done_all
+                : Icons.timelapse),
+          ),
+          DataCell(Text(
+            '${courses[index].deadLine[i].text}',
+            textAlign: TextAlign.center,
+          )),
+          DataCell(Text(
+            '${courses[index].deadLine[i].time}',
+            textAlign: TextAlign.center,
+          )),
+          DataCell(Text(
+            '${courses[index].deadLine[i].status}',
+            textAlign: TextAlign.center,
+          )),
+        ],
+      ));
+    }
+    return dataRows;
   }
 
   @override
@@ -55,7 +125,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
             return ExpansionPanel(
                 headerBuilder: (context, isExpanded) {
                   return ListTile(
-                    title: Text('课程$index'),
+                    title: Text('${courses[index].name}'),
                   );
                 },
                 body: Container(
@@ -84,58 +154,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ],
-                      rows: [
-                        DataRow(
-                          cells: [
-                            DataCell(
-                              Icon(Icons.done_all),
-                            ),
-                            DataCell(
-                              Text(
-                                '作业$index',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                '2020.4.15 20:00',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                '已完成',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          cells: [
-                            DataCell(
-                              Icon(Icons.timelapse),
-                            ),
-                            DataCell(
-                              Text(
-                                '作业$index',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                '2020.4.18 24:00',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                '4h35min',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
+                      rows: _getDataRows(index),
                     ),
                   ),
                 ),
