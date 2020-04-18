@@ -1,68 +1,92 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:async' show Future;
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class CourseCenterPage extends StatefulWidget {
   @override
   _CourseCenterPageState createState() => _CourseCenterPageState();
 }
 
-Map<String, List<Map>> courseData = {
-  "计网": [
-    {"ddl": "2010-10-11", "homework": "团队作业", "state": "已提交"}
-  ],
-  "软工": [
-    {"ddl": "2010-10-9", "homework": "团队作业", "state": "已提交"},
-    {"ddl": "2010-10-10", "homework": "个人作业", "state": "已提交"},
-    {"ddl": "2010-10-12", "homework": "最后一次作业", "state": "未提交"},
-    {"ddl": "2010-10-13", "homework": "团队作业", "state": "未提交"}
-  ]
-};
+//Map<String, List<Map>> courseData = {
+//  "计网": [
+//    {"ddl": "2020-04-14 17:00:00", "homework": "团队作业", "state": "已提交"}
+//  ],
+//  "软工": [
+//    {"ddl": "2020-04-22 22:00:00", "homework": "最后一次作业", "state": "未提交"},
+//    {"ddl": "2020-04-19 22:00:00", "homework": "团队作业", "state": "未提交"},
+//    {"ddl": "2020-04-17 20:00:00", "homework": "团队作业", "state": "已提交"},
+//    {"ddl": "2020-04-14 24:00:00", "homework": "个人作业", "state": "已提交"},
+//  ]
+//};
 
 class DDL {
-  String time;
-  String text;
-  String status;
+  final String time;
+  final String text;
+  final String status;
 
-  DDL(String time, String text, String status) {
-    this.time = time;
-    this.text = text;
-    this.status = status;
+  DDL({this.time, this.text, this.status});
+
+  factory DDL.fromJson(Map<String, dynamic> parsedJson) {
+    return DDL(
+        time: parsedJson['ddl'],
+        text: parsedJson['homework'],
+        status: parsedJson['state']);
   }
 }
 
 class Course {
-  String name;
-  List<DDL> deadLine;
+  final String name;
+  final List<DDL> content;
 
-  Course(String name) {
-    this.name = name;
-    this.deadLine = new List();
+  Course({this.name, this.content});
+
+  factory Course.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['content'] as List;
+    print(list.runtimeType);
+    List<DDL> ddlList = list.map((i) => DDL.fromJson(i)).toList();
+
+    return Course(name: parsedJson['name'], content: ddlList);
+  }
+}
+
+class CourseCenter {
+  final List<Course> courses;
+
+  CourseCenter({this.courses});
+
+  factory CourseCenter.fromJson(List<dynamic> parsedJson) {
+    List<Course> courseCenterList =
+        parsedJson.map((i) => Course.fromJson(i)).toList();
+    return CourseCenter(courses: courseCenterList);
+  }
+}
+
+Future<CourseCenter> loadCourseCenter() async {
+  final response =
+      await http.get('http://114.115.208.32:8000/ddl/?student_id=17373349');
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return CourseCenter.fromJson(json.decode(response.body));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load course center');
   }
 }
 
 class _CourseCenterPageState extends State<CourseCenterPage> {
   List<int> mList; //组成一个int类型数组，用来控制索引
-  List<Course> courses;
+  CourseCenter courseCenter;
   List<ExpandStateBean> courseList;
 
-  _CourseCenterPageState() {
-    mList = new List();
-    courseList = new List();
-    courses = new List();
-    //遍历两个List进行赋值
-    for (int i = 0; i < courseData.length; i++) {
-      mList.add(i);
-      courseList.add(ExpandStateBean(i, false)); //item初始状态为闭着的
-    }
-    courseData.keys.forEach((k) {
-      Course c = new Course(k);
-      courseData[k].forEach((d) {
-        DDL ddl = new DDL(d['ddl'], d['homework'], d['state']);
-        c.deadLine.add(ddl);
-      });
-      courses.add(c);
-    });
-  }
+  _CourseCenterPageState() {}
 
   //修改展开与闭合的内部方法
   _setCurrentIndex(int index, isExpand) {
@@ -79,26 +103,29 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
 
   _getDataRows(int index) {
     List<DataRow> dataRows = [];
-    for (int i = 0; i < courses[index].deadLine.length; i++) {
+    var now = DateTime.now();
+    for (int i = 0; i < courseCenter.courses[index].content.length; i++) {
+      var time = DateTime.parse(courseCenter.courses[index].content[i].time);
+      var duration = time.difference(now);
       dataRows.add(DataRow(
         cells: [
           DataCell(
-            Icon(courses[index].deadLine[i].status == '已提交'
-                ? Icons.done_all
-                : Icons.timelapse),
+            courseCenter.courses[index].content[i].status == '已提交'
+                ? Icon(Icons.done_all)
+                : Text('剩${duration.inHours.toString()}h'),
           ),
           DataCell(Text(
-            '${courses[index].deadLine[i].text}',
+            '${courseCenter.courses[index].content[i].text}',
             textAlign: TextAlign.center,
           )),
           DataCell(Text(
-            '${courses[index].deadLine[i].time}',
+            '${courseCenter.courses[index].content[i].time}',
             textAlign: TextAlign.center,
           )),
-          DataCell(Text(
-            '${courses[index].deadLine[i].status}',
-            textAlign: TextAlign.center,
-          )),
+//          DataCell(Text(
+//            '${courses[index].deadLine[i].status}',
+//            textAlign: TextAlign.center,
+//          )),
         ],
       ));
     }
@@ -125,7 +152,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
             return ExpansionPanel(
                 headerBuilder: (context, isExpanded) {
                   return ListTile(
-                    title: Text('${courses[index].name}'),
+                    title: Text('${courseCenter.courses[index].name}'),
                   );
                 },
                 body: Container(
@@ -145,11 +172,6 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                         ),
                         DataColumn(
                           label: Text('DeadLine',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('剩余时间',
                               textAlign: TextAlign.center,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
