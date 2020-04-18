@@ -41,6 +41,7 @@ class FunctionsPage extends StatelessWidget {
         automaticallyImplyLeading: false,
       ),
       body: new Container(
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -60,7 +61,7 @@ class FunctionsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _block(context, Icon(Icons.school, size: 40,), Text("课程评价"), ScorePage()),
-                _block(context, Icon(Icons.date_range, size: 40,), Text("课表查询"), CourseTablePage()),
+                _block(context, Icon(Icons.date_range, size: 40,), Text("未知"), ScorePage()),
               ],
             )
           ],
