@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseTablePage.dart';
 import 'package:jiaowuassistent/pages/FirstPage.dart';
 import 'package:jiaowuassistent/pages/FunctionsPage.dart';
-import 'package:jiaowuassistent/pages/ScorePage.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
