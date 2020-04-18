@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseCenterPage.dart';
 import 'package:jiaowuassistent/pages/EmptyRoomPage.dart';
 import 'package:jiaowuassistent/pages/ScorePage.dart';
-import 'package:jiaowuassistent/pages/CourseTablePage.dart';
 
 class FunctionsPage extends StatelessWidget {
   

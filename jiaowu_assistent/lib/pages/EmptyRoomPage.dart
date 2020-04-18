@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:dio/dio.dart';
 import 'dart:async';
-
-import 'package:jiaowuassistent/pages/CourseTablePage.dart';
 import 'package:jiaowuassistent/pages/User.dart';
 
 class EmptyRoomPage extends StatefulWidget {
@@ -14,8 +11,8 @@ class EmptyRoomPage extends StatefulWidget {
 
 class _DateTimeDemoState extends State<EmptyRoomPage> {
   Map<int, String> campusMap = {
-    1: "学院路校区",
-    2: "沙河校区",
+    1: "沙河校区",
+    2: "学院路校区",
   };
 
   Map<int, String> buildingMap = {
@@ -42,13 +39,12 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   };
 
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay selectedTime = TimeOfDay(hour: 9, minute: 30);
-  static List<String> list = ["G-101", "H-402"];
+//  TimeOfDay selectedTime = TimeOfDay(hour: 9, minute: 30);
 
   static double size = 20;
   TextStyle textStyle = TextStyle(fontSize: size);
-  var _selectedBegin = 1, _selectedEnd = 1, _selectedCampus = 1, _selectedBuilding = 1;
-  List<String> _list = list;
+  var _selectedBegin, _selectedEnd, _selectedCampus, _selectedBuilding;
+  List<String> _list;
 
 
   Future<void> _selectDate() async {
@@ -72,7 +68,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
       section = section + i.toString() + ',';
     }
     try {
-      getEmptyRoom(campusMap[_selectedCampus], _selectedDate.toString(), section,
+      getEmptyRoom(campusMap[_selectedCampus], DateFormat('yyyy-M-dd').format(_selectedDate), section,
           buildingMap[_selectedBuilding]).then((EmptyRoom temp) {
         setState(() {
           if (temp == null) {
@@ -114,8 +110,12 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     if (_list == null) {
       return Container(
         child: ListTile(
-          title: Text("No Empty Room!"),
-          subtitle: Text(buildingMap[_selectedBuilding]),
+          title: Text("Sorry, No Empty Room!",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.red, fontSize: 20),
+          ),
+//          subtitle: Text(buildingMap[_selectedBuilding] + " " + lessonMap[_selectedBegin] + "->" + lessonMap[_selectedEnd], textAlign: TextAlign.center,),
+          trailing: Icon(Icons.not_interested, color: Colors.red,),
         ),
         decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.black))),
       );
@@ -124,11 +124,46 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
       child: ListTile(
         title:  Text(_list[index]),
         subtitle: Text(buildingMap[_selectedBuilding]),
+        trailing: Icon(Icons.directions_run, color: Colors.blue,),
       ),
       decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.black))),
     );
   }
 
+  void _showAlertDialog() {
+    showDialog(
+      // 设置点击 dialog 外部不取消 dialog，默认能够取消
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('错误提示', textAlign: TextAlign.center,),
+          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // 标题文字样式
+          content: Text(r'  结束时间段要求在开始时间段之后\(^o^)/~'),
+          contentTextStyle: TextStyle(color: Colors.white, fontSize: 17), // 内容文字样式
+          backgroundColor: CupertinoColors.systemGrey,
+          elevation: 8.0, // 投影的阴影高度
+          semanticLabel: 'Label', // 这个用于无障碍下弹出 dialog 的提示
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
+          actions: <Widget>[
+            // 点击增加显示的值
+//            FlatButton(onPressed: increase, child: Text('点我增加')),
+//            // 点击减少显示的值
+//            FlatButton(onPressed: decrease, child: Text('点我减少')),
+//            // 点击关闭 dialog，需要通过 Navigator 进行操作
+            FlatButton(onPressed: () => Navigator.pop(context),
+                child: Text('知道了', style: TextStyle(color: CupertinoColors.white),)),
+          ],
+        ));
+  }
+
+  bool checkNull() {
+    if (_selectedEnd != null && _selectedBegin != null
+        && _selectedBuilding != null && _selectedCampus != null)
+      return true;
+    else
+      return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +191,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                             children: <Widget>[
                               Icon(Icons.date_range, size: 30,),
                               SizedBox(width: 20,),
-                              Text(DateFormat.yMMMMd().format(_selectedDate), style: textStyle,),
+                              Text(DateFormat.yMMMMd().format(_selectedDate), style: textStyle,),   //
                               Icon(Icons.arrow_drop_down, size: size,),
                             ],
                           ),
@@ -164,14 +199,14 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       ],
                     ),
                   ),
-                  SizedBox(width: 10),
-                  CupertinoButton(
-                    child: Text("查询"),
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    color: Colors.grey,
-                    onPressed: _search,
-                    pressedOpacity: 0.8,
-                  )
+//                    SizedBox(width: 10),
+//                    CupertinoButton(
+//                      child: Text("查询"),
+//                      padding: EdgeInsets.symmetric(horizontal: 20),
+//                      color: Colors.grey,
+//                      onPressed: _search,
+//                      pressedOpacity: 0.8,
+//                    )
                 ],
               ),
               SizedBox(height: 20,),
@@ -191,6 +226,8 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     onChanged: (value){
                       setState(() {
                         _selectedCampus = value;
+                        if (checkNull())
+                          _search();
                       });
                     },
                   ),
@@ -201,13 +238,15 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     iconEnabledColor: Colors.black,
                     hint: Text('请选择教学楼'),
                     items: [
-                      DropdownMenuItem(child: Text('一号教学楼'), value: 1,),
-                      DropdownMenuItem(child: Text('二号教学楼'), value: 2,),
+                      DropdownMenuItem(child: Text('一号楼'), value: 1,),
+                      DropdownMenuItem(child: Text('二号楼'), value: 2,),
                       DropdownMenuItem(child: Text('新主楼'), value: 3,),
                     ],
                     onChanged: (value) {
                       setState(() {
                         _selectedBuilding = value;
+                        if (checkNull())
+                          _search();
                       });
                     },
                   )
@@ -225,10 +264,18 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       items: getListData(),
                       onChanged: (value){
                         setState(() {
-                          _selectedBegin = value;
+                          if (_selectedEnd != null && value > _selectedEnd) {
+                            _showAlertDialog();
+                          }
+                          else {
+                            _selectedBegin = value;
+                            if (checkNull())
+                              _search();
+                          }
                         });
                       },
                     ),
+                    Icon(Icons.arrow_forward, size: 25, color: Colors.grey,),
                     DropdownButton(
                       value: _selectedEnd,
                       icon: Icon(Icons.arrow_drop_down),
@@ -238,7 +285,14 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       items: getListData(),
                       onChanged: (value){
                         setState(() {
-                          _selectedEnd = value;
+                          if (_selectedEnd != null && value < _selectedBegin) {
+                            _showAlertDialog();
+                          }
+                          else {
+                            _selectedEnd = value;
+                            if (checkNull())
+                              _search();
+                          }
                         });
                       },
                     ),
