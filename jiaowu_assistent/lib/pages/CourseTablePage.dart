@@ -60,6 +60,7 @@ class _CourseTablePage extends State<CourseTablePage> {
     // TODO: implement build
     return new Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('课程表'),
         actions: <Widget>[
           DropdownButton(
