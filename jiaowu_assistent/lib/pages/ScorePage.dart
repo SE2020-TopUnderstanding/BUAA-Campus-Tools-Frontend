@@ -56,12 +56,12 @@ class Score extends StatelessWidget {
 
   Widget build(BuildContext context) {
     Map<String, dynamic> data;
-    List<DataRow> dateRows = [];
+    List<DataRow> dataRows = [];
     double sumScore = 0;
     double sumCredit = 0;
 
     for (int i = 0; i < 2; i++) {
-      dateRows.add(DataRow(
+      dataRows.add(DataRow(
 //        selected: grades[i].selected,
         cells: [
           DataCell(Text('${grades[i].name}')),
@@ -86,7 +86,7 @@ class Score extends StatelessWidget {
                   DataColumn(label: Text('学分')),
                   DataColumn(label: Text('成绩')),
                 ],
-                rows: dateRows),
+                rows: dataRows),
             RaisedButton(
               color: Colors.lightBlue,
               shape: RoundedRectangleBorder(
