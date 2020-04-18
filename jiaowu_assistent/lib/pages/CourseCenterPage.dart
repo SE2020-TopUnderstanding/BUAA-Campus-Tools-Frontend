@@ -7,89 +7,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:jiaowuassistent/pages/User.dart';
+
 class CourseCenterPage extends StatefulWidget {
   @override
   _CourseCenterPageState createState() => _CourseCenterPageState();
 }
 
-//Map<String, List<Map>> courseData = {
-//  "计网": [
-//    {"ddl": "2020-04-14 17:00:00", "homework": "团队作业", "state": "已提交"}
-//  ],
-//  "软工": [
-//    {"ddl": "2020-04-22 22:00:00", "homework": "最后一次作业", "state": "未提交"},
-//    {"ddl": "2020-04-19 22:00:00", "homework": "团队作业", "state": "未提交"},
-//    {"ddl": "2020-04-17 20:00:00", "homework": "团队作业", "state": "已提交"},
-//    {"ddl": "2020-04-14 24:00:00", "homework": "个人作业", "state": "已提交"},
-//  ]
-//};
-
-class DDL {
-  final String time;
-  final String text;
-  final String status;
-
-  DDL({this.time, this.text, this.status});
-
-  factory DDL.fromJson(Map<String, dynamic> parsedJson) {
-    return DDL(
-        time: parsedJson['ddl'],
-        text: parsedJson['homework'],
-        status: parsedJson['state']);
-  }
-}
-
-class Course {
-  final String name;
-  final List<DDL> content;
-
-  Course({this.name, this.content});
-
-  factory Course.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['content'] as List;
-    print(list.runtimeType);
-    List<DDL> ddlList = list.map((i) => DDL.fromJson(i)).toList();
-
-    return Course(name: parsedJson['name'], content: ddlList);
-  }
-}
-
-class CourseCenter {
-  final List<Course> courses;
-
-  CourseCenter({this.courses});
-
-  factory CourseCenter.fromJson(List<dynamic> parsedJson) {
-    List<Course> courseCenterList =
-        parsedJson.map((i) => Course.fromJson(i)).toList();
-    return CourseCenter(courses: courseCenterList);
-  }
-}
-
-Future<CourseCenter> loadCourseCenter() async {
-  final response =
-      await http.get('http://114.115.208.32:8000/ddl/?student_id=17373349');
-
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return CourseCenter.fromJson(json.decode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load course center');
-  }
-}
-
 class _CourseCenterPageState extends State<CourseCenterPage> {
-  List<int> mList; //组成一个int类型数组，用来控制索引
-  CourseCenter courseCenter;
-  List<ExpandStateBean> courseList;
+  Future<CourseCenter> courseCenter;
 
-  _CourseCenterPageState() {}
+  @override
+  initState() {
+    super.initState();
+    courseCenter = loadCourseCenter();
+  }
 
   //修改展开与闭合的内部方法
-  _setCurrentIndex(int index, isExpand) {
+  _setCurrentIndex(List<ExpandStateBean> courseList, int index, isExpand) {
     setState(() {
       //遍历可展开状态列表
       courseList.forEach((item) {
@@ -101,36 +36,36 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     });
   }
 
-  _getDataRows(int index) {
+  _getDataRows(Course course) {
     List<DataRow> dataRows = [];
     var now = DateTime.now();
-    for (int i = 0; i < courseCenter.courses[index].content.length; i++) {
-      var time = DateTime.parse(courseCenter.courses[index].content[i].time);
+    for (int i = 0; i < course.content.length; i++) {
+//      var time = DateTime.parse(course.content[i].time);
+      var time = DateTime.parse("2020-04-20 19:00:00");
       var duration = time.difference(now);
       dataRows.add(DataRow(
         cells: [
           DataCell(
-            courseCenter.courses[index].content[i].status == '已提交'
+            course.content[i].status == '已提交'
                 ? Icon(Icons.done_all)
                 : Text('剩${duration.inHours.toString()}h'),
           ),
           DataCell(Text(
-            '${courseCenter.courses[index].content[i].text}',
+            '${course.content[i].text}',
             textAlign: TextAlign.center,
           )),
           DataCell(Text(
-            '${courseCenter.courses[index].content[i].time}',
+            '${course.content[i].time}',
             textAlign: TextAlign.center,
           )),
-//          DataCell(Text(
-//            '${courses[index].deadLine[i].status}',
-//            textAlign: TextAlign.center,
-//          )),
         ],
       ));
     }
     return dataRows;
   }
+
+  List<int> mList = []; //组成一个int类型数组，用来控制索引
+  List<ExpandStateBean> courseList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -139,51 +74,72 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
         title: Text("课程中心DDL"),
       ),
       //加入可滚动组件(ExpansionPanelList必须使用可滚动的组件)
-      body: SingleChildScrollView(
-        child: ExpansionPanelList(
-          //交互回调属性，里面是个匿名函数
-          expansionCallback: (index, bol) {
-            //调用内部方法
-            _setCurrentIndex(index, bol);
-          },
-          //进行map操作，然后用toList再次组成List
-          children: mList.map((index) {
-            //返回一个组成的ExpansionPanel
-            return ExpansionPanel(
-                headerBuilder: (context, isExpanded) {
-                  return ListTile(
-                    title: Text('${courseCenter.courses[index].name}'),
-                  );
-                },
-                body: Container(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      columns: [
-                        DataColumn(
-                          label: Text('状态',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+      body: FutureBuilder<CourseCenter>(
+          future: courseCenter,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              for (int i = 0; i < snapshot.data.courses.length; i++) {
+                if (!mList.contains(i)) {
+                  mList.add(i);
+                  courseList.add(ExpandStateBean(i, true)); //item初始状态为闭着的
+                }
+              }
+              return SingleChildScrollView(
+                child: ExpansionPanelList(
+                  //交互回调属性，里面是个匿名函数
+                  expansionCallback: (index, bol) {
+                    //调用内部方法
+                    _setCurrentIndex(courseList, index, bol);
+                  },
+                  //进行map操作，然后用toList再次组成List
+                  children: mList.map((index) {
+                    //返回一个组成的ExpansionPanel
+                    return ExpansionPanel(
+                        headerBuilder: (context, isExpanded) {
+                          return ListTile(
+                            title: Text('${snapshot.data.courses[index].name}'),
+                          );
+                        },
+                        body: Container(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columns: [
+                                DataColumn(
+                                  label: Text('状态',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                                DataColumn(
+                                  label: Text('作业内容',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                                DataColumn(
+                                  label: Text('DeadLine',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ],
+                              rows: _getDataRows(snapshot.data.courses[index]),
+                            ),
+                          ),
                         ),
-                        DataColumn(
-                          label: Text('作业内容',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        DataColumn(
-                          label: Text('DeadLine',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                      rows: _getDataRows(index),
-                    ),
-                  ),
+                        isExpanded: courseList[index].isOpen);
+                  }).toList(),
                 ),
-                isExpanded: courseList[index].isOpen);
-          }).toList(),
-        ),
-      ),
+              );
+            } else {
+              return Container(
+                  alignment: Alignment(0.0, -0.2),
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ));
+            }
+          }),
     );
   }
 }
