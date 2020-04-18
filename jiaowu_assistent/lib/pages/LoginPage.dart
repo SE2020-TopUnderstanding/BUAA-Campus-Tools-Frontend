@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jiaowuassistent/pages/FirstPage.dart';
 import 'package:jiaowuassistent/pages/HomePage.dart';
 import 'dart:async';
 import 'dart:io';

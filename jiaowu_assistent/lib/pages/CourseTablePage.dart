@@ -53,6 +53,7 @@ class CourseTablePage extends StatefulWidget {
 
 class _CourseTablePage extends State<CourseTablePage> {
   int week_value;
+
   List<DropdownMenuItem> getWeekItem() {
     List<DropdownMenuItem> weekItems = [
       DropdownMenuItem(child: Text('第1周'), value: 1,),
@@ -77,34 +78,35 @@ class _CourseTablePage extends State<CourseTablePage> {
     ];
     return weekItems;
   }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return ShareWeekWidget(
-      week:week_value,
+      week: week_value,
       child: Scaffold(
-          appBar: AppBar(
-            title: Text('课程表'),
-            actions: <Widget>[
-              DropdownButton(
-                value: week_value,
-                hint: Text('请选择周次'),
-                items: getWeekItem(),
-                onChanged: (_value){
-                  setState(() {
-                    week_value = _value;
-                  });
-                },
-                iconSize: 20,
-              ),
-              IconButton(
-                icon: Icon(Icons.refresh), onPressed: null,),
-            ],
-          ),
-          body: SingleChildScrollView(
-          //  child: CourseGridTable(),
-          ),
+        appBar: AppBar(
+          title: Text('课程表'),
+          actions: <Widget>[
+            DropdownButton(
+              value: week_value,
+              hint: Text('请选择周次'),
+              items: getWeekItem(),
+              onChanged: (_value) {
+                setState(() {
+                  week_value = _value;
+                });
+              },
+              iconSize: 20,
+            ),
+            IconButton(
+              icon: Icon(Icons.refresh), onPressed: null,),
+          ],
         ),
+        body: SingleChildScrollView(
+          //  child: CourseGridTable(),
+        ),
+      ),
     );
   }
 }
@@ -195,7 +197,6 @@ class _CourseGridTable extends State{
     return courses;
   }
 
-
   /// 左边显示节数的列
   Widget buildLeftColumn() {
     return Column(
@@ -213,19 +214,23 @@ class _CourseGridTable extends State{
   }
 
 
+
   /// 中间的所有列
   List<Widget> buildMainColumns() {
     return List<Widget>.generate(7, (index) {
       // 获取当天的课
       Iterable<Course> day = courselist.where((c) => c.weekDay == index + 1);
+
       List<Widget> cols = new List();
 
       // 遍历每天的14节课
       for (int i = 0; i < 14; i++) {
         // 获取课程开始时间等于本节课的课程
+
         Iterable<Course> courselist = day.where((c) => c.sectionStart == i + 1);
         // 没找到就用空块填充
         if (courselist.length == 0) {
+
           cols.add(WhiteBlock(blockHeight));
           continue;
         }
