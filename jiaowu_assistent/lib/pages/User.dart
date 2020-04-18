@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 class EmptyRoom {
@@ -32,9 +30,12 @@ class Room{
 Future<EmptyRoom> getEmptyRoom(
     String campus, String date, String section, String building) async{
   try {
-    Response response = await Dio().get('http://www.mocky.io/v2/5e9a690133000021bf7b3008', options: Options(responseType: ResponseType.plain));    //http://114.115.208.32:8000/query/classroom/ campus="$campus" date="$date" section="$section"
-    print('Request(http://127.0.0.1:8000/query/classroom/ campus="$campus" date="$date" section="$section")');
+    Response response = await Dio().get(
+        'http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section',
+        options: Options(responseType: ResponseType.plain));    // http://www.mocky.io/v2/5e9a690133000021bf7b3008
+    print('Request(http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section)');
     Map<String, dynamic> data = json.decode(response.data.toString());
+    print(response);
     if (data == null) {
       throw FormatException('No Data Response!');
     }
