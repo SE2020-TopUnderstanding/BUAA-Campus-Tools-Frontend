@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:dio/dio.dart';
 
 class Course {
+  int ID;
   String name;
   String location;
   String teacher;
@@ -9,8 +13,10 @@ class Course {
   int weekDay;
   int sectionStart;
   int sectionEnd;
+  String semester;
 
   Course({
+    this.ID,
     this.name,
     this.location,
     this.teacher,
@@ -18,17 +24,35 @@ class Course {
     this.weekDay,
     this.sectionStart,
     this.sectionEnd,
+    this.semester,
   });
+}
+
+class ShareWeekWidget extends InheritedWidget {
+  ShareWeekWidget({
+   @required  this.week,
+    Widget child,
+  }):super(child:child);
+
+  final int week;
+  static ShareWeekWidget of(BuildContext context){
+    return context.dependOnInheritedWidgetOfExactType();
+  }
+
+  @override
+  bool updateShouldNotify(ShareWeekWidget oldWidget) {
+    // TODO: implement updateShouldNotify
+    return oldWidget.week != week;
+  }
 }
 
 class CourseTablePage extends StatefulWidget {
   @override
   _CourseTablePage createState() => _CourseTablePage();
-
 }
 
 class _CourseTablePage extends State<CourseTablePage> {
-  var week_value;
+  int week_value;
 
   List<DropdownMenuItem> getWeekItem() {
     List<DropdownMenuItem> weekItems = [
@@ -58,28 +82,30 @@ class _CourseTablePage extends State<CourseTablePage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('课程表'),
-        actions: <Widget>[
-          DropdownButton(
-            value: week_value,
-            hint: Text('请选择周次'),
-            items: getWeekItem(),
-            onChanged: (_value){
-              setState(() {
-                week_value = _value;
-              });
-            },
-            iconSize: 20,
-          ),
-          IconButton(
-              icon: Icon(Icons.refresh), onPressed: null),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: CourseGridTable(),
+    return ShareWeekWidget(
+      week: week_value,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('课程表'),
+          actions: <Widget>[
+            DropdownButton(
+              value: week_value,
+              hint: Text('请选择周次'),
+              items: getWeekItem(),
+              onChanged: (_value) {
+                setState(() {
+                  week_value = _value;
+                });
+              },
+              iconSize: 20,
+            ),
+            IconButton(
+              icon: Icon(Icons.refresh), onPressed: null,),
+          ],
+        ),
+        body: SingleChildScrollView(
+          //  child: CourseGridTable(),
+        ),
       ),
     );
   }
@@ -87,64 +113,95 @@ class _CourseTablePage extends State<CourseTablePage> {
 
 class CourseGridTable extends StatefulWidget{
   @override
-  _CourseGridTable createState()  => _CourseGridTable();
+  _CourseGridTable createState() => _CourseGridTable();
 }
 
-class _CourseGridTable extends State<CourseGridTable>{
+class _CourseGridTable extends State{
+  int week;
+  List<Course> courselist;
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Stack(
-        children: <Widget>[
-          WeekBar(
-            DateTime.now(),
-            color: Colors.white,
-            height: blockHeight,
-          ),
-          buildBlocks(),
-        ],
+    return Center(
+      child: FutureBuilder<List<Course>>(
+          future: getCourse(ShareWeekWidget.of(context).week),
+          builder: (BuildContext context,AsyncSnapshot snapshot){
+            if(snapshot.connectionState == ConnectionState.done){
+              return Stack(
+                children: <Widget>[
+                  WeekBar(
+                    DateTime.now(),
+                    color: Colors.white,
+                    height: blockHeight,
+                  ),
+                  buildBlocks(),
+                ],
+              );
+            }else{
+              return Text('loading');
+            }
+          }
+      ),
     );
   }
-
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
 
   final double blockHeight = 60;
 
-  final List<Course> courses = [
-    Course(
-      name: '方法论',
-      location: '教1',
-      teacher: '阮利',
-      week: [1, 2, 3, 4, 5, 6, 7, 8],
-      weekDay: 1,
-      sectionStart: 3,
-      sectionEnd: 4,
-    ),
-    Course(
-      name: '医学伦理',
-      location: '教2',
-      teacher: '汲婧',
-      week: [1, 2, 3, 4, 5, 6, 7, 8],
-      weekDay: 4,
-      sectionStart: 5,
-      sectionEnd: 6,
-    ),
-    Course(
-      name: '计网实验',
-      location: '远程',
-      teacher: '张力军',
-      week: [1, 2, 3, 4, 5, 6, 7, 8],
-      weekDay: 1,
-      sectionStart: 11,
-      sectionEnd: 14,
-    ),
-  ];
+  Future<List<Course>> getCourse(int week) async{
+    List<Course> courses = [
+      Course(
+        name: '方法论',
+        location: '教1',
+        teacher: '阮利',
+        week: [1, 2, 3, 4, 5, 6, 7, 8],
+        weekDay: 1,
+        sectionStart: 3,
+        sectionEnd: 4,
+      ),
+      Course(
+        name: '医学伦理',
+        location: '教2',
+        teacher: '汲婧',
+        week: [1, 2, 3, 4, 5, 6, 7, 8],
+        weekDay: 4,
+        sectionStart: 5,
+        sectionEnd: 6,
+      ),
+      Course(
+        name: '计网实验',
+        location: '远程',
+        teacher: '张力军',
+        week: [1, 2, 3, 4, 5, 6, 7, 8],
+        weekDay: 1,
+        sectionStart: 11,
+        sectionEnd: 14,
+      ),
+    ];
+    Dio dio = new Dio();
+    try{
+      Response response;
+      print('test1');
+      response = await dio.request('http://127.0.0.1:8000/timetable/',
+          data:{"student_id":"17373182","semester":"2020_Spring", "week":"8"},
+          options: Options(method: "GET", responseType: ResponseType.json));
+      print('test2');
+      print(response.data);
+    }catch(e){
+      e.toString();
+    }
+    return courses;
+  }
 
   /// 左边显示节数的列
   Widget buildLeftColumn() {
     return Column(
       children: List<Widget>.generate(
-        14,
-            (index) => Container(
+          14, (index) => Container(
           width: 30,
           height: blockHeight,
           color: Colors.white,
@@ -156,26 +213,30 @@ class _CourseGridTable extends State<CourseGridTable>{
     );
   }
 
+
+
   /// 中间的所有列
   List<Widget> buildMainColumns() {
-    // 一周7天
     return List<Widget>.generate(7, (index) {
       // 获取当天的课
-      Iterable<Course> day = courses.where((c) => c.weekDay == index + 1);
+      Iterable<Course> day = courselist.where((c) => c.weekDay == index + 1);
+
       List<Widget> cols = new List();
 
       // 遍历每天的14节课
       for (int i = 0; i < 14; i++) {
         // 获取课程开始时间等于本节课的课程
-        Iterable<Course> courses = day.where((c) => c.sectionStart == i + 1);
+
+        Iterable<Course> courselist = day.where((c) => c.sectionStart == i + 1);
         // 没找到就用空块填充
-        if (courses.length == 0) {
+        if (courselist.length == 0) {
+
           cols.add(WhiteBlock(blockHeight));
           continue;
         }
 
         // 获得其中的第一个课
-        Course course = courses.first;
+        Course course = courselist.first;
         // 计算块的大小
         int jie = course.sectionEnd - course.sectionStart;
         if (jie >= 0 && jie < 14) {
@@ -186,7 +247,7 @@ class _CourseGridTable extends State<CourseGridTable>{
               height: blockHeight,
               backgroundColor: Color.fromARGB(255, 250, 107, 91),
               textColor: Colors.white,
-//              onTap: () => onTap(course),
+              onTap: () => onTap(course),
             ),
           );
           i += jie;
