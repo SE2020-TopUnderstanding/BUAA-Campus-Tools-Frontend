@@ -1,0 +1,26 @@
+[
+  {"name": "science",
+    "location": "building1",
+    "teacher": "ruanli",
+    "weekDay": 1,
+    "sectionStart": 3,
+    "sectionEnd": 4
+  },
+
+  {
+    "name": "doctor",
+    "location": "building2",
+    "teacher": "jijing",
+    "weekDay": 4,
+    "sectionStart": 5,
+    "sectionEnd": 6
+  },
+  {
+    "name": "lab",
+    "location": "home",
+    "teacher": "zhanglijun",
+    "weekDay": 1,
+    "sectionStart": 11,
+    "sectionEnd": 14
+  }
+]
