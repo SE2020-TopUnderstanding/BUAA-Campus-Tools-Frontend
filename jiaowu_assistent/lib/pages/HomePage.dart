@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseTablePage.dart';
 import 'package:jiaowuassistent/pages/FirstPage.dart';
 import 'package:jiaowuassistent/pages/FunctionsPage.dart';
+import 'package:jiaowuassistent/pages/Person.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -33,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
           //FirstPage(),
           CourseTablePage(),
           FunctionsPage(),
-          PersonalPage(),
+          PersonPage(),
         ],
         controller: _controller,
 //        onPageChanged: onPageChanged,

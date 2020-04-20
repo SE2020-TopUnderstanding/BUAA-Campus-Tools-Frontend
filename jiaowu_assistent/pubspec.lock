@@ -116,6 +116,11 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_web_plugins:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   gbk2utf8:
     dependency: "direct main"
     description:
@@ -242,6 +247,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.0"
+  plugin_platform_interface:
+    dependency: transitive
+    description:
+      name: plugin_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   pub_semver:
     dependency: transitive
     description:
@@ -310,6 +322,34 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.6"
+  url_launcher:
+    dependency: "direct main"
+    description:
+      name: url_launcher
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.4.2"
+  url_launcher_macos:
+    dependency: transitive
+    description:
+      name: url_launcher_macos
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.1+4"
+  url_launcher_platform_interface:
+    dependency: transitive
+    description:
+      name: url_launcher_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.6"
+  url_launcher_web:
+    dependency: transitive
+    description:
+      name: url_launcher_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.1+1"
   vector_math:
     dependency: transitive
     description:
@@ -324,6 +364,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.9.7+14"
+  webview_flutter:
+    dependency: "direct main"
+    description:
+      name: webview_flutter
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.19+9"
   xml:
     dependency: transitive
     description:
@@ -340,4 +387,4 @@ packages:
     version: "2.2.0"
 sdks:
   dart: ">=2.7.0 <3.0.0"
-  flutter: ">=0.4.1 <2.0.0"
+  flutter: ">=1.12.13+hotfix.5 <2.0.0"
