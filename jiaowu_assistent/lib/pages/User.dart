@@ -80,7 +80,7 @@ class Course {
 
   factory Course.fromJson(Map<String, dynamic> parsedJson) {
     var list = parsedJson['content'] as List;
-    print(list.runtimeType);
+//    print(list.runtimeType);
     List<DDL> ddlList = list.map((i) => DDL.fromJson(i)).toList();
 
     return Course(name: parsedJson['name'], content: ddlList);
@@ -92,9 +92,10 @@ class CourseCenter {
 
   CourseCenter({this.courses});
 
-  factory CourseCenter.fromJson(List<dynamic> parsedJson) {
+  factory CourseCenter.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['ddl'] as List;
     List<Course> courseCenterList =
-        parsedJson.map((i) => Course.fromJson(i)).toList();
+        list.map((i) => Course.fromJson(i)).toList();
     return CourseCenter(courses: courseCenterList);
   }
 
