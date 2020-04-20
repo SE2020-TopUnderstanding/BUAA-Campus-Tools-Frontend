@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseCenterPage.dart';
 import 'package:jiaowuassistent/pages/EmptyRoomPage.dart';
 import 'package:jiaowuassistent/pages/ScorePage.dart';
+import 'package:jiaowuassistent/pages/CourseTablePage.dart';
+
 
 class FunctionsPage extends StatelessWidget {
   
@@ -60,6 +62,9 @@ class FunctionsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _block(context, Icon(Icons.school, size: 40,), Text("课程评价"), ScorePage()),
+
+                _block(context, Icon(Icons.date_range, size: 40,), Text("课表查询"), CourseTablePage()),
+
                 _block(context, Icon(Icons.date_range, size: 40,), Text("未知"), ScorePage()),
               ],
             )

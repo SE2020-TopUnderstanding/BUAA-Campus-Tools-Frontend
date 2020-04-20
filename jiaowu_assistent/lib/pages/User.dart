@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:gbk2utf8/gbk2utf8.dart';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
@@ -71,7 +71,7 @@ class DDL {
         status: parsedJson['state']);
   }
 }
-
+//课程中心用
 class Course {
   final String name;
   final List<DDL> content;
@@ -120,3 +120,69 @@ Future<CourseCenter> loadCourseCenter() async {
     throw Exception('Failed to load course center');
   }
 }
+
+//课表用
+class CourseT {
+  final String name;
+  final String location;
+  final String teacher;
+  //final List<int> week;
+  final int weekDay;
+  final int sectionStart;
+  final int sectionEnd;
+  //String semester;
+
+  CourseT({
+    this.name,
+    this.location,
+    this.teacher,
+    this.weekDay,
+    this.sectionStart,
+    this.sectionEnd,}
+  );
+
+  factory CourseT.fromJson(Map<String,dynamic> parsedJson){
+     return CourseT(
+       name: parsedJson['name'],
+       location: parsedJson['location'],
+       teacher: parsedJson['teacher'],
+       //week: parsedJson['week'],
+       weekDay: parsedJson['weekDay'],
+       sectionStart: parsedJson['sectionStart'],
+       sectionEnd: parsedJson['sectionEnd'],
+    );
+  }
+}
+
+class WeekCourseTable{
+  final List<CourseT> courses;
+  WeekCourseTable({this.courses});
+  factory WeekCourseTable.fromJson(List<dynamic> jsonList){
+    List<CourseT> courseList = jsonList.map((i) => CourseT.fromJson(i)).toList();
+    return WeekCourseTable(courses: courseList);
+  }
+}
+
+Future<WeekCourseTable> getCourse(int week) async{
+  String jsonString = await rootBundle.loadString('assets/data/courseTable1.json');
+  List<dynamic> jsonList = json.decode(jsonString);
+  WeekCourseTable temp = WeekCourseTable.fromJson(jsonList);
+  //print(temp.toString());
+  //print(jsonResult);
+  /*
+  Dio dio = new Dio();
+  try{
+    Response response;
+    response = await dio.request('http://127.0.0.1:8000/timetable/',
+        data:{"student_id":"17373182","semester":"2020_Spring", "week":"8"},
+        options: Options(method: "GET", responseType: ResponseType.json));
+  }catch(e){
+    e.toString();
+  }
+   */
+  return temp;
+}
+
+
+
+
