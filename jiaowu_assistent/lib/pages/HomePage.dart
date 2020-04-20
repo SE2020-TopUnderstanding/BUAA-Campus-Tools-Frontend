@@ -2,6 +2,7 @@ import 'package:jiaowuassistent/Pages/PersonalPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseTablePage.dart';
+import 'package:jiaowuassistent/pages/FirstPage.dart';
 import 'package:jiaowuassistent/pages/FunctionsPage.dart';
 
 class MyHomePage extends StatefulWidget {
