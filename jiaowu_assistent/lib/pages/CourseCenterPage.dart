@@ -40,15 +40,17 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     List<DataRow> dataRows = [];
     var now = DateTime.now();
     for (int i = 0; i < course.content.length; i++) {
-//      var time = DateTime.parse(course.content[i].time);
-      var time = DateTime.parse("2020-04-20 19:00:00");
+      var time = DateTime.parse(course.content[i].time);
+//      var time = DateTime.parse("2020-04-23 19:00:00");
       var duration = time.difference(now);
       dataRows.add(DataRow(
         cells: [
           DataCell(
-            course.content[i].status == '已提交'
+            course.content[i].status.contains('已提交')
                 ? Icon(Icons.done_all)
-                : Text('剩${duration.inHours.toString()}h'),
+                : duration.inHours <= 0
+                    ? Text('已截止')
+                    : Text('剩${duration.inHours.toString()}h'),
           ),
           DataCell(Text(
             '${course.content[i].text}',

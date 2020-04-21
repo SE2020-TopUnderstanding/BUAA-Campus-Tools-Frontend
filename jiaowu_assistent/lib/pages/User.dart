@@ -36,8 +36,11 @@ Future<EmptyRoom> getEmptyRoom(
   try {
     Response response = await Dio().get(
         'http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section',
-        options: Options(responseType: ResponseType.plain));    // http://www.mocky.io/v2/5e9a690133000021bf7b3008
-    print('Request(http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section)');
+        options: Options(
+            responseType: ResponseType
+                .plain)); // http://www.mocky.io/v2/5e9a690133000021bf7b3008
+    print(
+        'Request(http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section)');
     Map<String, dynamic> data = json.decode(response.data.toString());
     print(response);
     if (data == null) {
@@ -71,6 +74,7 @@ class DDL {
         status: parsedJson['state']);
   }
 }
+
 //课程中心用
 class Course {
   final String name;
@@ -98,6 +102,11 @@ class CourseCenter {
         list.map((i) => Course.fromJson(i)).toList();
     return CourseCenter(courses: courseCenterList);
   }
+//  factory CourseCenter.fromJson(List<dynamic> parsedJson) {
+//    List<Course> courseCenterList =
+//        parsedJson.map((i) => Course.fromJson(i)).toList();
+//    return CourseCenter(courses: courseCenterList);
+//  }
 
   List<Course> getCourses() {
     return courses;
@@ -105,21 +114,23 @@ class CourseCenter {
 }
 
 Future<CourseCenter> loadCourseCenter() async {
-  final response =
-      await http.get('http://114.115.208.32:8000/ddl/?student_id=17373349');
+  String response =
+      await rootBundle.loadString('assets/data/courseCenter.json');
+  return CourseCenter.fromJson(json.decode(response));
 
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    Utf8Decoder decode = new Utf8Decoder();
-//    return json.decode(decode.convert(response.bodyBytes));
-    return CourseCenter.fromJson(
-        json.decode(decode.convert(response.bodyBytes)));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load course center');
-  }
+//  final response =
+//      await http.get('http://114.115.208.32:8000/ddl/?student_id=17373349');
+//  if (response.statusCode == 200) {
+//    // If the server did return a 200 OK response,
+//    // then parse the JSON.
+//    Utf8Decoder decode = new Utf8Decoder();
+//    return CourseCenter.fromJson(
+//        json.decode(decode.convert(response.bodyBytes)));
+//  } else {
+//    // If the server did not return a 200 OK response,
+//    // then throw an exception.
+//    throw Exception('Failed to load course center');
+//  }
 }
 
 //课表用
@@ -127,10 +138,12 @@ class CourseT {
   final String name;
   final String location;
   final String teacher;
+
   //final List<int> week;
   final int weekDay;
   final int sectionStart;
   final int sectionEnd;
+
   //String semester;
 
   CourseT({
@@ -139,33 +152,37 @@ class CourseT {
     this.teacher,
     this.weekDay,
     this.sectionStart,
-    this.sectionEnd,}
-  );
+    this.sectionEnd,
+  });
 
-  factory CourseT.fromJson(Map<String,dynamic> parsedJson){
-     return CourseT(
-       name: parsedJson['name'],
-       location: parsedJson['location'],
-       teacher: parsedJson['teacher'],
-       //week: parsedJson['week'],
-       weekDay: parsedJson['weekDay'],
-       sectionStart: parsedJson['sectionStart'],
-       sectionEnd: parsedJson['sectionEnd'],
+  factory CourseT.fromJson(Map<String, dynamic> parsedJson) {
+    return CourseT(
+      name: parsedJson['name'],
+      location: parsedJson['location'],
+      teacher: parsedJson['teacher'],
+      //week: parsedJson['week'],
+      weekDay: parsedJson['weekDay'],
+      sectionStart: parsedJson['sectionStart'],
+      sectionEnd: parsedJson['sectionEnd'],
     );
   }
 }
 
-class WeekCourseTable{
+class WeekCourseTable {
   final List<CourseT> courses;
+
   WeekCourseTable({this.courses});
-  factory WeekCourseTable.fromJson(List<dynamic> jsonList){
-    List<CourseT> courseList = jsonList.map((i) => CourseT.fromJson(i)).toList();
+
+  factory WeekCourseTable.fromJson(List<dynamic> jsonList) {
+    List<CourseT> courseList =
+        jsonList.map((i) => CourseT.fromJson(i)).toList();
     return WeekCourseTable(courses: courseList);
   }
 }
 
-Future<WeekCourseTable> getCourse(int week) async{
-  String jsonString = await rootBundle.loadString('assets/data/courseTable1.json');
+Future<WeekCourseTable> getCourse(int week) async {
+  String jsonString =
+      await rootBundle.loadString('assets/data/courseTable1.json');
   List<dynamic> jsonList = json.decode(jsonString);
   WeekCourseTable temp = WeekCourseTable.fromJson(jsonList);
   //print(temp.toString());
@@ -183,7 +200,3 @@ Future<WeekCourseTable> getCourse(int week) async{
    */
   return temp;
 }
-
-
-
-

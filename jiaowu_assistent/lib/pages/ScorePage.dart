@@ -39,7 +39,7 @@ class ScorePage extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: new Text('成绩查询'),
-          backgroundColor: Colors.lightBlue,
+//          backgroundColor: Colors.lightBlue,
           automaticallyImplyLeading: false,
         ),
         body: Score());
@@ -83,21 +83,21 @@ class Score extends StatelessWidget {
                   DataColumn(label: Text('成绩')),
                 ],
                 rows: dataRows),
-            RaisedButton(
-              color: Colors.lightBlue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-              ),
-              child: Text(
-                '刷新',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    letterSpacing: 20,
-                    fontSize: 20,
-                    color: Colors.black54),
-              ),
-              onPressed: () {},
-            ),
+//            RaisedButton(
+//              color: Colors.lightBlue,
+//              shape: RoundedRectangleBorder(
+//                borderRadius: BorderRadius.all(Radius.circular(30)),
+//              ),
+//              child: Text(
+//                '刷新',
+//                textAlign: TextAlign.center,
+//                style: TextStyle(
+//                    letterSpacing: 20,
+//                    fontSize: 20,
+//                    color: Colors.black54),
+//              ),
+//              onPressed: () {},
+//            ),
           ],
         ),
       ),
