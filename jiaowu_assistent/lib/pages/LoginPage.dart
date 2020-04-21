@@ -102,7 +102,8 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                               color: Colors.black54),
                         ),
                         onPressed: () {
-                          _login();
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+//                          _login();
                         },
                       ),
                     ),
