@@ -78,7 +78,6 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                         onPressed: (){
                           setState(() {
                             showPassword = !showPassword;
-
                           });
                         },
                       ),
@@ -103,7 +102,8 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                               color: Colors.black54),
                         ),
                         onPressed: () {
-                          _login();
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+//                          _login();
                         },
                       ),
                     ),
@@ -119,32 +119,33 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   void _login() async {
     //if((_formkey.currentState as FormState).validate()){
     //}
-    if(_userNameController.text.isEmpty||_passwordController.text.isEmpty){
-      print('账号或密码为空，请继续输入');
-    }else{
-      //Url请求
-      BaseOptions options = new BaseOptions(
-          //baseUrl: 'http://114.115.208.32:8000',
-          connectTimeout: 50000,
-          receiveTimeout: 3000,
-          //contentType: "applicatio/json",
-      );
-      Dio dio = new Dio(options);
-      try{
-        Response response;
-        response = await dio.request(
-            'http://114.115.208.32:8000/login/',
-            data: {"usr_name":_userNameController.text, "usr_password":_passwordController.text},
-            options:Options(method: "POST", responseType: ResponseType.json));
-        print(response.data);
-        int state = response.data['state'];
-        if(state != 1){
-          throw '账号或密码错误';
-        }
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-      }catch(e){
-        print(e.toString());
-      }
-    }
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+//    if(_userNameController.text.isEmpty||_passwordController.text.isEmpty){
+//      print('账号或密码为空，请继续输入');
+//    }else{
+//      //Url请求
+//      BaseOptions options = new BaseOptions(
+//          //baseUrl: 'http://114.115.208.32:8000',
+//          connectTimeout: 50000,
+//          receiveTimeout: 3000,
+//          //contentType: "applicatio/json",
+//      );
+//      Dio dio = new Dio(options);
+//      try{
+//        Response response;
+//        response = await dio.request(
+//            'http://114.115.208.32:8000/login/',
+//            data: {"usr_name":_userNameController.text, "usr_password":_passwordController.text},
+//            options:Options(method: "POST", responseType: ResponseType.json));
+//        print(response.data);
+//        int state = response.data['state'];
+//        if(state != 1){
+//          throw '账号或密码错误';
+//        }
+//        Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+//      }catch(e){
+//        print(e.toString());
+//      }
+//    }
   }
 }

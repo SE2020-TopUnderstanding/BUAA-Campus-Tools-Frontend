@@ -1,11 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:async' show Future;
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:jiaowuassistent/pages/User.dart';
 
@@ -20,7 +15,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
   @override
   initState() {
     super.initState();
-    courseCenter = loadCourseCenter();
+    courseCenter = getCourseCenter();
   }
 
   //修改展开与闭合的内部方法
@@ -40,15 +35,17 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     List<DataRow> dataRows = [];
     var now = DateTime.now();
     for (int i = 0; i < course.content.length; i++) {
-//      var time = DateTime.parse(course.content[i].time);
-      var time = DateTime.parse("2020-04-20 19:00:00");
+      var time = DateTime.parse(course.content[i].time);
+//      var time = DateTime.parse("2020-04-23 19:00:00");
       var duration = time.difference(now);
       dataRows.add(DataRow(
         cells: [
           DataCell(
-            course.content[i].status == '已提交'
+            course.content[i].status.contains('已提交')
                 ? Icon(Icons.done_all)
-                : Text('剩${duration.inHours.toString()}h'),
+                : duration.inHours <= 0
+                    ? Text('已截止')
+                    : Text('剩${duration.inHours.toString()}h'),
           ),
           DataCell(Text(
             '${course.content[i].text}',
