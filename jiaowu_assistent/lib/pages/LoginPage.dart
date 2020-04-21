@@ -78,7 +78,6 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                         onPressed: (){
                           setState(() {
                             showPassword = !showPassword;
-
                           });
                         },
                       ),
