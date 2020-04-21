@@ -30,8 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: new PageView(
         children: <Widget>[
-          //FirstPage(),
-          CourseTablePage(),
+          FirstPage(),
+          //CourseTablePage(),
           FunctionsPage(),
           PersonalPage(),
         ],

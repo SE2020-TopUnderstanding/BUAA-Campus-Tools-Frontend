@@ -25,6 +25,8 @@ dependencies:
   cupertino_icons: ^0.1.2
   #dio: ^3.0.0
   path_provider: ^0.4.1
+  shared_preferences: ^0.5.3+4
+  provider: ^2.0.1+1
   gbk2utf8:
 
 dev_dependencies:
@@ -46,6 +48,7 @@ flutter:
     - assets/images/welcome.png
     - assets/data/grade.json
     - assets/data/courseTable1.json
+    - assets/data/courseTable9.json
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

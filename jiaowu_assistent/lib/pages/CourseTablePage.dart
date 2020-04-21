@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
-import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/pages/User.dart';
+import 'dart:math';
 
 class ShareWeekWidget extends InheritedWidget {
   //跨组件共享week value
@@ -22,7 +21,7 @@ class ShareWeekWidget extends InheritedWidget {
   @override
   bool updateShouldNotify(ShareWeekWidget oldWidget) {
     // TODO: implement updateShouldNotify
-    return oldWidget.week != week;
+    return (oldWidget.week != week);
   }
 }
 
@@ -33,7 +32,6 @@ class CourseTablePage extends StatefulWidget {
 
 class _CourseTablePage extends State<CourseTablePage> {
   int week_value;
-
   List<DropdownMenuItem> getWeekItem() {
     List<DropdownMenuItem> weekItems = [
       DropdownMenuItem(child: Text('第1周'), value: 1,),
@@ -60,33 +58,45 @@ class _CourseTablePage extends State<CourseTablePage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getWeek().then((value){
+      setState(() {
+        week_value = value;
+        print('set cur week:$week_value');
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ShareWeekWidget(
-      week: week_value,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('课程表'),
-          actions: <Widget>[
-            DropdownButton(
-              value: week_value,
-              hint: Text('请选择周次'),
-              items: getWeekItem(),
-              onChanged: (_value) {
-                setState(() {
-                  week_value = _value;
-                });
-              },
-              iconSize: 20,
+        return ShareWeekWidget(
+          week: week_value,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('课程表'),
+              actions: <Widget>[
+                DropdownButton(
+                  value: week_value,
+                  hint: Text('第$week_value周'),
+                  items: getWeekItem(),
+                  onChanged: (_value) {
+                    setState(() {
+                      week_value = _value;
+                    });
+                  },
+                  iconSize: 20,
+                ),
+                //IconButton(icon: Icon(Icons.refresh), onPressed: null,),暂不支持手动刷新
+              ],
             ),
-            //IconButton(icon: Icon(Icons.refresh), onPressed: null,),暂不支持手动刷新
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: CourseGridTable(),
-        ),
-      ),
-    );
+            body: SingleChildScrollView(
+              child: CourseGridTable(),
+            ),
+          ),
+        );
   }
 }
 
@@ -102,33 +112,49 @@ class _CourseGridTable extends State{
   List<CourseT> courses= new List<CourseT>();
 
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
-
-  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    week = 8;
-    courseList = getCourse(week);
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    week = ShareWeekWidget.of(context).week;
+    super.didChangeDependencies();
+    print('didChangeDependencies:$week');
+  }
+
+  @override
+  void didUpdateWidget(StatefulWidget oldWidget) {
+    // TODO: implement didUpdateWidget
+    print('didUpdateWidget:$week');
+    super.didUpdateWidget(oldWidget);
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    print('build:$week');
     // TODO: implement build
     return Center(
       child: FutureBuilder(
-          future: courseList,
+          future: getCourse(week),
           builder: (BuildContext context,AsyncSnapshot snapshot){
             if(snapshot.connectionState == ConnectionState.waiting){
               print('waiting');
             }
             if(snapshot.connectionState == ConnectionState.done){
-              for(int i=0;i<snapshot.data.courses.length;i++){
-                courses.add(snapshot.data.courses[i]);
+              if(snapshot.data==null){
+                courses.clear();
+                print('no data');
+              }else{
+                courses.clear();
+                for(int i=0;i<snapshot.data.courses.length;i++){
+                  courses.add(snapshot.data.courses[i]);
+                }
               }
+
               return Stack(
                 children: <Widget>[
                   WeekBar(
@@ -178,7 +204,6 @@ class _CourseGridTable extends State{
           cols.add(WhiteBlock(blockHeight));
           continue;
         }
-
         // 获得其中的第一个课
         CourseT course = list.first;
         // 计算块的大小
@@ -189,7 +214,11 @@ class _CourseGridTable extends State{
               course,
               size: jie + 1,
               height: blockHeight,
-              backgroundColor: Color.fromARGB(255, 250, 107, 91),
+              backgroundColor: Color.fromARGB(
+                  255,
+                  Random.secure().nextInt(255),
+                  Random.secure().nextInt(255),
+                  Random.secure().nextInt(255)),
               textColor: Colors.white,
               onTap: () => onTap(course),
             ),
@@ -199,7 +228,6 @@ class _CourseGridTable extends State{
           cols.add(WhiteBlock(blockHeight));
         }
       }
-
       return Expanded(
         child: Column(
           children: cols,
@@ -374,7 +402,7 @@ class CourseBlock extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(5)),
         ),
         child: Text(
-          '${course.name}@${course.teacher}',
+          '${course.name}@${course.location}',
           style: TextStyle(color: textColor),
         ),
       ),
