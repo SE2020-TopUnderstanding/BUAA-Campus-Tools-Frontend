@@ -64,6 +64,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     setState(() {
       _selectedDate = date;
     });
+    _search();
   }
 
   Future<void> _search() async {
