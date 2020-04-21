@@ -8,10 +8,16 @@ import 'package:dio/dio.dart';
 class EmptyRoom {
   String _building;
   List<String> _rooms;
+  String _response;
 
-  EmptyRoom(String building, List<String> rooms) {
+  EmptyRoom(String building, List<String> rooms, String response) {
     this._building = building;
     this._rooms = rooms;
+    this._response = response;
+  }
+
+  String getResPonse() {
+    return _response;
   }
 
   String getBuilding() {
@@ -47,12 +53,13 @@ Future<EmptyRoom> getEmptyRoom(String campus, String date, String section,
       throw FormatException('No Data Response!');
     } else if (!data.containsKey(building)) {
       print("building: $building");
-      throw FormatException('The certain building has no empty room!');
+      print("The certain building has no empty room!");
+      return EmptyRoom(building, null, response.data.toString());
+//      throw FormatException('The certain building has no empty room!');
     } else {
       List<dynamic> listJson = data['$building'];
-      List<String> list =
-      listJson.map((value) => value['classroom'].toString()).toList();
-      return EmptyRoom(building, list);
+      List<String> list = listJson.map((value) => value['classroom'].toString()).toList();
+      return EmptyRoom(building, list, response.data);
     }
   } catch (e) {
     print(e);
