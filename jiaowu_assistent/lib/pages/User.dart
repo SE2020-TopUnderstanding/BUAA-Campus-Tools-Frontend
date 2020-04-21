@@ -31,8 +31,8 @@ class Room {
   }
 }
 
-Future<EmptyRoom> getEmptyRoom(
-    String campus, String date, String section, String building) async {
+Future<EmptyRoom> getEmptyRoom(String campus, String date, String section,
+    String building) async {
   try {
     Response response = await Dio().get(
         'http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section',
@@ -51,7 +51,7 @@ Future<EmptyRoom> getEmptyRoom(
     } else {
       List<dynamic> listJson = data['$building'];
       List<String> list =
-          listJson.map((value) => value['classroom'].toString()).toList();
+      listJson.map((value) => value['classroom'].toString()).toList();
       return EmptyRoom(building, list);
     }
   } catch (e) {
@@ -99,23 +99,20 @@ class CourseCenter {
   factory CourseCenter.fromJson(Map<String, dynamic> parsedJson) {
     var list = parsedJson['ddl'] as List;
     List<Course> courseCenterList =
-        list.map((i) => Course.fromJson(i)).toList();
+    list.map((i) => Course.fromJson(i)).toList();
     return CourseCenter(courses: courseCenterList);
   }
+
 //  factory CourseCenter.fromJson(List<dynamic> parsedJson) {
 //    List<Course> courseCenterList =
 //        parsedJson.map((i) => Course.fromJson(i)).toList();
 //    return CourseCenter(courses: courseCenterList);
 //  }
-
-  List<Course> getCourses() {
-    return courses;
-  }
 }
 
-Future<CourseCenter> loadCourseCenter() async {
+Future<CourseCenter> getCourseCenter() async {
   String response =
-      await rootBundle.loadString('assets/data/courseCenter.json');
+  await rootBundle.loadString('assets/data/courseCenter.json');
   return CourseCenter.fromJson(json.decode(response));
 
 //  final response =
@@ -125,6 +122,53 @@ Future<CourseCenter> loadCourseCenter() async {
 //    // then parse the JSON.
 //    Utf8Decoder decode = new Utf8Decoder();
 //    return CourseCenter.fromJson(
+//        json.decode(decode.convert(response.bodyBytes)));
+//  } else {
+//    // If the server did not return a 200 OK response,
+//    // then throw an exception.
+//    throw Exception('Failed to load course center');
+//  }
+}
+
+//成绩查询用
+class Grade {
+  final String name;
+  final double credit;
+  final int score;
+
+  Grade({this.name, this.credit, this.score});
+
+  factory Grade.fromJson(Map<String, dynamic> parsedJson) {
+    return Grade(
+        name: parsedJson['course_name'],
+        credit: parsedJson['credit'],
+        score: parsedJson['score']);
+  }
+}
+
+class GradeCenter {
+  final List<Grade> grades;
+
+  GradeCenter({this.grades});
+
+  factory GradeCenter.fromJson(List<dynamic> parsedJson) {
+    List<Grade> gradeList = parsedJson.map((i) => Grade.fromJson(i)).toList();
+    return GradeCenter(grades: gradeList);
+  }
+}
+
+Future<GradeCenter> getGrade() async {
+  String response = await rootBundle.loadString('assets/data/grade.json');
+  GradeCenter temp = GradeCenter.fromJson(json.decode(response));
+  return temp;
+
+//  final response =
+//      await http.get('http://114.115.208.32:8000/ddl/?student_id=17373349');
+//  if (response.statusCode == 200) {
+//    // If the server did return a 200 OK response,
+//    // then parse the JSON.
+//    Utf8Decoder decode = new Utf8Decoder();
+//    return GradeCenter.fromJson(
 //        json.decode(decode.convert(response.bodyBytes)));
 //  } else {
 //    // If the server did not return a 200 OK response,
@@ -175,14 +219,14 @@ class WeekCourseTable {
 
   factory WeekCourseTable.fromJson(List<dynamic> jsonList) {
     List<CourseT> courseList =
-        jsonList.map((i) => CourseT.fromJson(i)).toList();
+    jsonList.map((i) => CourseT.fromJson(i)).toList();
     return WeekCourseTable(courses: courseList);
   }
 }
 
 Future<WeekCourseTable> getCourse(int week) async {
   String jsonString =
-      await rootBundle.loadString('assets/data/courseTable1.json');
+  await rootBundle.loadString('assets/data/courseTable1.json');
   List<dynamic> jsonList = json.decode(jsonString);
   WeekCourseTable temp = WeekCourseTable.fromJson(jsonList);
   //print(temp.toString());

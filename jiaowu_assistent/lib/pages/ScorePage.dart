@@ -1,106 +1,100 @@
+import 'dart:async' show Future;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Grade {
-  String name;
-  double credit;
-  int score;
+import 'package:jiaowuassistent/pages/User.dart';
 
-  Grade(this.name, this.credit, this.score);
-
-  Grade.fromJson(Map<String, dynamic> json) {
-    name = json['course_name'];
-    credit = json['credit'];
-    score = json['score'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['course_name'] = this.name;
-    data['credit'] = this.credit;
-    data['score'] = this.score;
-    return data;
-  }
-}
-
-//List<Grade> grades = <Grade>[Grade('计算机网络', 3, 90), Grade('软件工程', 2, 93)];
-
-class ScorePage extends StatelessWidget {
+class ScorePage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    List<DataRow> dateRows = [];
-    double sumScore = 0;
-    double sumCredit = 0;
-
-    return new Scaffold(
-        appBar: new AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: new Text('成绩查询'),
-//          backgroundColor: Colors.lightBlue,
-          automaticallyImplyLeading: false,
-        ),
-        body: Score());
-  }
+  _ScorePageState createState() => _ScorePageState();
 }
 
-class Score extends StatelessWidget {
+class _ScorePageState extends State<ScorePage> {
+  Future<GradeCenter> gradeCenter;
 
-  List<Grade> grades = <Grade>[Grade('计算机网络', 3, 90), Grade('软件工程', 2, 93)];
+  @override
+  initState() {
+    super.initState();
+    gradeCenter = getGrade();
+  }
 
-  Widget build(BuildContext context) {
-    Map<String, dynamic> data;
+  _getDataRows(List<Grade> grades) {
     List<DataRow> dataRows = [];
     double sumScore = 0;
     double sumCredit = 0;
-
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < grades.length; i++) {
       dataRows.add(DataRow(
-//        selected: grades[i].selected,
         cells: [
-          DataCell(Text('${grades[i].name}')),
-          DataCell(Text('${grades[i].credit}')),
-          DataCell(Text('${grades[i].score}')),
+          DataCell(Text(
+            '${grades[i].name}',
+            textAlign: TextAlign.center,
+          )),
+          DataCell(Text(
+            '          ${grades[i].credit}',
+            textAlign: TextAlign.center,
+          )),
+          DataCell(Text(
+            '         ${grades[i].score}',
+            textAlign: TextAlign.center,
+          )),
         ],
       ));
-//      sumScore += grades[i].score;
-//      sumCredit += grades[i].credit;
+      sumScore += grades[i].score * grades[i].credit;
+      sumCredit += grades[i].credit;
     }
+    dataRows.add(DataRow(
+      cells: [
+        DataCell(Text('加权平均分',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold))),
+        DataCell(Text(
+          '          ',
+          textAlign: TextAlign.center,
+        )),
+        DataCell(Text('      ${(sumScore / sumCredit).toStringAsFixed(2)}',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold))),
+      ],
+    ));
+
+    return dataRows;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return new Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(16),
-        child:
-        ListView(
-          children: <Widget>[
-            DataTable(
-                sortColumnIndex: 1,
-                sortAscending: true,
-                columns: [
-                  DataColumn(label: Text('科目')),
-                  DataColumn(label: Text('学分')),
-                  DataColumn(label: Text('成绩')),
-                ],
-                rows: dataRows),
-//            RaisedButton(
-//              color: Colors.lightBlue,
-//              shape: RoundedRectangleBorder(
-//                borderRadius: BorderRadius.all(Radius.circular(30)),
-//              ),
-//              child: Text(
-//                '刷新',
-//                textAlign: TextAlign.center,
-//                style: TextStyle(
-//                    letterSpacing: 20,
-//                    fontSize: 20,
-//                    color: Colors.black54),
-//              ),
-//              onPressed: () {},
-//            ),
-          ],
-        ),
+      appBar: new AppBar(
+        title: new Text('成绩查询'),
       ),
+      body: FutureBuilder<GradeCenter>(
+          future: gradeCenter,
+          builder: (context, snapshot) {
+            return SingleChildScrollView(
+              child: DataTable(
+                columns: [
+                  DataColumn(
+                    label: Text('课程',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20)),
+                  ),
+                  DataColumn(
+                    label: Text('     学分',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20)),
+                  ),
+                  DataColumn(
+                    label: Text('    成绩',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20)),
+                  ),
+                ],
+                rows: _getDataRows(snapshot.data.grades),
+              ),
+            );
+          }),
     );
   }
 }

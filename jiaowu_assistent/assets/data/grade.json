@@ -8,5 +8,10 @@
     "course_name": "软件工程",
     "credit": 1.5,
     "score": 90
+  },
+  {
+    "course_name": "计网实验",
+    "credit": 1.0,
+    "score": 90
   }
 ]

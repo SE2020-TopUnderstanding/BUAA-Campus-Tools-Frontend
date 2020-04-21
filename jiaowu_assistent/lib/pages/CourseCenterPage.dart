@@ -1,11 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:async' show Future;
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:jiaowuassistent/pages/User.dart';
 
@@ -20,7 +15,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
   @override
   initState() {
     super.initState();
-    courseCenter = loadCourseCenter();
+    courseCenter = getCourseCenter();
   }
 
   //修改展开与闭合的内部方法
