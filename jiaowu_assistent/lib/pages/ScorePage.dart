@@ -69,31 +69,39 @@ class _ScorePageState extends State<ScorePage> {
       body: FutureBuilder<GradeCenter>(
           future: gradeCenter,
           builder: (context, snapshot) {
-            return SingleChildScrollView(
-              child: DataTable(
-                columns: [
-                  DataColumn(
-                    label: Text('课程',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20)),
-                  ),
-                  DataColumn(
-                    label: Text('     学分',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20)),
-                  ),
-                  DataColumn(
-                    label: Text('    成绩',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20)),
-                  ),
-                ],
-                rows: _getDataRows(snapshot.data.grades),
-              ),
-            );
+            if (snapshot.hasData) {
+              return SingleChildScrollView(
+                child: DataTable(
+                  columns: [
+                    DataColumn(
+                      label: Text('课程',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20)),
+                    ),
+                    DataColumn(
+                      label: Text('     学分',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20)),
+                    ),
+                    DataColumn(
+                      label: Text('    成绩',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20)),
+                    ),
+                  ],
+                  rows: _getDataRows(snapshot.data.grades),
+                ),
+              );
+            } else {
+              return Container(
+                  alignment: Alignment(0.0, -0.2),
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ));
+            }
           }),
     );
   }

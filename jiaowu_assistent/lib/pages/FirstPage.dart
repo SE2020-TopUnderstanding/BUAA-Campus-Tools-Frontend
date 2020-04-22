@@ -1,30 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../GlobalUser.dart';
+import '../GlobalUser.dart';
+import 'CourseCenterPage.dart';
+import 'CourseTablePage.dart';
+import 'ScorePage.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:provider/provider.dart';
 
 class FirstPage extends StatelessWidget {
+  int choice=1;
   @override
   Widget build(BuildContext context) {
+    PageSelect page = Provider.of<PageSelect>(context);
     // TODO: implement build
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("主页"),
-        backgroundColor: Colors.lightBlue,
-        automaticallyImplyLeading: false,
-      ),
-      body: new Container(
-        decoration: new BoxDecoration(
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
           color: Colors.white,
         ),
-        child: new Center(
-          child: new Text(
-            '这里是主页，默认显示当周课表，目前尚未完成。',
-            style: TextStyle(
-              fontSize: 32,
-              decoration: TextDecoration.none,
-            ),
-          ),
-        ),
+        child: getFirstPage(page.choice),
       ),
     );
+  }
+}
+
+Widget getFirstPage(int type){
+  switch(type) {
+    case 1:
+      return CourseTablePage();
+    case 2:
+      return ScorePage();
+    case 3:
+      return CourseCenterPage();
+    default:
+      return CourseTablePage();
   }
 }
