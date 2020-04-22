@@ -20,7 +20,7 @@ class WelcomePage extends StatelessWidget {
             Text(
               '北航教务助手,方便你的校园生活',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 20,
                 color: Colors.black54,
                 decoration: TextDecoration.none,
               ),
