@@ -1,24 +1,24 @@
 [
-  {"name": "science",
-    "location": "building1",
-    "teacher": "ruanli",
+  {"name": "计算机科学方法论",
+    "location": "教一",
+    "teacher": "阮利",
     "weekDay": 1,
     "sectionStart": 3,
     "sectionEnd": 4
   },
 
   {
-    "name": "doctor",
-    "location": "building2",
-    "teacher": "jijing",
+    "name": "医学伦理与临床医学基础",
+    "location": "教二",
+    "teacher": "汲婧",
     "weekDay": 4,
     "sectionStart": 5,
     "sectionEnd": 6
   },
   {
-    "name": "lab",
-    "location": "home",
-    "teacher": "zhanglijun",
+    "name": "计算机网络实验",
+    "location": "远程实验平台",
+    "teacher": "张力军",
     "weekDay": 1,
     "sectionStart": 11,
     "sectionEnd": 14

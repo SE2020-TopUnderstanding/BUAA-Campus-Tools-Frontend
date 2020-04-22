@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/HelpCenterPage.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
+import 'DIYPage.dart';
 
 class PersonPage extends StatefulWidget {
   @override
@@ -52,14 +54,15 @@ class _PersonPageState extends State<PersonPage> {
     );
   }
 
-  String _name = "用户昵称";
+  String _name = GlobalUser.name;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        //backgroundColor: Colors.white,
+        title: Text('个人中心'),
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
@@ -78,9 +81,10 @@ class _PersonPageState extends State<PersonPage> {
                       _name,
                       style: TextStyle(fontSize: 25,),
                     ),
-                    subtitle: Text("学号"),
+                    subtitle: Text("学号:${GlobalUser.studentID}"),
                   ),
                 ),
+                /*
                 IconButton(
                   padding: EdgeInsets.all(0),
                   icon: Icon(Icons.edit, size: 15,),
@@ -88,6 +92,8 @@ class _PersonPageState extends State<PersonPage> {
                     editOnPressed();
                   },
                 ),
+
+                 */
                 SizedBox(
                   width: 100,
                 ),
@@ -109,6 +115,20 @@ class _PersonPageState extends State<PersonPage> {
               trailing: Icon(Icons.keyboard_arrow_right, size: 20,),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => HelpCenterPage()));
+              },
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            color: Colors.white,
+            child: ListTile(
+              leading: Icon(Icons.view_stream, size: 20,),
+              title: Text("主页选择", style: TextStyle(fontSize: 20),),
+              trailing: Icon(Icons.keyboard_arrow_right, size: 20,),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => DIYPage()));
               },
             ),
           ),
