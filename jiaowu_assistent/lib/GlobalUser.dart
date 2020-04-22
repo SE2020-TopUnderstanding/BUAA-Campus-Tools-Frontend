@@ -66,6 +66,7 @@ class PageSelect with ChangeNotifier{
   int _choice = 1;
   void setPage(int type){
     _choice = type;
+    print('type:$type, final:$_choice');
     GlobalUser.setChoice(type);
     notifyListeners();
   }

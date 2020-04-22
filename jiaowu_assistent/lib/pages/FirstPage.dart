@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../GlobalUser.dart';
+import '../GlobalUser.dart';
 import 'CourseCenterPage.dart';
 import 'CourseTablePage.dart';
 import 'ScorePage.dart';
@@ -7,24 +9,17 @@ import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:provider/provider.dart';
 
 class FirstPage extends StatelessWidget {
-  int choice;
+  int choice=1;
   @override
   Widget build(BuildContext context) {
+    PageSelect page = Provider.of<PageSelect>(context);
     // TODO: implement build
-    return MultiProvider(
-      providers:[ ChangeNotifierProvider.value(notifier: PageSelect())],
-      child:Consumer<PageSelect>(
-        builder:(BuildContext context, PageSelect, Widget child){
-          choice = PageSelect.choice;
-          return Scaffold(
-            body: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              child: getFirstPage(choice),
-            ),
-          );
-        }
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        child: getFirstPage(page.choice),
       ),
     );
   }

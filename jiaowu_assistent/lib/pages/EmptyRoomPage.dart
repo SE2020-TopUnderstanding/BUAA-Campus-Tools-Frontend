@@ -19,11 +19,24 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     2: "学院路校区",
   };
 
-  Map<int, String> buildingMap = {
-    1: "一号楼",
-    2: "二号楼",
-    3: "新主楼",
-  };
+  List<Map<int, String>> buildingMap = [
+    {
+      1: "教零楼",
+      2: "教一楼",
+      3: "教二楼",
+      4: "教三楼",
+      5: "教四楼",
+      6: "教五楼",
+    },
+    {
+      1: "一号楼",
+      2: "二号楼",
+      3: "三号楼",
+      4: "四号楼",
+      5: "主楼",
+      6: "新主楼",
+    }
+  ];
 
   Map<int, String> lessonMap = {
     1: "第一节课",
@@ -49,6 +62,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   TextStyle textStyle = TextStyle(fontSize: size);
   var _selectedBegin, _selectedEnd, _selectedCampus, _selectedBuilding;
   List<String> _list;
+  String response = '';
 
 
   Future<void> _selectDate() async {
@@ -64,6 +78,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     setState(() {
       _selectedDate = date;
     });
+    _search();
   }
 
   Future<void> _search() async {
@@ -73,9 +88,10 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     }
     try {
       getEmptyRoom(campusMap[_selectedCampus], DateFormat('yyyy-M-dd').format(_selectedDate), section,
-          buildingMap[_selectedBuilding]).then((EmptyRoom temp) {
+          buildingMap[_selectedCampus - 1][_selectedBuilding]).then((EmptyRoom temp) {
         setState(() {
-          if (temp == null) {
+          response = temp.getResPonse();
+          if (temp.getRooms() == null) {
             _list = null;
           }
           else {
@@ -118,6 +134,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.red, fontSize: 20),
           ),
+          subtitle: Text(response),
 //          subtitle: Text(buildingMap[_selectedBuilding] + " " + lessonMap[_selectedBegin] + "->" + lessonMap[_selectedEnd], textAlign: TextAlign.center,),
           trailing: Icon(Icons.not_interested, color: Colors.red,),
         ),
@@ -127,7 +144,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     return Container(
       child: ListTile(
         title:  Text(_list[index]),
-        subtitle: Text(buildingMap[_selectedBuilding]),
+        subtitle: Text(buildingMap[_selectedCampus - 1][_selectedBuilding]),
         trailing: Icon(Icons.directions_run, color: Colors.blue,),
       ),
       decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.black))),
@@ -168,6 +185,27 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     else
       return false;
   }
+
+  List<DropdownMenuItem> _buildingList = [];
+
+  List<List<DropdownMenuItem>> _BuildingList = [
+    [
+      DropdownMenuItem(child: Text('教零楼'), value: 1,),
+      DropdownMenuItem(child: Text('教一楼'), value: 2,),
+      DropdownMenuItem(child: Text('教二楼'), value: 3,),
+      DropdownMenuItem(child: Text('教三楼'), value: 4,),
+      DropdownMenuItem(child: Text('教四楼'), value: 5,),
+      DropdownMenuItem(child: Text('教五楼'), value: 6,),
+    ],
+    [
+      DropdownMenuItem(child: Text('一号楼'), value: 1,),
+      DropdownMenuItem(child: Text('二号楼'), value: 2,),
+      DropdownMenuItem(child: Text('三号楼'), value: 3,),
+      DropdownMenuItem(child: Text('四号楼'), value: 4,),
+      DropdownMenuItem(child: Text('主楼'), value: 5,),
+      DropdownMenuItem(child: Text('新主楼'), value: 6,),
+    ]
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -225,11 +263,12 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     hint: Text('请选择校区'),
                     items: [
                       DropdownMenuItem(child: Text('沙河校区'), value: 1,),
-                      DropdownMenuItem(child: Text('学院路校区'), value: 2,)
+                      DropdownMenuItem(child: Text('学院路校区'), value: 2,),
                     ],
                     onChanged: (value){
                       setState(() {
                         _selectedCampus = value;
+                        _buildingList = _BuildingList[_selectedCampus - 1];
                         if (checkNull())
                           _search();
                       });
@@ -241,11 +280,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     iconSize: 30,
                     iconEnabledColor: Colors.black,
                     hint: Text('请选择教学楼'),
-                    items: [
-                      DropdownMenuItem(child: Text('一号楼'), value: 1,),
-                      DropdownMenuItem(child: Text('二号楼'), value: 2,),
-                      DropdownMenuItem(child: Text('新主楼'), value: 3,),
-                    ],
+                    items: _buildingList,
                     onChanged: (value) {
                       setState(() {
                         _selectedBuilding = value;
