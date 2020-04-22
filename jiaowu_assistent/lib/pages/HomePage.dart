@@ -31,8 +31,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: new PageView(
         children: <Widget>[
-          //FirstPage(),
-          CourseTablePage(),
+          FirstPage(),
+          //CourseTablePage(),
           FunctionsPage(),
           PersonPage(),
         ],
@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Icons.date_range,
               color: _bottomNavigationColor,
             ),
-            title: Text("课表"),
+            title: Text("主页"),
           ),
           BottomNavigationBarItem(
             activeIcon: Icon(

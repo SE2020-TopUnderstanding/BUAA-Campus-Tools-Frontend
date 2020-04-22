@@ -4,6 +4,7 @@ import 'package:gbk2utf8/gbk2utf8.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 class EmptyRoom {
   String _building;
@@ -231,11 +232,14 @@ class WeekCourseTable {
   }
 }
 
-Future<WeekCourseTable> getCourse(int week) async {
-  String jsonString =
-  await rootBundle.loadString('assets/data/courseTable1.json');
+Future<WeekCourseTable> getCourse(int week) async{
+  //print(week);
+  //print("get week:$week");
+  String jsonString = await rootBundle.loadString('assets/data/courseTable$week.json');
+  //print(jsonString);
   List<dynamic> jsonList = json.decode(jsonString);
   WeekCourseTable temp = WeekCourseTable.fromJson(jsonList);
+
   //print(temp.toString());
   //print(jsonResult);
   /*
@@ -251,3 +255,26 @@ Future<WeekCourseTable> getCourse(int week) async {
    */
   return temp;
 }
+
+Future<int> getWeek() async{
+  //print('there is get week number');
+  /*
+  Dio dio =  new Dio();
+
+  Response response;
+  try{
+    response = await dio.request('http://127.0.0.1:8000/timetable/',
+    data: {"date":"${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}"},
+    options: Options(method: "GET",responseType: ResponseType.json));
+  }catch(e){
+    e.toString();
+    throw "查找当前周号失败";
+  }
+  int weekNumber = response.data['week'];
+   */
+  int weekNumber =9;
+  return weekNumber;
+}
+
+
+
