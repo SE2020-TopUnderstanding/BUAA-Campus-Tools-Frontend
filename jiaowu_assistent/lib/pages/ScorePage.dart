@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jiaowuassistent/pages/User.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
 
 class ScorePage extends StatefulWidget {
   @override
@@ -10,54 +11,72 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePageState extends State<ScorePage> {
-  Future<GradeCenter> gradeCenter;
+  GradeCenter gradeCenter;
+  var semester = 7;
+
+  Map<int, String> semesterMap = {
+    1: "2016秋季",
+    2: "2017春季",
+    3: "2017秋季",
+    4: "2018春季",
+    5: "2018秋季",
+    6: "2019春季",
+    7: "2019秋季",
+    8: "2020春季",
+  };
+
+  List<DropdownMenuItem> semesterList = [
+    DropdownMenuItem(
+      child: Text('2016秋季'),
+      value: 1,
+    ),
+    DropdownMenuItem(
+      child: Text('2017春季'),
+      value: 2,
+    ),
+    DropdownMenuItem(
+      child: Text('2017秋季'),
+      value: 3,
+    ),
+    DropdownMenuItem(
+      child: Text('2018春季'),
+      value: 4,
+    ),
+    DropdownMenuItem(
+      child: Text('2018秋季'),
+      value: 5,
+    ),
+    DropdownMenuItem(
+      child: Text('2019春季'),
+      value: 6,
+    ),
+    DropdownMenuItem(
+      child: Text('2019秋季'),
+      value: 7,
+    ),
+    DropdownMenuItem(
+      child: Text('2020春季'),
+      value: 8,
+    ),
+  ];
 
   @override
   initState() {
     super.initState();
-    gradeCenter = getGrade();
+    searchGrade();
   }
 
-  _getDataRows(List<Grade> grades) {
-    List<DataRow> dataRows = [];
-    double sumScore = 0;
-    double sumCredit = 0;
-    for (int i = 0; i < grades.length; i++) {
-      dataRows.add(DataRow(
-        cells: [
-          DataCell(Text(
-            '${grades[i].name}',
-            textAlign: TextAlign.center,
-          )),
-          DataCell(Text(
-            '          ${grades[i].credit}',
-            textAlign: TextAlign.center,
-          )),
-          DataCell(Text(
-            '         ${grades[i].score}',
-            textAlign: TextAlign.center,
-          )),
-        ],
-      ));
-      sumScore += grades[i].score * grades[i].credit;
-      sumCredit += grades[i].credit;
+  Future<void> searchGrade() async {
+    try {
+      getGrade(GlobalUser.studentID, semesterMap[semester])
+          .then((GradeCenter temp) {
+        setState(() {
+          gradeCenter = temp;
+        });
+      });
+    } catch (e) {
+      print(e);
     }
-    dataRows.add(DataRow(
-      cells: [
-        DataCell(Text('加权平均分',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold))),
-        DataCell(Text(
-          '          ',
-          textAlign: TextAlign.center,
-        )),
-        DataCell(Text('      ${(sumScore / sumCredit).toStringAsFixed(2)}',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold))),
-      ],
-    ));
-
-    return dataRows;
   }
 
   @override
@@ -66,43 +85,70 @@ class _ScorePageState extends State<ScorePage> {
       appBar: new AppBar(
         title: new Text('成绩查询'),
       ),
-      body: FutureBuilder<GradeCenter>(
-          future: gradeCenter,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return SingleChildScrollView(
-                child: DataTable(
-                  columns: [
-                    DataColumn(
-                      label: Text('课程',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
-                    ),
-                    DataColumn(
-                      label: Text('     学分',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
-                    ),
-                    DataColumn(
-                      label: Text('    成绩',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
-                    ),
-                  ],
-                  rows: _getDataRows(snapshot.data.grades),
-                ),
-              );
-            } else {
-              return Container(
-                  alignment: Alignment(0.0, -0.2),
-                  child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-                  ));
-            }
-          }),
+      body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: <
+              Widget>[
+            SizedBox(
+              height: 10,
+            ),
+            DropdownButton(
+              value: semester,
+              icon: Icon(Icons.arrow_drop_down),
+              iconSize: 30,
+              iconEnabledColor: Colors.black,
+              hint: Text('请选择学期'),
+              items: semesterList,
+              onChanged: (value) {
+                setState(() {
+                  semester = value;
+                  searchGrade();
+                });
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Column(
+              children: <Widget>[
+                Container(
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount:
+                        (gradeCenter == null) ? 1 : gradeCenter.grades.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (gradeCenter == null) {
+                        return Container(
+                          child: ListTile(
+                            title: Text(
+                              "",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                      }
+                      return Container(
+                        child: ListTile(
+                          title: Text(gradeCenter.grades[index].name),
+                          subtitle:
+                              Text('${gradeCenter.grades[index].credit}学分'),
+                          trailing: Text('${gradeCenter.grades[index].score}'),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 40.0),
+                        ),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom:
+                                    BorderSide(width: 1, color: Colors.grey),
+                                top: BorderSide(width: 1, color: Colors.grey))),
+                      );
+                    },
+                  ),
+                )
+              ],
+            )
+          ])),
     );
   }
 }
@@ -112,32 +158,6 @@ class AverageScore extends StatelessWidget {
     return new SizedBox(
       width: 200.0,
       height: 50.0,
-    );
-  }
-}
-
-class RefreshButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new SizedBox(
-      width: 200.0,
-      height: 50.0,
-      child: new RaisedButton(
-        color: Colors.lightBlue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30)),
-        ),
-        child: Text(
-          '刷新',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              letterSpacing: 20,
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: Colors.black54),
-        ),
-        onPressed: () {},
-      ),
     );
   }
 }

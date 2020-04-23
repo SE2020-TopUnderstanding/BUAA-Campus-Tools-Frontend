@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jiaowuassistent/pages/User.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
 
 class CourseCenterPage extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
   @override
   initState() {
     super.initState();
-    courseCenter = getCourseCenter();
+    courseCenter = getCourseCenter(GlobalUser.studentID);
   }
 
   //修改展开与闭合的内部方法
@@ -41,9 +42,11 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
       dataRows.add(DataRow(
         cells: [
           DataCell(
-            course.content[i].status.contains('已提交')
+            course.content[i].status.contains('已提交') ||
+                    course.content[i].status.contains('重新提交') ||
+                    course.content[i].status.contains('已返还')
                 ? Icon(Icons.done_all)
-                : duration.inHours <= 0
+                : duration.inHours.ceil() < 0
                     ? Text('已截止')
                     : Text('剩${duration.inHours.toString()}h'),
           ),
@@ -78,10 +81,11 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
               for (int i = 0; i < snapshot.data.courses.length; i++) {
                 if (!mList.contains(i)) {
                   mList.add(i);
-                  courseList.add(ExpandStateBean(i, true)); //item初始状态为闭着的
+                  courseList.add(ExpandStateBean(i, false)); //item初始状态为闭着的
                 }
               }
               return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
                 child: ExpansionPanelList(
                   //交互回调属性，里面是个匿名函数
                   expansionCallback: (index, bol) {
