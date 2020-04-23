@@ -139,7 +139,13 @@ class _PersonPageState extends State<PersonPage> {
               title: Text("退出登录", style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
               onTap: () {
                 GlobalUser.setIsLogin(false);
+//                Navigator.pushAndRemoveUntil(
+//                  context,
+//                  MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+//                      (Route<dynamic> route) => false,
+//                );
                 Navigator.pushNamedAndRemoveUntil(context, '/loginPage', ModalRoute.withName("/loginPage"));
+                //Navigator.popUntil(context, ModalRoute.withName("/loginPage"));
               },
             ),
             decoration: BoxDecoration(border: Border.all(width: 1)),
