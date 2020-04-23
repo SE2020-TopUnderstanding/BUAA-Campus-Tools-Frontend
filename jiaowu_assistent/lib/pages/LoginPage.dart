@@ -157,34 +157,34 @@ class _LoginPageStateBody extends State<LoginPageBody> {
           //contentType: "applicatio/json",
       );
       try{
-//        Response response;
-//        response = await new Dio(options).request(
-//            'http://114.115.208.32:8000/login/',
-//            data: {"usr_name":_userNameController.text,
-//              "usr_password":Encrypt.encrypt(_passwordController.text)},
-//            options:Options(method: "POST", responseType: ResponseType.json));
-//        print(response.data);
-//        int state = response.data['state'];
-//        if(state != 1){
-//        showDialog(
-//          context:context,
-//          builder: (BuildContext context){
-//            return SimpleDialog(
-//              title: Text('报错', textAlign: TextAlign.center,),
-//
-//              children: <Widget>[
-//                Text('账号或密码错误',textAlign: TextAlign.center,),
-//              ],
-//            );
-//          }
-//        );
-//          throw '账号或密码错误';
-//        }
-//        //保存用户信息
-//        GlobalUser.setUser(_userNameController.text, _passwordController.text,
-//            response.data['name'], response.data['student_id']);
+        Response response;
+        response = await new Dio(options).request(
+            'http://114.115.208.32:8000/login/',
+            data: {"usr_name":_userNameController.text,
+              "usr_password":Encrypt.encrypt(_passwordController.text)},
+            options:Options(method: "POST", responseType: ResponseType.json));
+        print(response.data);
+        int state = response.data['state'];
+        if(state != 1){
+        showDialog(
+          context:context,
+          builder: (BuildContext context){
+            return SimpleDialog(
+              title: Text('报错', textAlign: TextAlign.center,),
+
+              children: <Widget>[
+                Text('账号或密码错误',textAlign: TextAlign.center,),
+              ],
+            );
+          }
+        );
+          throw '账号或密码错误';
+        }
+        //保存用户信息
         GlobalUser.setUser(_userNameController.text, _passwordController.text,
-            '张艺璇', '17373182');
+            response.data['name'], response.data['student_id']);
+//        GlobalUser.setUser(_userNameController.text, _passwordController.text,
+//            '张艺璇', '17373182');
         GlobalUser.setIsLogin(true);
         GlobalUser.setChoice(1);//课表
 
