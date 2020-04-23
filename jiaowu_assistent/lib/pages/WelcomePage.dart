@@ -41,8 +41,9 @@ class WelcomePage extends StatelessWidget {
                       color: Colors.black54,
                     )),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LoginPage()));
+                  Navigator.pushReplacementNamed(context, '/loginPage');
+//                  Navigator.push(context,
+//                      MaterialPageRoute(builder: (context) => LoginPage()));
                 },
               ),
             ),

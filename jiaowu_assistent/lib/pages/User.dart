@@ -30,14 +30,6 @@ class EmptyRoom {
   }
 }
 
-class Room {
-  String room;
-
-  Room(String string) {
-    room = string;
-  }
-}
-
 Future<EmptyRoom> getEmptyRoom(
     String campus, String date, String section, String building) async {
   try {
