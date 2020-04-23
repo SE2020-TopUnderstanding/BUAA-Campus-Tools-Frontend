@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/HelpCenterPage.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:jiaowuassistent/pages/LoginPage.dart';
 import 'DIYPage.dart';
 
 class PersonPage extends StatefulWidget {
@@ -132,6 +133,17 @@ class _PersonPageState extends State<PersonPage> {
               },
             ),
           ),
+          SizedBox(height: 40,),
+          Container(
+            child: ListTile(
+              title: Text("退出登录", style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
+              onTap: () {
+                GlobalUser.setIsLogin(false);
+                Navigator.pushNamedAndRemoveUntil(context, '/loginPage', ModalRoute.withName("/loginPage"));
+              },
+            ),
+            decoration: BoxDecoration(border: Border.all(width: 1)),
+          )
         ],
       ),
     );
