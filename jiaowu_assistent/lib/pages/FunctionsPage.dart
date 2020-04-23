@@ -7,7 +7,7 @@ import 'package:jiaowuassistent/pages/CourseTablePage.dart';
 
 
 class FunctionsPage extends StatelessWidget {
-  
+
   // 图标函数，其中page 参数需要给出页面函数
 
   Column _block(BuildContext context, Icon icon, Text text, Widget page) {
@@ -53,7 +53,7 @@ class FunctionsPage extends StatelessWidget {
                 _block(context, Icon(Icons.school, size: 40,), Text("成绩查询"), ScorePage()),
 
                 _block(context, Icon(Icons.business, size: 40,), Text("空教室查询"), EmptyRoomPage()),
-                
+
                 _block(context, Icon(Icons.check_circle_outline, size: 40,), Text("课程中心查询"), CourseCenterPage()),
               ],
             ),
@@ -61,11 +61,11 @@ class FunctionsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _block(context, Icon(Icons.school, size: 40,), Text("课程评价"), ScorePage()),
+//                _block(context, Icon(Icons.school, size: 40,), Text("课程评价"), ScorePage()),
 
                 _block(context, Icon(Icons.date_range, size: 40,), Text("课表查询"), CourseTablePage()),
 
-                _block(context, Icon(Icons.date_range, size: 40,), Text("未知"), ScorePage()),
+//                _block(context, Icon(Icons.date_range, size: 40,), Text("未知"), ScorePage()),
               ],
             )
           ],
