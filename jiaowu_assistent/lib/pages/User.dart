@@ -179,50 +179,54 @@ Future<GradeCenter> getGrade() async {
 
 //课表用
 class CourseT {
-  final String name;
-  final String location;
-  final List<String> teachers;
-  final List<int> week;
-  final int weekDay;
-  final int sectionStart;
-  final int sectionEnd;
+   String name;
+   String location;
+   //Teachers teachers;
+   List<String> week;
+   int weekDay;
+   int sectionStart;
+   int sectionEnd;
 
   CourseT({
     this.name,
     this.location,
-    this.teachers,
+    //this.teachers,
     this.week,
     this.weekDay,
     this.sectionStart,
     this.sectionEnd,
   });
 
-  factory CourseT.fromJson(Map<String, dynamic> parsedJson) {
+  static CourseT fromJson(Map<String, dynamic> parsedJson) {
+    String weeks = parsedJson['week'] as String;
+    List<String> weekss= weeks.split(',');
+    //var list =json.decode((parsedJson['teacher_course'].toString()));
+    //print(list.toString());
     return CourseT(
       name: parsedJson['name'],
-      location: parsedJson['location'],
-      teachers: parsedJson['teacher'],
-      week: parsedJson['week'],
-      weekDay: parsedJson['weekDay'],
-      sectionStart: parsedJson['sectionStart'],
-      sectionEnd: parsedJson['sectionEnd'],
+      location: parsedJson['place'],
+      //teachers: Teachers.fromJson(parsedJson['teacher_course'].toString()),
+      week: weekss,
+      weekDay: int.parse(parsedJson['time'].toString().substring(0,1)),
+      sectionStart: int.parse(parsedJson['time'].toString().substring(2,3)),
+      sectionEnd: int.parse(parsedJson['time'].toString().substring(4,5)),
     );
   }
 }
 
 class WeekCourseTable {
-  final List<CourseT> courses;
-  WeekCourseTable({this.courses});
-  factory WeekCourseTable.fromJson(List<dynamic> jsonList) {
-    List<CourseT> courseList =
-    jsonList.map((i) => CourseT.fromJson(i)).toList();
-    return WeekCourseTable(courses: courseList);
+   List<CourseT> courses;
+   WeekCourseTable({this.courses});
+   static WeekCourseTable  fromJson(List<dynamic> jsonList) {
+      List<CourseT> courseList =
+      jsonList.map((i) => CourseT.fromJson(i)).toList();
+      return WeekCourseTable(courses: courseList);
   }
-
 }
 
-Future<WeekCourseTable> getCourse(int week) async{
-  String jsonString = await rootBundle.loadString('assets/data/courseTable$week.json');
+
+Future<WeekCourseTable> loadCourse(int week, String studentID) async{
+  String jsonString = await rootBundle.loadString('assets/data/courseTable1.json');
   List<dynamic> jsonList = json.decode(jsonString);
   WeekCourseTable temp = WeekCourseTable.fromJson(jsonList);
 
@@ -233,7 +237,7 @@ Future<WeekCourseTable> getCourse(int week) async{
   try{
     Response response;
     response = await dio.request('http://127.0.0.1:8000/timetable/',
-        data:{"student_id":"17373182","semester":"2020_Spring", "week":"8"},
+        data:{"student_id":"17373182", "week":"8"},
         options: Options(method: "GET", responseType: ResponseType.json));
   }catch(e){
     e.toString();
@@ -243,22 +247,22 @@ Future<WeekCourseTable> getCourse(int week) async{
 }
 
 Future<int> getWeek() async{
-  //print('there is get week number');
-  /*
   Dio dio =  new Dio();
-
   Response response;
+  DateTime now = DateTime.now();
   try{
-    response = await dio.request('http://127.0.0.1:8000/timetable/',
-    data: {"date":"${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}"},
+    //response = await dio.request('http://114.115.208.32:8000/timetable/?student_id=17373182&week=all');
+    //print('my table'+response.toString());
+    response = await dio.request(
+        'http://114.115.208.32:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
     options: Options(method: "GET",responseType: ResponseType.json));
   }catch(e){
     e.toString();
-    throw "查找当前周号失败";
+    print('response:'+response.toString());
+    return 9;
   }
-  int weekNumber = response.data['week'];
-   */
-  int weekNumber =9;
+  print(response.data.toString());
+  int weekNumber = int.parse(response.data[0]['week']);
   return weekNumber;
 }
 

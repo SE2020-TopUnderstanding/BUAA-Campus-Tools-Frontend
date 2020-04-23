@@ -36,7 +36,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   TextEditingController _userNameController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   bool showPassword = false;//是否明文显示密码
-  bool _autoUserNameFocus = true;//焦点是否在账号密码输入框
+//  bool _autoUserNameFocus = true;//焦点是否在账号密码输入框
   GlobalKey _formkey = new GlobalKey<FormState>();
   FocusNode _focusNodeUserName = new FocusNode();
   FocusNode _focusNodePassword = new FocusNode();
@@ -79,7 +79,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                 child: Column(
                   children: <Widget>[
                     TextFormField(
-                      autofocus: _autoUserNameFocus,
+                    //  autofocus: _autoUserNameFocus,
                       focusNode: _focusNodeUserName,
                       controller: _userNameController,
                       validator: (v) => v.trim().isNotEmpty?Null:'请输入统一认证账号',
@@ -147,60 +147,115 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   void _login() async {
     //if((_formkey.currentState as FormState).validate()){
     //}
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+    return;
     if(_userNameController.text.isEmpty||_passwordController.text.isEmpty){
       print('账号或密码为空，请继续输入');
-    }else{
-      //Url请求
-      BaseOptions options = new BaseOptions(
-          connectTimeout: 50000,
-          receiveTimeout: 3000,
-          //contentType: "applicatio/json",
-      );
-      try{
-        /*
-        Response response;
-        response = await new Dio(options).request(
-            'http://114.115.208.32:8000/login/',
-            data: {"usr_name":_userNameController.text,
-              "usr_password":Encrypt.encrypt(_passwordController.text)},
-            options:Options(method: "POST", responseType: ResponseType.json));
-        print(response.data);
-        int state = response.data['state'];
-        if(state != 1){
-        showDialog(
+      showDialog(
           context:context,
           builder: (BuildContext context){
             return SimpleDialog(
               title: Text('报错', textAlign: TextAlign.center,),
 
               children: <Widget>[
-                Text('账号或密码错误',textAlign: TextAlign.center,),
+                Text('请将账号密码填写完整',textAlign: TextAlign.center,),
               ],
             );
           }
-        );
-          throw '账号或密码错误';
-        }
-        //保存用户信息
-        GlobalUser.setUser(_userNameController.text, _passwordController.text,
-            response.data['name'], response.data['student_id']);
-         */
-        GlobalUser.setUser(_userNameController.text, _passwordController.text,
-            '张艺璇', '17373182');
-        GlobalUser.setIsLogin(true);
-        GlobalUser.setChoice(1);//课表
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-      }catch(e){
-        print(e.toString());
-        if(e.toString()!='账号或密码错误'){
+      );
+    }else{
+      //Url请求
+      BaseOptions options = new BaseOptions(
+          connectTimeout: 10000,
+          receiveTimeout: 3000,
+          //contentType: "applicatio/json",
+      );
+      Response response;
+      Dio dio = new Dio(options);
+      try{
+        response = await dio.request(
+            'http://114.115.208.32:8000/login/',
+            data: {"usr_name":_userNameController.text,
+              "usr_password":Encrypt.encrypt(_passwordController.text)},
+            options:Options(method: "POST", responseType: ResponseType.json));
+        if(response.statusCode == 400){
           showDialog(
               context:context,
               builder: (BuildContext context){
                 return SimpleDialog(
                   title: Text('报错', textAlign: TextAlign.center,),
                   children: <Widget>[
-                    Text('出错啦，过会再来吧',textAlign: TextAlign.center,),
+                    Text('账号或密码错误',textAlign: TextAlign.center,),
+                  ],
+                );
+              }
+          );
+        }else if(response.statusCode == 500){
+          showDialog(
+              context:context,
+              builder: (BuildContext context){
+                return SimpleDialog(
+                  title: Text('报错', textAlign: TextAlign.center,),
+                  children: <Widget>[
+                    Text('服务器错误',textAlign: TextAlign.center,),
+                  ],
+                );
+              }
+          );
+        }else if(response.statusCode == 200){
+          int state = response.data['state'];
+          if(state != 1){
+            throw '账号或密码错误';
+          }
+          //保存用户信息
+          GlobalUser.setUser(_userNameController.text, _passwordController.text,
+              response.data['name'], response.data['student_id']);
+          GlobalUser.setIsLogin(true);
+          GlobalUser.setChoice(1);//课表
+          /*
+        GlobalUser.setUser(_userNameController.text, _passwordController.text,
+            '张艺璇', '17373182');
+        GlobalUser.setIsLogin(true);
+         */
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+        }else{
+          throw('未知错误！');
+        }
+      }on DioError catch(e){
+        if((e.type == DioErrorType.CONNECT_TIMEOUT)||(e.type == DioErrorType.RECEIVE_TIMEOUT)){
+          showDialog(
+              context:context,
+              builder: (BuildContext context){
+                return SimpleDialog(
+                  title: Text('报错', textAlign: TextAlign.center,),
+                  children: <Widget>[
+                    Text('连接超时，请检查网络',textAlign: TextAlign.center,),
+                  ],
+                );
+              }
+          );
+        }
+      }catch(e){
+        if(e.toString()=='未知错误！'){
+          showDialog(
+              context:context,
+              builder: (BuildContext context){
+                return SimpleDialog(
+                  title: Text('报错', textAlign: TextAlign.center,),
+                  children: <Widget>[
+                    Text('未知错误',textAlign: TextAlign.center,),
+                  ],
+                );
+              }
+          );
+        }else if(e.toString() == '账号或密码错误'){
+          showDialog(
+              context:context,
+              builder: (BuildContext context){
+                return SimpleDialog(
+                  title: Text('报错', textAlign: TextAlign.center,),
+                  children: <Widget>[
+                    Text('账号或密码错误',textAlign: TextAlign.center,),
                   ],
                 );
               }
