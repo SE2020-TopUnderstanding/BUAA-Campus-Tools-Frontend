@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jiaowuassistent/pages/User.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
 
 class CourseCenterPage extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
   @override
   initState() {
     super.initState();
-    courseCenter = getCourseCenter();
+    courseCenter = getCourseCenter(GlobalUser.studentID);
   }
 
   //修改展开与闭合的内部方法
@@ -35,26 +36,29 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     List<DataRow> dataRows = [];
     var now = DateTime.now();
     for (int i = 0; i < course.content.length; i++) {
-      var time = DateTime.parse(course.content[i].time);
-//      var time = DateTime.parse("2020-04-23 19:00:00");
-      var duration = time.difference(now);
+      var time, duration;
+      if (course.content[i].time != "") {
+        time = DateTime.parse(course.content[i].time);
+        duration = time.difference(now);
+      }
       dataRows.add(DataRow(
         cells: [
           DataCell(
-            course.content[i].status.contains('已提交')
-                ? Icon(Icons.done_all)
-                : duration.inHours <= 0
+            course.content[i].status.contains('已提交') ||
+                    course.content[i].status.contains('重新提交') ||
+                    course.content[i].status.contains('已返还') ||
+                    course.content[i].time == ""
+                ? Icon(Icons.check_circle_outline)
+                : duration.inHours < 0
                     ? Text('已截止')
-                    : Text('剩${duration.inHours.toString()}h'),
+                    : duration.inDays > 0
+                        ? Text('剩${duration.inDays.toString()}天')
+                        : Text('剩${duration.inHours.toString()}时'),
           ),
-          DataCell(Text(
-            '${course.content[i].text}',
-            textAlign: TextAlign.center,
-          )),
-          DataCell(Text(
-            '${course.content[i].time}',
-            textAlign: TextAlign.center,
-          )),
+          DataCell(Text('${course.content[i].text}')),
+          DataCell(course.content[i].time == ""
+              ? Text('没有截止时间')
+              : Text('${course.content[i].time}')),
         ],
       ));
     }
@@ -78,10 +82,11 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
               for (int i = 0; i < snapshot.data.courses.length; i++) {
                 if (!mList.contains(i)) {
                   mList.add(i);
-                  courseList.add(ExpandStateBean(i, true)); //item初始状态为闭着的
+                  courseList.add(ExpandStateBean(i, false)); //item初始状态为闭着的
                 }
               }
               return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
                 child: ExpansionPanelList(
                   //交互回调属性，里面是个匿名函数
                   expansionCallback: (index, bol) {
@@ -131,7 +136,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
               );
             } else {
               return Container(
-                  alignment: Alignment(0.0, -0.2),
+                  alignment: Alignment(0.0, 0.0),
                   child: CircularProgressIndicator(
                     valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
                   ));
