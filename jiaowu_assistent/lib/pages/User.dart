@@ -111,23 +111,24 @@ class CourseCenter {
 }
 
 Future<CourseCenter> getCourseCenter(String studentID) async {
-  String response =
-      await rootBundle.loadString('assets/data/courseCenter.json');
-  return CourseCenter.fromJson(json.decode(response));
+//  String response =
+//      await rootBundle.loadString('assets/data/courseCenter.json');
+//  return CourseCenter.fromJson(json.decode(response));
 
-//  final response =
-//      await http.get('http://114.115.208.32:8000/ddl/?student_id=$studentID');
-//  if (response.statusCode == 200) {
-//    // If the server did return a 200 OK response,
-//    // then parse the JSON.
-//    Utf8Decoder decode = new Utf8Decoder();
-//    return CourseCenter.fromJson(
-//        json.decode(decode.convert(response.bodyBytes)));
-//  } else {
-//    // If the server did not return a 200 OK response,
-//    // then throw an exception.
-//    throw Exception('Failed to load course center');
-//  }
+  final response =
+      await http.get('http://114.115.208.32:8000/ddl/?student_id=$studentID');
+  print('http://114.115.208.32:8000/ddl/?student_id=$studentID');
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return CourseCenter.fromJson(
+        json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load course center');
+  }
 }
 
 //成绩查询用
@@ -158,23 +159,24 @@ class GradeCenter {
 }
 
 Future<GradeCenter> getGrade(String studentID, String semester) async {
-  String response = await rootBundle.loadString('assets/data/grade.json');
-  GradeCenter temp = GradeCenter.fromJson(json.decode(response));
-  return temp;
+//  String response = await rootBundle.loadString('assets/data/grade.json');
+//  GradeCenter temp = GradeCenter.fromJson(json.decode(response));
+//  return temp;
 
-//  final response = await http.get(
-//      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
-//  if (response.statusCode == 200) {
-//    // If the server did return a 200 OK response,
-//    // then parse the JSON.
-//    Utf8Decoder decode = new Utf8Decoder();
-//    return GradeCenter.fromJson(
-//        json.decode(decode.convert(response.bodyBytes)));
-//  } else {
-//    // If the server did not return a 200 OK response,
-//    // then throw an exception.
-//    throw Exception('Failed to load course center');
-//  }
+  final response = await http.get(
+      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+  print('http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return GradeCenter.fromJson(
+        json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load course center');
+  }
 }
 
 //课表用
