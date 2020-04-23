@@ -189,19 +189,17 @@ Future<GradeCenter> getGrade() async {
 class CourseT {
   final String name;
   final String location;
-  final String teacher;
-
-  //final List<int> week;
+  final List<String> teachers;
+  final List<int> week;
   final int weekDay;
   final int sectionStart;
   final int sectionEnd;
 
-  //String semester;
-
   CourseT({
     this.name,
     this.location,
-    this.teacher,
+    this.teachers,
+    this.week,
     this.weekDay,
     this.sectionStart,
     this.sectionEnd,
@@ -211,8 +209,8 @@ class CourseT {
     return CourseT(
       name: parsedJson['name'],
       location: parsedJson['location'],
-      teacher: parsedJson['teacher'],
-      //week: parsedJson['week'],
+      teachers: parsedJson['teacher'],
+      week: parsedJson['week'],
       weekDay: parsedJson['weekDay'],
       sectionStart: parsedJson['sectionStart'],
       sectionEnd: parsedJson['sectionEnd'],
@@ -222,21 +220,17 @@ class CourseT {
 
 class WeekCourseTable {
   final List<CourseT> courses;
-
   WeekCourseTable({this.courses});
-
   factory WeekCourseTable.fromJson(List<dynamic> jsonList) {
     List<CourseT> courseList =
     jsonList.map((i) => CourseT.fromJson(i)).toList();
     return WeekCourseTable(courses: courseList);
   }
+
 }
 
 Future<WeekCourseTable> getCourse(int week) async{
-  //print(week);
-  //print("get week:$week");
   String jsonString = await rootBundle.loadString('assets/data/courseTable$week.json');
-  //print(jsonString);
   List<dynamic> jsonList = json.decode(jsonString);
   WeekCourseTable temp = WeekCourseTable.fromJson(jsonList);
 
