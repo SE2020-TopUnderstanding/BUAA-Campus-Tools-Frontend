@@ -100,15 +100,20 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     }
     try {
       currBuilding = buildingMap[_selectedCampus - 1][_selectedBuilding];
-      getEmptyRoom(campusMap[_selectedCampus], DateFormat('yyyy-MM-dd').format(_selectedDate), section,
+      getEmptyRoom(context, campusMap[_selectedCampus], DateFormat('yyyy-MM-dd').format(_selectedDate), section,
           buildingMap[_selectedCampus - 1][_selectedBuilding]).then((EmptyRoom temp) {
         setState(() {
-          response = temp.getResPonse();
-          if (temp.getRooms() == null) {
+          if (temp == null) {
             _list = null;
           }
           else {
-            _list = temp.getRooms();
+            response = temp.getResPonse();
+            if (temp.getRooms() == null) {
+              _list = null;
+            }
+            else {
+              _list = temp.getRooms();
+            }
           }
         });
       });
@@ -147,7 +152,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.red, fontSize: 20),
           ),
-          subtitle: Text(response),
+//          subtitle: Text(response),
 //          subtitle: Text(buildingMap[_selectedBuilding] + " " + lessonMap[_selectedBegin] + "->" + lessonMap[_selectedEnd], textAlign: TextAlign.center,),
           trailing: Icon(Icons.not_interested, color: Colors.red,),
         ),
@@ -238,6 +243,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
           elevation: 0.0,
         ),
         body: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -347,7 +353,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       items: getListData(),
                       onChanged: (value){
                         setState(() {
-                          if (_selectedEnd != null && value < _selectedBegin) {
+                          if (_selectedBegin != null && value < _selectedBegin) {
                             _showAlertDialog();
                           }
                           else {

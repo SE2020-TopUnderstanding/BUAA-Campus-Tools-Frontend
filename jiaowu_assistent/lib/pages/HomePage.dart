@@ -25,11 +25,18 @@ class _MyHomePageState extends State<MyHomePage> {
     _controller.dispose();
   }
 
+  void _pageChange(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
       body: new PageView(
+        onPageChanged: _pageChange,
         children: <Widget>[
           FirstPage(),
           //CourseTablePage(),
