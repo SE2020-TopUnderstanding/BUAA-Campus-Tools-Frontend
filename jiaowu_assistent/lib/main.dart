@@ -28,6 +28,9 @@ class MyApp extends StatelessWidget {
               primaryColor: Colors.grey,
               ),
               home: getHomePage(),
+              routes: {
+                '/loginPage': (context) => LoginPage(),
+              },
             );
           }
         ),
