@@ -157,7 +157,6 @@ class _LoginPageStateBody extends State<LoginPageBody> {
           //contentType: "applicatio/json",
       );
       try{
-        /*
         Response response;
         response = await new Dio(options).request(
             'http://114.115.208.32:8000/login/',
@@ -184,13 +183,13 @@ class _LoginPageStateBody extends State<LoginPageBody> {
         //保存用户信息
         GlobalUser.setUser(_userNameController.text, _passwordController.text,
             response.data['name'], response.data['student_id']);
-         */
-        GlobalUser.setUser(_userNameController.text, _passwordController.text,
-            '张艺璇', '17373182');
+//        GlobalUser.setUser(_userNameController.text, _passwordController.text,
+//            '张艺璇', '17373182');
         GlobalUser.setIsLogin(true);
         GlobalUser.setChoice(1);//课表
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+//        Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+        Navigator.pushReplacementNamed(context, '/homePage');
       }catch(e){
         print(e.toString());
         if(e.toString()!='账号或密码错误'){
