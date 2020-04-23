@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
               home: getHomePage(),
               routes: {
                 '/loginPage': (context) => LoginPage(),
+                '/homePage': (context) => MyHomePage(),
               },
             );
           }
