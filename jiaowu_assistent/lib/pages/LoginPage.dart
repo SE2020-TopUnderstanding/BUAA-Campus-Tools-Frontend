@@ -129,9 +129,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                                 fontSize: 24,
                                 color: Colors.black54),
                           ),
-                          onPressed: () {
-                            _login();
-                          },
+                          onPressed: _login,
                         ),
                       ),
                     ),

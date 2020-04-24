@@ -74,6 +74,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   List<String> _list;
   String response = '';
   String currBuilding = '';
+  bool isDisabled = false;
 
 
   Future<void> _selectDate() async {
@@ -99,6 +100,9 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
       section = section + i.toString() + ', ';
     }
     try {
+      setState(() {
+        isDisabled = true;
+      });
       currBuilding = buildingMap[_selectedCampus - 1][_selectedBuilding];
       getEmptyRoom(context, campusMap[_selectedCampus], DateFormat('yyyy-MM-dd').format(_selectedDate), section,
           buildingMap[_selectedCampus - 1][_selectedBuilding]).then((EmptyRoom temp) {
@@ -115,6 +119,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
               _list = temp.getRooms();
             }
           }
+          isDisabled = false;
         });
       });
     }
@@ -275,7 +280,12 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       child: Text("查询"),
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       color: Colors.grey,
-                      onPressed: _search,
+                      onPressed: () {
+                        if (isDisabled)
+                          return null;
+                        else
+                          _search();
+                      },
                       pressedOpacity: 0.8,
                     )
                 ],
