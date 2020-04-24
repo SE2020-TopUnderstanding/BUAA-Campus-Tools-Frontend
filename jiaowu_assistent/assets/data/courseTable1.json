@@ -1,26 +1,155 @@
 [
-  {"name": "计算机科学方法论",
-    "location": "教一",
-    "teacher": "阮利",
-    "weekDay": 1,
-    "sectionStart": 3,
-    "sectionEnd": 4
-  },
-
   {
-    "name": "医学伦理与临床医学基础",
-    "location": "教二",
-    "teacher": "汲婧",
-    "weekDay": 4,
-    "sectionStart": 5,
-    "sectionEnd": 6
+    "name": "计算机网络",
+    "teacher_course": [
+      {
+        "name": "罗洪斌"
+      }
+    ],
+    "time": "2_1_2",
+    "place": "(一)301",
+    "week": "1,2,3,4,5,6,7,8,9,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "学科技术前沿讲座",
+    "teacher_course": [
+      {
+        "name": "李波"
+      }
+    ],
+    "time": "4_1_2",
+    "place": "主M302",
+    "week": "1,2,3,4,5,6,7,8,9,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机科学方法论",
+    "teacher_course": [
+      {
+        "name": "阮利"
+      }
+    ],
+    "time": "1_3_4",
+    "place": "(一)207",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "经济管理",
+    "teacher_course": [
+      {
+        "name": "单伟"
+      }
+    ],
+    "time": "2_3_4",
+    "place": "F227",
+    "week": "1,2,3,4,5,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "经济管理",
+    "teacher_course": [
+      {
+        "name": "单伟"
+      }
+    ],
+    "time": "2_3_4",
+    "place": "(一)301",
+    "week": "6,7,8,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "经济管理",
+    "teacher_course": [
+      {
+        "name": "李亚帅"
+      }
+    ],
+    "time": "2_3_4",
+    "place": "(一)301",
+    "week": "9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "软件工程",
+    "teacher_course": [
+      {
+        "name": "罗杰"
+      },
+      {
+        "name": "任健"
+      }
+    ],
+    "time": "3_3_4",
+    "place": "(四)406",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机网络",
+    "teacher_course": [
+      {
+        "name": "罗洪斌"
+      }
+    ],
+    "time": "4_3_4",
+    "place": "(一)301",
+    "week": "1,2,3,4,5,6,7,8,9,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机科学方法论",
+    "teacher_course": [
+      {
+        "name": "阮利"
+      }
+    ],
+    "time": "7_3_4",
+    "place": "(一)207",
+    "week": "9,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "体育（6）(体育舞蹈)",
+    "teacher_course": [
+      {
+        "name": "袁焰"
+      }
+    ],
+    "time": "1_6_6",
+    "place": "武术、健美操厅",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "临床医学基础与医学伦理",
+    "teacher_course": [
+      {
+        "name": "黄艳"
+      },
+      {
+        "name": "汲婧"
+      },
+      {
+        "name": "孙联文"
+      }
+    ],
+    "time": "4_6_7",
+    "place": "(三)215",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
   },
   {
     "name": "计算机网络实验",
-    "location": "远程实验平台",
-    "teacher": "张力军",
-    "weekDay": 1,
-    "sectionStart": 11,
-    "sectionEnd": 14
+    "teacher_course": [
+      {
+        "name": "张力军"
+      }
+    ],
+    "time": "1_11_12",
+    "place": "远程",
+    "week": "5,6,7,8,9,10,11,12,13,14,",
+    "semester": "2020_Spring"
   }
 ]
