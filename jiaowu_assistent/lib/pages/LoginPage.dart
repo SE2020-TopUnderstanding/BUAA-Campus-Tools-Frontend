@@ -147,10 +147,12 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   void _login() async {
     //if((_formkey.currentState as FormState).validate()){
     //}
-    /*
+/*
     Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
     return;
-     */
+
+ */
+
     if(_userNameController.text.isEmpty||_passwordController.text.isEmpty){
       print('账号或密码为空，请继续输入');
       showDialog(
@@ -180,6 +182,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
             data: {"usr_name":_userNameController.text,
               "usr_password":Encrypt.encrypt(_passwordController.text)},
             options:Options(method: "POST", responseType: ResponseType.json));
+        print('login test');
         if(response.statusCode == 400){
           showDialog(
               context:context,
@@ -237,27 +240,15 @@ class _LoginPageStateBody extends State<LoginPageBody> {
               }
           );
         }
-      }catch(e){
-        if(e.toString()=='未知错误！'){
+      }catch(e) {
+        if (e.toString() == '未知错误！') {
           showDialog(
-              context:context,
-              builder: (BuildContext context){
+              context: context,
+              builder: (BuildContext context) {
                 return SimpleDialog(
                   title: Text('报错', textAlign: TextAlign.center,),
                   children: <Widget>[
-                    Text('未知错误',textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
-        }else if(e.toString() == '账号或密码错误'){
-          showDialog(
-              context:context,
-              builder: (BuildContext context){
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('账号或密码错误',textAlign: TextAlign.center,),
+                    Text('未知错误', textAlign: TextAlign.center,),
                   ],
                 );
               }
