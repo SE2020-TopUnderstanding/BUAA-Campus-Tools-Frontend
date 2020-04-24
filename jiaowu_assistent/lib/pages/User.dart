@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
+
+//import 'package:path_provider/path_provider.dart';
 
 class EmptyRoom {
   String _building;
@@ -227,23 +231,18 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
   }
 }
 
-
 //课表用
 class TeacherCourse {
   String name;
-
   TeacherCourse({this.name});
-
   TeacherCourse.fromJson(Map<String, dynamic> json) {
     name = json['name'];
   }
-
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     return data;
   }
-
   @override
   String toString() {
     // TODO: implement toString
@@ -276,12 +275,19 @@ class CourseT {
        json['teacher_course'].forEach((v) {
          teacherCourse.add(new TeacherCourse.fromJson(v));
        });
+     }else{
+       teacherCourse = new List<TeacherCourse>();
+       teacherCourse.add(TeacherCourse(name: "未知"));
      }
      String weeks = json['week'] as String;
      List<String> weekss= weeks.split(',');
      String times = json['time'] as String;
      List<String> timess = times.split('_');
-     location = json['place'];
+     if(json['place']==null){
+       location = '未知';
+     }else{
+       location = json['place'];
+     }
      week = weekss;
      weekDay= int.parse(timess[0]);
      sectionStart= int.parse(timess[1]);
@@ -299,63 +305,46 @@ class WeekCourseTable {
    }
 }
 
-
 Future<WeekCourseTable> loadCourse(int week, String studentID) async{
   /*
-  String lastID = "";
-  DateTime lasttime = DateTime(2020,4,24);
-  Directory documentsDir = await getApplicationDocumentsDirectory();
-  String documentsPath = documentsDir.path;
+  Directory dir = await getApplicationDocumentsDirectory();
   File file;
   if(file==null){
-    file = new File('$documentsPath/courseTableAll.json');
+    file = new File('${dir.path}/courseTableAll.json');
+  }else{
+    file = File('${dir.path}/courseTableAll.json');
   }
-  if(!file.existsSync()){
-    file.createSync();
-  }
-  if(lastID.compareTo(studentID) !=0 || DateTime.now().difference(lasttime)>Duration(days: 6)){
+  //更新策略：本次学号和上次不同或者间隔时间大于6天
+  DateTime now = DateTime.now();
+  // ignore: unrelated_type_equality_checks
+  DateTime lastModified = file.lastModifiedSync();
+  */
+  String ss;
+  //暂定先直接用网络请求
+    print('get course table from http');
     Dio dio = new Dio();
     Response response;
-    try{
-      response = await dio.request('http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
-          options: Options(method: "GET", responseType: ResponseType.plain));
-      //print(response.data.toString().length);
-      file.writeAsString(response.data);
-    }catch(e){
-      print(response.toString());
-      print(e.toString());
+    response = await dio.request('http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
+        options: Options(method: "GET", responseType: ResponseType.plain));
+    if(response.statusCode == 200) {
+      ss = response.data;
+      //file.writeAsStringSync(response.data.toString());
+    }else {
+      throw "网络错误";
     }
-    lasttime = DateTime.now();
-    }
-   */
-    String jsonString = await rootBundle.loadString('assets/data/courseTable1.json');
-    print(jsonString.length);
-    //print(jsonString);
-    List<dynamic> jsonList = json.decode(jsonString);
+  try{
+    //String ss = file.readAsStringSync();
+    List<dynamic> jsonList = json.decode(ss);
+    print(jsonList.length);
     WeekCourseTable temp = new WeekCourseTable.fromJson(jsonList);
     return temp;
-  /*
-  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
-  print("file length:${ss.length}");
-  final response = await http.get(
-      'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all');
-  print(response.bodyBytes.length);
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    Utf8Decoder decode = new Utf8Decoder();
-    return WeekCourseTable.fromJson(
-        json.decode(decode.convert(response.bodyBytes)));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load course center');
+  } catch(e){
+    throw "文件读取错误";
   }
-   */
-
 }
 
 Future<int> getWeek() async{
+  //获取当前周
   Dio dio =  new Dio();
   Response response;
   DateTime now = DateTime.now();
@@ -370,6 +359,5 @@ Future<int> getWeek() async{
   }
   print(response.data.toString());
   int weekNumber = int.parse(response.data[0]['week']);
-
   return weekNumber;
 }

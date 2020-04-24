@@ -1,10 +1,153 @@
 [
   {
-    "name": "医学伦理与临床医学基础",
-    "location": "教二",
-    "teacher": "汲婧",
-    "weekDay": 4,
-    "sectionStart": 5,
-    "sectionEnd": 6
+    "name": "计算机网络",
+    "teacher_course": [
+      {
+        "name": "张辉"
+      }
+    ],
+    "time": "2_1_2",
+    "place": "(一)304",
+    "week": "1,2,3,4,5,6,7,8,9,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "经济管理",
+    "teacher_course": [
+      {
+        "name": "未知"
+      }
+    ],
+    "time": "3_1_2",
+    "place": "未知",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "学科技术前沿讲座",
+    "teacher_course": [
+      {
+        "name": "李波"
+      }
+    ],
+    "time": "4_1_2",
+    "place": "主M302",
+    "week": "1,2,3,4,5,6,7,8,9,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机科学方法论",
+    "teacher_course": [
+      {
+        "name": "李甲"
+      }
+    ],
+    "time": "1_3_4",
+    "place": "(一)205",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机网络",
+    "teacher_course": [
+      {
+        "name": "张辉"
+      }
+    ],
+    "time": "4_3_4",
+    "place": "(一)304",
+    "week": "1,2,3,4,5,6,7,8,9,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "软件工程",
+    "teacher_course": [
+      {
+        "name": "罗杰"
+      },
+      {
+        "name": "任健"
+      }
+    ],
+    "time": "5_3_4",
+    "place": "(四)406",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机科学方法论",
+    "teacher_course": [
+      {
+        "name": "李甲"
+      }
+    ],
+    "time": "7_3_4",
+    "place": "(一)205",
+    "week": "9,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "体育（6）(跆拳道品势)",
+    "teacher_course": [
+      {
+        "name": "刘菁"
+      }
+    ],
+    "time": "1_6_6",
+    "place": "体育馆主馆",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机网络实验",
+    "teacher_course": [
+      {
+        "name": "谷云超"
+      }
+    ],
+    "time": "2_6_7",
+    "place": "",
+    "week": "5,6,7,8,9,10,11,12,13,14,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "人工智能",
+    "teacher_course": [
+      {
+        "name": "巢文涵"
+      },
+      {
+        "name": "丁嵘"
+      }
+    ],
+    "time": "5_6_7",
+    "place": "(一)407",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机网络安全技术",
+    "teacher_course": [
+      {
+        "name": "李巍"
+      }
+    ],
+    "time": "1_8_9",
+    "place": "主219",
+    "week": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,",
+    "semester": "2020_Spring"
+  },
+  {
+    "name": "计算机网络实验",
+    "teacher_course": [
+      {
+        "name": "谷云超"
+      }
+    ],
+    "time": "2_8_9",
+    "place": "",
+    "week": "5,6,7,8,9,10,11,12,13,14,",
+    "semester": "2020_Spring"
   }
 ]
+
