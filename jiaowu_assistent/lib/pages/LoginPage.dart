@@ -222,7 +222,8 @@ class _LoginPageStateBody extends State<LoginPageBody> {
             '张艺璇', '17373182');
         GlobalUser.setIsLogin(true);
          */
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+          Navigator.pushReplacementNamed(context, '/homePage');
+//          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
         }else{
           throw('未知错误！');
         }
