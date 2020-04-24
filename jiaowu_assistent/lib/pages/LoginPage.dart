@@ -213,7 +213,14 @@ class _LoginPageStateBody extends State<LoginPageBody> {
               response.data['name'], response.data['student_id']);
           GlobalUser.setIsLogin(true);
           GlobalUser.setChoice(1);//课表
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+          /*
+        GlobalUser.setUser(_userNameController.text, _passwordController.text,
+            '张艺璇', '17373182');
+        GlobalUser.setIsLogin(true);
+         */
+          Navigator.pushReplacementNamed(context, '/homePage');
+//          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+
         }else{
           throw('未知错误！');
         }

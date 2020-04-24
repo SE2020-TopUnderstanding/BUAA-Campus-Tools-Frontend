@@ -289,7 +289,7 @@ class _CourseGridTable extends State{
       CourseT temp = templist[i];
       l.add(ListTile(leading: Text("课程："), title: Text(temp.name),));
       l.add(ListTile(leading:Text("时间："), title: Text('第${temp.sectionStart}-${temp.sectionEnd}节')));
-      l.add(ListTile(leading: Text("地点"), title: Text('${temp.location}')));
+      l.add(ListTile(leading: Text("地点："), title: Text('${temp.location}')));
       l.add(ListTile(leading: Text("教师："), title: Text(temp.teacherCourse.toString())));
       l.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
     }
