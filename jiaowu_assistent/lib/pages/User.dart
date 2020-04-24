@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:gbk2utf8/gbk2utf8.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 class EmptyRoom {
   String _building;
@@ -30,20 +30,21 @@ class EmptyRoom {
   }
 }
 
-Future<EmptyRoom> getEmptyRoom(String campus, String date, String section,
+Future<EmptyRoom> getEmptyRoom(BuildContext context, String campus, String date, String section,
     String building) async {
   try {
     Response response = await Dio().get(
-        'http://114.115.208.32:8000/classroom/?campus=$campus&date=$date&section=$section',
+        'http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section',
         options: Options(
             responseType: ResponseType
                 .plain)); // http://www.mocky.io/v2/5e9a690133000021bf7b3008
     print(
-        'Request(http://114.115.208.32:8000/classroom/?campus=$campus&date=$date&section=$section)');
+        'Request(http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section)');
     Map<String, dynamic> data = json.decode(response.data.toString());
     print(response);
     if (data == null) {
-      throw FormatException('No Data Response!');
+      print("No data response!");
+      return null;
     } else if (!data.containsKey(building)) {
       print("building: $building");
       print("The certain building has no empty room!");
@@ -51,12 +52,60 @@ Future<EmptyRoom> getEmptyRoom(String campus, String date, String section,
 //      throw FormatException('The certain building has no empty room!');
     } else {
       List<dynamic> listJson = data['$building'];
-      List<String> list = listJson.map((value) => value['classroom'].toString()).toList();
+      List<String> list =
+          listJson.map((value) => value['classroom'].toString()).toList();
       return EmptyRoom(building, list, response.data);
     }
-  } catch (e) {
-    print(e);
+  }on DioError catch(e) {
+    print(formatError(e));
+    showDialog(
+      // 设置点击 dialog 外部不取消 dialog，默认能够取消
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('错误提示', textAlign: TextAlign.center,),
+          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // 标题文字样式
+          content: Text(formatError(e) + "  " + e.type.toString()),
+          contentTextStyle: TextStyle(color: Colors.white, fontSize: 17), // 内容文字样式
+          backgroundColor: CupertinoColors.systemGrey,
+          elevation: 8.0, // 投影的阴影高度
+          semanticLabel: 'Label', // 这个用于无障碍下弹出 dialog 的提示
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
+          actions: <Widget>[
+            // 点击增加显示的值
+//            FlatButton(onPressed: increase, child: Text('点我增加')),
+//            // 点击减少显示的值
+//            FlatButton(onPressed: decrease, child: Text('点我减少')),
+//            // 点击关闭 dialog，需要通过 Navigator 进行操作
+            FlatButton(onPressed: () => Navigator.pop(context),
+                child: Text('知道了', style: TextStyle(color: CupertinoColors.white),)),
+          ],
+        )
+    );
     return null;
+  }
+}
+
+String formatError(DioError e) {
+  if (e.type == DioErrorType.CONNECT_TIMEOUT) {
+    // It occurs when url is opened timeout.
+    return("连接超时");
+  } else if (e.type == DioErrorType.SEND_TIMEOUT) {
+    // It occurs when url is sent timeout.
+    return("请求超时");
+  } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
+    //It occurs when receiving timeout
+    return("响应超时");
+  } else if (e.type == DioErrorType.RESPONSE) {
+    // When the server response, but with a incorrect status, such as 404, 503...
+    return("出现异常");
+  } else if (e.type == DioErrorType.CANCEL) {
+    // When the request is cancelled, dio will throw a error with this type.
+    return("请求取消");
+  } else {
+    //DEFAULT Default error type, Some other Error. In this case, you can read the DioError.error if it is not null.
+    return("未知错误");
   }
 }
 
@@ -96,10 +145,9 @@ class CourseCenter {
 
   CourseCenter({this.courses});
 
-  factory CourseCenter.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['ddl'] as List;
+  factory CourseCenter.fromJson(List<dynamic> parsedJson) {
     List<Course> courseCenterList =
-    list.map((i) => Course.fromJson(i)).toList();
+        parsedJson.map((i) => Course.fromJson(i)).toList();
     return CourseCenter(courses: courseCenterList);
   }
 
@@ -110,24 +158,25 @@ class CourseCenter {
 //  }
 }
 
-Future<CourseCenter> getCourseCenter() async {
-  String response =
-  await rootBundle.loadString('assets/data/courseCenter.json');
-  return CourseCenter.fromJson(json.decode(response));
+Future<CourseCenter> getCourseCenter(String studentID) async {
+//  String response =
+//      await rootBundle.loadString('assets/data/courseCenter.json');
+//  return CourseCenter.fromJson(json.decode(response));
 
-//  final response =
-//      await http.get('http://114.115.208.32:8000/ddl/?student_id=17373349');
-//  if (response.statusCode == 200) {
-//    // If the server did return a 200 OK response,
-//    // then parse the JSON.
-//    Utf8Decoder decode = new Utf8Decoder();
-//    return CourseCenter.fromJson(
-//        json.decode(decode.convert(response.bodyBytes)));
-//  } else {
-//    // If the server did not return a 200 OK response,
-//    // then throw an exception.
-//    throw Exception('Failed to load course center');
-//  }
+  final response =
+      await http.get('http://114.115.208.32:8000/ddl/?student_id=$studentID');
+  print('http://114.115.208.32:8000/ddl/?student_id=$studentID');
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return CourseCenter.fromJson(
+        json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load course center');
+  }
 }
 
 //成绩查询用
@@ -157,93 +206,153 @@ class GradeCenter {
   }
 }
 
-Future<GradeCenter> getGrade() async {
-  String response = await rootBundle.loadString('assets/data/grade.json');
-  GradeCenter temp = GradeCenter.fromJson(json.decode(response));
-  return temp;
+Future<GradeCenter> getGrade(String studentID, String semester) async {
+//  String response = await rootBundle.loadString('assets/data/grade.json');
+//  GradeCenter temp = GradeCenter.fromJson(json.decode(response));
+//  return temp;
 
-//  final response =
-//      await http.get('http://114.115.208.32:8000/ddl/?student_id=17373349');
-//  if (response.statusCode == 200) {
-//    // If the server did return a 200 OK response,
-//    // then parse the JSON.
-//    Utf8Decoder decode = new Utf8Decoder();
-//    return GradeCenter.fromJson(
-//        json.decode(decode.convert(response.bodyBytes)));
-//  } else {
-//    // If the server did not return a 200 OK response,
-//    // then throw an exception.
-//    throw Exception('Failed to load course center');
-//  }
+  final response = await http.get(
+      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+  print('http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return GradeCenter.fromJson(
+        json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load course center');
+  }
 }
 
+
 //课表用
+class TeacherCourse {
+  String name;
+
+  TeacherCourse({this.name});
+
+  TeacherCourse.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    return data;
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return name;
+  }
+}
 class CourseT {
    String name;
    String location;
-   //Teachers teachers;
+   List<TeacherCourse> teacherCourse;
    List<String> week;
    int weekDay;
    int sectionStart;
    int sectionEnd;
 
-  CourseT({
+   CourseT({
     this.name,
     this.location,
-    //this.teachers,
+    this.teacherCourse,
     this.week,
     this.weekDay,
     this.sectionStart,
     this.sectionEnd,
   });
 
-  static CourseT fromJson(Map<String, dynamic> parsedJson) {
-    String weeks = parsedJson['week'] as String;
-    List<String> weekss= weeks.split(',');
-    //var list =json.decode((parsedJson['teacher_course'].toString()));
-    //print(list.toString());
-    return CourseT(
-      name: parsedJson['name'],
-      location: parsedJson['place'],
-      //teachers: Teachers.fromJson(parsedJson['teacher_course'].toString()),
-      week: weekss,
-      weekDay: int.parse(parsedJson['time'].toString().substring(0,1)),
-      sectionStart: int.parse(parsedJson['time'].toString().substring(2,3)),
-      sectionEnd: int.parse(parsedJson['time'].toString().substring(4,5)),
-    );
-  }
+   CourseT.fromJson(Map<String, dynamic> json) {
+     name = json['name'];
+     if (json['teacher_course'] != null) {
+       teacherCourse = new List<TeacherCourse>();
+       json['teacher_course'].forEach((v) {
+         teacherCourse.add(new TeacherCourse.fromJson(v));
+       });
+     }
+     String weeks = json['week'] as String;
+     List<String> weekss= weeks.split(',');
+     String times = json['time'] as String;
+     List<String> timess = times.split('_');
+     location = json['place'];
+     week = weekss;
+     weekDay= int.parse(timess[0]);
+     sectionStart= int.parse(timess[1]);
+     sectionEnd= int.parse(timess[2]);
+   }
 }
 
 class WeekCourseTable {
    List<CourseT> courses;
-   WeekCourseTable({this.courses});
-   static WeekCourseTable  fromJson(List<dynamic> jsonList) {
-      List<CourseT> courseList =
-      jsonList.map((i) => CourseT.fromJson(i)).toList();
-      return WeekCourseTable(courses: courseList);
-  }
+   WeekCourseTable(List<CourseT> courses){
+     this.courses = courses;
+   }
+   WeekCourseTable.fromJson(List<dynamic> jsonList) {
+     courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+   }
 }
 
 
 Future<WeekCourseTable> loadCourse(int week, String studentID) async{
-  String jsonString = await rootBundle.loadString('assets/data/courseTable1.json');
-  List<dynamic> jsonList = json.decode(jsonString);
-  WeekCourseTable temp = WeekCourseTable.fromJson(jsonList);
-
-  //print(temp.toString());
-  //print(jsonResult);
   /*
-  Dio dio = new Dio();
-  try{
+  String lastID = "";
+  DateTime lasttime = DateTime(2020,4,24);
+  Directory documentsDir = await getApplicationDocumentsDirectory();
+  String documentsPath = documentsDir.path;
+  File file;
+  if(file==null){
+    file = new File('$documentsPath/courseTableAll.json');
+  }
+  if(!file.existsSync()){
+    file.createSync();
+  }
+  if(lastID.compareTo(studentID) !=0 || DateTime.now().difference(lasttime)>Duration(days: 6)){
+    Dio dio = new Dio();
     Response response;
-    response = await dio.request('http://127.0.0.1:8000/timetable/',
-        data:{"student_id":"17373182", "week":"8"},
-        options: Options(method: "GET", responseType: ResponseType.json));
-  }catch(e){
-    e.toString();
+    try{
+      response = await dio.request('http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
+          options: Options(method: "GET", responseType: ResponseType.plain));
+      //print(response.data.toString().length);
+      file.writeAsString(response.data);
+    }catch(e){
+      print(response.toString());
+      print(e.toString());
+    }
+    lasttime = DateTime.now();
+    }
+   */
+    String jsonString = await rootBundle.loadString('assets/data/courseTable1.json');
+    print(jsonString.length);
+    //print(jsonString);
+    List<dynamic> jsonList = json.decode(jsonString);
+    WeekCourseTable temp = new WeekCourseTable.fromJson(jsonList);
+    return temp;
+  /*
+  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
+  print("file length:${ss.length}");
+  final response = await http.get(
+      'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all');
+  print(response.bodyBytes.length);
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return WeekCourseTable.fromJson(
+        json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load course center');
   }
    */
-  return temp;
+
 }
 
 Future<int> getWeek() async{
@@ -251,8 +360,6 @@ Future<int> getWeek() async{
   Response response;
   DateTime now = DateTime.now();
   try{
-    //response = await dio.request('http://114.115.208.32:8000/timetable/?student_id=17373182&week=all');
-    //print('my table'+response.toString());
     response = await dio.request(
         'http://114.115.208.32:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
     options: Options(method: "GET",responseType: ResponseType.json));
@@ -263,8 +370,6 @@ Future<int> getWeek() async{
   }
   print(response.data.toString());
   int weekNumber = int.parse(response.data[0]['week']);
+
   return weekNumber;
 }
-
-
-

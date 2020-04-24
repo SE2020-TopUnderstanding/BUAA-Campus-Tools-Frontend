@@ -147,8 +147,10 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   void _login() async {
     //if((_formkey.currentState as FormState).validate()){
     //}
+    /*
     Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
     return;
+     */
     if(_userNameController.text.isEmpty||_passwordController.text.isEmpty){
       print('账号或密码为空，请继续输入');
       showDialog(

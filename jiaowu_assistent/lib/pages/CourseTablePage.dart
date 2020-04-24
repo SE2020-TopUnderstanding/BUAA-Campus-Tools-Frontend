@@ -1,19 +1,21 @@
-import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'dart:math';
+import 'package:jiaowuassistent/GlobalUser.dart';
 
 class ShareWeekWidget extends InheritedWidget {
-  //跨组件共享week value
+  //跨组件共享指定week和当前week
   ShareWeekWidget({
    @required  this.week,
+    @required this.curWeek,
     Widget child,
   }):super(child:child);
 
   final int week;
+  final int curWeek;
   static ShareWeekWidget of(BuildContext context){
     return context.dependOnInheritedWidgetOfExactType();
   }
@@ -21,7 +23,7 @@ class ShareWeekWidget extends InheritedWidget {
   @override
   bool updateShouldNotify(ShareWeekWidget oldWidget) {
     // TODO: implement updateShouldNotify
-    return (oldWidget.week != week);
+    return ((oldWidget.week != week) ||(oldWidget.curWeek != curWeek));
   }
 }
 
@@ -32,6 +34,7 @@ class CourseTablePage extends StatefulWidget {
 
 class _CourseTablePage extends State<CourseTablePage> {
   int week_value;
+  int cur_week_value;
   List<DropdownMenuItem> getWeekItem() {
     List<DropdownMenuItem> weekItems = [
       DropdownMenuItem(child: Text('第1周'), value: 1,),
@@ -60,13 +63,15 @@ class _CourseTablePage extends State<CourseTablePage> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
+    print('course table init');
     getWeek().then((value){
       setState(() {
         week_value = value;
+        cur_week_value = value;
         print('set cur week:$week_value');
       });
     });
+    super.initState();
   }
 
   @override
@@ -74,6 +79,7 @@ class _CourseTablePage extends State<CourseTablePage> {
     // TODO: implement build
         return ShareWeekWidget(
           week: week_value,
+          curWeek: cur_week_value,
           child: Scaffold(
             appBar: AppBar(
               title: Text('课程表'),
@@ -107,7 +113,8 @@ class CourseGridTable extends StatefulWidget{
 
 class _CourseGridTable extends State{
   int week;
-  Future<WeekCourseTable> courseList;
+  int cur_week;
+  //Future<WeekCourseTable> courseList;
   final double blockHeight = 60;
   List<CourseT> courses= new List<CourseT>();
 
@@ -121,6 +128,8 @@ class _CourseGridTable extends State{
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     week = ShareWeekWidget.of(context).week;
+    cur_week = ShareWeekWidget.of(context).curWeek;
+
     super.didChangeDependencies();
     print('didChangeDependencies:$week');
   }
@@ -128,10 +137,9 @@ class _CourseGridTable extends State{
   @override
   void didUpdateWidget(StatefulWidget oldWidget) {
     // TODO: implement didUpdateWidget
-    print('didUpdateWidget:$week');
+    //print('didUpdateWidget:$week');
     super.didUpdateWidget(oldWidget);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +147,7 @@ class _CourseGridTable extends State{
     // TODO: implement build
     return Center(
       child: FutureBuilder(
-          future: getCourse(week),
+          future: loadCourse(week,GlobalUser.studentID),
           builder: (BuildContext context,AsyncSnapshot snapshot){
             if(snapshot.connectionState == ConnectionState.waiting){
               print('waiting');
@@ -158,6 +166,7 @@ class _CourseGridTable extends State{
               return Stack(
                 children: <Widget>[
                   WeekBar(
+                    //(DateTime.now().add(Duration(days: (week-cur_week)*7))),
                     DateTime.now(),
                     color: Colors.white,
                     height: blockHeight,
@@ -191,42 +200,51 @@ class _CourseGridTable extends State{
 
   // 中间的所有列
   List<Widget> buildMainColumns() {
+    Iterable<CourseT> weekcourses = courses.where((c) => c.week.contains(week.toString()));//当周的课
+
     return List<Widget>.generate(7, (index) {
-      // 获取当天的课
-      Iterable<CourseT> day = courses.where((c) => c.weekDay == index + 1);
+      Iterable<CourseT> day = weekcourses.where((c) => c.weekDay == index + 1); // 当天的课
+
       List<Widget> cols = new List();
-      // 遍历每天的14节课
-      for (int i = 0; i < 14; i++) {
-        // 获取课程开始时间等于本节课的课程
-        Iterable<CourseT> list = day.where((c) => c.sectionStart == i + 1);
+      for (int i = 1; i <= 14; i++) {
+        Iterable<CourseT> section = day.where((c) => c.sectionStart == i);//当节的课
+        List<CourseT> sectionList = section.toList();
         // 没找到就用空块填充
-        if (list.length == 0) {
+        if (sectionList.length == 0) {
           cols.add(WhiteBlock(blockHeight));
           continue;
         }
-        // 获得其中的第一个课
-        CourseT course = list.first;
-        // 计算块的大小
-        int jie = course.sectionEnd - course.sectionStart;
-        if (jie >= 0 && jie < 14) {
+        //找到当节开始的课
+        int maxLength = 0 ;
+        int last = i;//结束时间
+        for(CourseT temp in sectionList){
+          int length = temp.sectionEnd-temp.sectionStart;
+          if(length > maxLength){
+            maxLength = length;
+            last = temp.sectionEnd;
+          }
+        }
+        for(CourseT temp in day){
+          if(temp.sectionStart>i && temp.sectionStart<=last){
+            sectionList.add(temp);
+          }
+        }
+        if (maxLength >= 0 && maxLength < 14) {
           cols.add(
             CourseBlock(
-              course,
-              size: jie + 1,
+              sectionList,
+              size: maxLength + 1,
               height: blockHeight,
-              backgroundColor: Color.fromARGB(
-                  255,
-                  Random.secure().nextInt(255),
-                  Random.secure().nextInt(255),
-                  Random.secure().nextInt(255)),
+              backgroundColor: Color.fromARGB(255, 250, 107, 91),
               textColor: Colors.white,
-              onTap: () => onTap(course),
+              onTap: () => onTap(sectionList),
             ),
           );
-          i += jie;
+          i += maxLength;
         } else {
           cols.add(WhiteBlock(blockHeight));
         }
+
       }
       return Expanded(
         child: Column(
@@ -249,7 +267,23 @@ class _CourseGridTable extends State{
     );
   }
 
-  onTap(CourseT course) {
+
+
+  List<Widget> showCourse(List<CourseT> templist){
+    List<Widget> l = new List();
+    for (int i = 0; i < templist.length ; i++){
+      CourseT temp = templist[i];
+      l.add(ListTile(leading: Text("课程："), title: Text(temp.name),));
+      l.add(ListTile(leading:Text("时间："), title: Text('第${temp.sectionStart}-${temp.sectionEnd}节')));
+      l.add(ListTile(leading: Text("地点"), title: Text('第${temp.location}')));
+      l.add(ListTile(leading: Text("教师："), title: Text(temp.teacherCourse.toString())));
+      l.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
+    }
+    l.removeLast();
+    return l;
+  }
+
+  onTap(List<CourseT> course) {
     showDialog(
       context: context,
       builder: (ctx) {
@@ -266,27 +300,19 @@ class _CourseGridTable extends State{
             ),
           ),
           children: <Widget>[
-            ListTile(
-              leading: Text("课程名："),
-              title: Text(course.name),
-            ),
-            ListTile(
-              leading: Text("时间："),
-              title: Text('星期${course.weekDay}'),
-            ),
-            ListTile(
-              leading: Text("地点："),
-              title: Text(course.location),
-            ),
-            ListTile(
-              leading: Text("教师："),
-              title: Text(course.teacher),
+            SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                ]..addAll(showCourse(course)),
+              ),
             ),
           ],
         );
       },
     );
   }
+
+
 }
 
 class WeekBar extends StatelessWidget {
@@ -374,7 +400,7 @@ class WhiteBlock extends StatelessWidget {
 }
 
 class CourseBlock extends StatelessWidget {
-  final CourseT course;
+  final List<CourseT> course;
   final Color backgroundColor;
   final Color textColor;
   final int size;
@@ -401,11 +427,22 @@ class CourseBlock extends StatelessWidget {
           color: backgroundColor,
           borderRadius: BorderRadius.all(Radius.circular(5)),
         ),
-        child: Text(
-          '${course.name}@${course.location}',
-          style: TextStyle(color: textColor),
-        ),
+        child: getCourseBlocks(course),
       ),
+    );
+  }
+}
+
+Widget getCourseBlocks(List<CourseT> list){
+  if(list.length==1){
+    return Text(
+      '${list.first.name}@${list.first.location}',
+      style: TextStyle(color: Colors.black),
+    );
+  } else{
+    return Text(
+      '多节课，请点开查看',
+      style: TextStyle(color: Colors.black),
     );
   }
 }

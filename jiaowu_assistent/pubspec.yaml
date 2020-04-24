@@ -26,7 +26,8 @@ dependencies:
   #dio: ^3.0.0
   shared_preferences: ^0.5.3+4
   provider: ^2.0.1+1
-#  path_provider: ^0.4.1
+  dio_cookie_manager: 1.0.0
+  path_provider: ^0.4.1
   gbk2utf8:
 
 
@@ -51,6 +52,7 @@ flutter:
     - assets/data/courseTable1.json
     - assets/data/courseTable9.json
     - assets/data/courseCenter.json
+    - assets/data/courseTableAll.json
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
