@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 
 class EmptyRoom {
   String _building;
@@ -226,94 +227,149 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
   }
 }
 
+
 //课表用
+class TeacherCourse {
+  String name;
+
+  TeacherCourse({this.name});
+
+  TeacherCourse.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    return data;
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return name;
+  }
+}
 class CourseT {
-  final String name;
-  final String location;
-  final String teacher;
+   String name;
+   String location;
+   List<TeacherCourse> teacherCourse;
+   List<String> week;
+   int weekDay;
+   int sectionStart;
+   int sectionEnd;
 
-  //final List<int> week;
-  final int weekDay;
-  final int sectionStart;
-  final int sectionEnd;
-
-  //String semester;
-
-  CourseT({
+   CourseT({
     this.name,
     this.location,
-    this.teacher,
+    this.teacherCourse,
+    this.week,
     this.weekDay,
     this.sectionStart,
     this.sectionEnd,
   });
 
-  factory CourseT.fromJson(Map<String, dynamic> parsedJson) {
-    return CourseT(
-      name: parsedJson['name'],
-      location: parsedJson['location'],
-      teacher: parsedJson['teacher'],
-      //week: parsedJson['week'],
-      weekDay: parsedJson['weekDay'],
-      sectionStart: parsedJson['sectionStart'],
-      sectionEnd: parsedJson['sectionEnd'],
-    );
-  }
+   CourseT.fromJson(Map<String, dynamic> json) {
+     name = json['name'];
+     if (json['teacher_course'] != null) {
+       teacherCourse = new List<TeacherCourse>();
+       json['teacher_course'].forEach((v) {
+         teacherCourse.add(new TeacherCourse.fromJson(v));
+       });
+     }
+     String weeks = json['week'] as String;
+     List<String> weekss= weeks.split(',');
+     String times = json['time'] as String;
+     List<String> timess = times.split('_');
+     location = json['place'];
+     week = weekss;
+     weekDay= int.parse(timess[0]);
+     sectionStart= int.parse(timess[1]);
+     sectionEnd= int.parse(timess[2]);
+   }
 }
 
 class WeekCourseTable {
-  final List<CourseT> courses;
-
-  WeekCourseTable({this.courses});
-
-  factory WeekCourseTable.fromJson(List<dynamic> jsonList) {
-    List<CourseT> courseList =
-        jsonList.map((i) => CourseT.fromJson(i)).toList();
-    return WeekCourseTable(courses: courseList);
-  }
+   List<CourseT> courses;
+   WeekCourseTable(List<CourseT> courses){
+     this.courses = courses;
+   }
+   WeekCourseTable.fromJson(List<dynamic> jsonList) {
+     courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+   }
 }
 
-Future<WeekCourseTable> getCourse(int week) async {
-  //print(week);
-  //print("get week:$week");
-  String jsonString =
-      await rootBundle.loadString('assets/data/courseTable$week.json');
-  //print(jsonString);
-  List<dynamic> jsonList = json.decode(jsonString);
-  WeekCourseTable temp = WeekCourseTable.fromJson(jsonList);
 
-  //print(temp.toString());
-  //print(jsonResult);
+Future<WeekCourseTable> loadCourse(int week, String studentID) async{
   /*
-  Dio dio = new Dio();
-  try{
+  String lastID = "";
+  DateTime lasttime = DateTime(2020,4,24);
+  Directory documentsDir = await getApplicationDocumentsDirectory();
+  String documentsPath = documentsDir.path;
+  File file;
+  if(file==null){
+    file = new File('$documentsPath/courseTableAll.json');
+  }
+  if(!file.existsSync()){
+    file.createSync();
+  }
+  if(lastID.compareTo(studentID) !=0 || DateTime.now().difference(lasttime)>Duration(days: 6)){
+    Dio dio = new Dio();
     Response response;
-    response = await dio.request('http://127.0.0.1:8000/timetable/',
-        data:{"student_id":"17373182","semester":"2020_Spring", "week":"8"},
-        options: Options(method: "GET", responseType: ResponseType.json));
-  }catch(e){
-    e.toString();
+    try{
+      response = await dio.request('http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
+          options: Options(method: "GET", responseType: ResponseType.plain));
+      //print(response.data.toString().length);
+      file.writeAsString(response.data);
+    }catch(e){
+      print(response.toString());
+      print(e.toString());
+    }
+    lasttime = DateTime.now();
+    }
+   */
+    String jsonString = await rootBundle.loadString('assets/data/courseTable1.json');
+    print(jsonString.length);
+    //print(jsonString);
+    List<dynamic> jsonList = json.decode(jsonString);
+    WeekCourseTable temp = new WeekCourseTable.fromJson(jsonList);
+    return temp;
+  /*
+  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
+  print("file length:${ss.length}");
+  final response = await http.get(
+      'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all');
+  print(response.bodyBytes.length);
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return WeekCourseTable.fromJson(
+        json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load course center');
   }
    */
-  return temp;
+
 }
 
-Future<int> getWeek() async {
-  //print('there is get week number');
-  /*
+Future<int> getWeek() async{
   Dio dio =  new Dio();
-
   Response response;
+  DateTime now = DateTime.now();
   try{
-    response = await dio.request('http://127.0.0.1:8000/timetable/',
-    data: {"date":"${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}"},
+    response = await dio.request(
+        'http://114.115.208.32:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
     options: Options(method: "GET",responseType: ResponseType.json));
   }catch(e){
     e.toString();
-    throw "查找当前周号失败";
+    print('response:'+response.toString());
+    return 9;
   }
-  int weekNumber = response.data['week'];
-   */
-  int weekNumber = 9;
+  print(response.data.toString());
+  int weekNumber = int.parse(response.data[0]['week']);
+
   return weekNumber;
 }
