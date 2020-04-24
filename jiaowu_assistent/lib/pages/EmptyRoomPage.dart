@@ -21,20 +21,30 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
 
   List<Map<int, String>> buildingMap = [
     {
-      1: "教零楼",
-      2: "教一楼",
-      3: "教二楼",
-      4: "教三楼",
-      5: "教四楼",
-      6: "教五楼",
+      1: "教零",
+      2: "教一",
+      3: "教二",
+      4: "教三",
+      5: "教四",
+      6: "教五",
     },
     {
       1: "一号楼",
       2: "二号楼",
       3: "三号楼",
       4: "四号楼",
-      5: "主楼",
-      6: "新主楼",
+      5: "主M",
+      6: "主北",
+      7: "主南",
+      8: "主楼",
+      9: "新主楼A座",
+      10: "新主楼B座",
+      11: "新主楼C座",
+      12: "新主楼D座",
+      13: "新主楼E座",
+      14: "新主楼F座",
+      15: "新主楼G座",
+      16: "新主楼H座",
     }
   ];
 
@@ -63,6 +73,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   var _selectedBegin, _selectedEnd, _selectedCampus, _selectedBuilding;
   List<String> _list;
   String response = '';
+  String currBuilding = '';
 
 
   Future<void> _selectDate() async {
@@ -78,24 +89,31 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     setState(() {
       _selectedDate = date;
     });
-    _search();
   }
 
   Future<void> _search() async {
+    if (!checkNull())
+      return;
     String section = '';
     for (int i = _selectedBegin; i <= _selectedEnd; i++) {
-      section = section + i.toString() + ',';
+      section = section + i.toString() + ', ';
     }
     try {
-      getEmptyRoom(campusMap[_selectedCampus], DateFormat('yyyy-M-dd').format(_selectedDate), section,
+      currBuilding = buildingMap[_selectedCampus - 1][_selectedBuilding];
+      getEmptyRoom(context, campusMap[_selectedCampus], DateFormat('yyyy-MM-dd').format(_selectedDate), section,
           buildingMap[_selectedCampus - 1][_selectedBuilding]).then((EmptyRoom temp) {
         setState(() {
-          response = temp.getResPonse();
-          if (temp.getRooms() == null) {
+          if (temp == null) {
             _list = null;
           }
           else {
-            _list = temp.getRooms();
+            response = temp.getResPonse();
+            if (temp.getRooms() == null) {
+              _list = null;
+            }
+            else {
+              _list = temp.getRooms();
+            }
           }
         });
       });
@@ -134,7 +152,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.red, fontSize: 20),
           ),
-          subtitle: Text(response),
+//          subtitle: Text(response),
 //          subtitle: Text(buildingMap[_selectedBuilding] + " " + lessonMap[_selectedBegin] + "->" + lessonMap[_selectedEnd], textAlign: TextAlign.center,),
           trailing: Icon(Icons.not_interested, color: Colors.red,),
         ),
@@ -144,7 +162,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     return Container(
       child: ListTile(
         title:  Text(_list[index]),
-        subtitle: Text(buildingMap[_selectedCampus - 1][_selectedBuilding]),
+        subtitle: Text(currBuilding),
         trailing: Icon(Icons.directions_run, color: Colors.blue,),
       ),
       decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.black))),
@@ -190,20 +208,30 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
 
   List<List<DropdownMenuItem>> _BuildingList = [
     [
-      DropdownMenuItem(child: Text('教零楼'), value: 1,),
-      DropdownMenuItem(child: Text('教一楼'), value: 2,),
-      DropdownMenuItem(child: Text('教二楼'), value: 3,),
-      DropdownMenuItem(child: Text('教三楼'), value: 4,),
-      DropdownMenuItem(child: Text('教四楼'), value: 5,),
-      DropdownMenuItem(child: Text('教五楼'), value: 6,),
+      DropdownMenuItem(child: Text('教零'), value: 1,),
+      DropdownMenuItem(child: Text('教一'), value: 2,),
+      DropdownMenuItem(child: Text('教二'), value: 3,),
+      DropdownMenuItem(child: Text('教三'), value: 4,),
+      DropdownMenuItem(child: Text('教四'), value: 5,),
+      DropdownMenuItem(child: Text('教五'), value: 6,),
     ],
     [
       DropdownMenuItem(child: Text('一号楼'), value: 1,),
       DropdownMenuItem(child: Text('二号楼'), value: 2,),
       DropdownMenuItem(child: Text('三号楼'), value: 3,),
       DropdownMenuItem(child: Text('四号楼'), value: 4,),
-      DropdownMenuItem(child: Text('主楼'), value: 5,),
-      DropdownMenuItem(child: Text('新主楼'), value: 6,),
+      DropdownMenuItem(child: Text('主M'), value: 5,),
+      DropdownMenuItem(child: Text('主北'), value: 6,),
+      DropdownMenuItem(child: Text('主南'), value: 7,),
+      DropdownMenuItem(child: Text('主楼'), value: 8,),
+      DropdownMenuItem(child: Text('新主楼A座'), value: 9,),
+      DropdownMenuItem(child: Text('新主楼B座'), value: 10,),
+      DropdownMenuItem(child: Text('新主楼C座'), value: 11,),
+      DropdownMenuItem(child: Text('新主楼D座'), value: 12,),
+      DropdownMenuItem(child: Text('新主楼E座'), value: 13,),
+      DropdownMenuItem(child: Text('新主楼F座'), value: 14,),
+      DropdownMenuItem(child: Text('新主楼G座'), value: 15,),
+      DropdownMenuItem(child: Text('新主楼H座'), value: 16,),
     ]
   ];
 
@@ -215,6 +243,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
           elevation: 0.0,
         ),
         body: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -241,14 +270,14 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       ],
                     ),
                   ),
-//                    SizedBox(width: 10),
-//                    CupertinoButton(
-//                      child: Text("查询"),
-//                      padding: EdgeInsets.symmetric(horizontal: 20),
-//                      color: Colors.grey,
-//                      onPressed: _search,
-//                      pressedOpacity: 0.8,
-//                    )
+                    SizedBox(width: 10),
+                    CupertinoButton(
+                      child: Text("查询"),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      color: Colors.grey,
+                      onPressed: _search,
+                      pressedOpacity: 0.8,
+                    )
                 ],
               ),
               SizedBox(height: 20,),
@@ -269,8 +298,8 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       setState(() {
                         _selectedCampus = value;
                         _buildingList = _BuildingList[_selectedCampus - 1];
-                        if (checkNull())
-                          _search();
+//                        if (checkNull())
+//                          _search();
                       });
                     },
                   ),
@@ -284,8 +313,8 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     onChanged: (value) {
                       setState(() {
                         _selectedBuilding = value;
-                        if (checkNull())
-                          _search();
+//                        if (checkNull())
+//                          _search();
                       });
                     },
                   )
@@ -308,8 +337,8 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                           }
                           else {
                             _selectedBegin = value;
-                            if (checkNull())
-                              _search();
+//                            if (checkNull())
+//                              _search();
                           }
                         });
                       },
@@ -324,13 +353,13 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       items: getListData(),
                       onChanged: (value){
                         setState(() {
-                          if (_selectedEnd != null && value < _selectedBegin) {
+                          if (_selectedBegin != null && value < _selectedBegin) {
                             _showAlertDialog();
                           }
                           else {
                             _selectedEnd = value;
-                            if (checkNull())
-                              _search();
+//                            if (checkNull())
+//                              _search();
                           }
                         });
                       },
