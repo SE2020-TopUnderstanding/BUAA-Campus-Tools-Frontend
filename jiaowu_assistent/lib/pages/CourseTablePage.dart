@@ -63,12 +63,12 @@ class _CourseTablePage extends State<CourseTablePage> {
   @override
   void initState() {
     // TODO: implement initState
-    print('course table init');
+    //print('course table init');
     getWeek().then((value){
       setState(() {
         week_value = value;
         cur_week_value = value;
-        print('set cur week:$week_value');
+        //print('set cur week:$week_value');
       });
     });
     super.initState();
@@ -131,7 +131,7 @@ class _CourseGridTable extends State{
     cur_week = ShareWeekWidget.of(context).curWeek;
 
     super.didChangeDependencies();
-    print('didChangeDependencies:$week');
+    //print('didChangeDependencies:$week');
   }
 
   @override
@@ -143,7 +143,7 @@ class _CourseGridTable extends State{
 
   @override
   Widget build(BuildContext context) {
-    print('build:$week');
+    //print('build:$week');
     // TODO: implement build
     return Center(
       child: FutureBuilder(
@@ -153,23 +153,37 @@ class _CourseGridTable extends State{
               print('waiting');
             }
             if(snapshot.connectionState == ConnectionState.done){
-              if(snapshot.data==null){
+
+              if(snapshot.hasError){
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context){
+                      return SimpleDialog(
+                        title: Text('报错'),
+                        children: <Widget>[
+                          Text("${snapshot.error.toString()}"),
+                        ],
+                      );
+                    });
                 courses.clear();
-                print('no data');
-              }else{
-                courses.clear();
-                for(int i=0;i<snapshot.data.courses.length;i++){
-                  courses.add(snapshot.data.courses[i]);
+              }else {
+                if (snapshot.data == null) {
+                  courses.clear();
+                  print('no data');
+                } else {
+                  courses.clear();
+                  for (int i = 0; i < snapshot.data.courses.length; i++) {
+                    courses.add(snapshot.data.courses[i]);
+                  }
                 }
               }
-
               return Stack(
-                children: <Widget>[
-                  WeekBar(
-                    //(DateTime.now().add(Duration(days: (week-cur_week)*7))),
-                    DateTime.now(),
-                    color: Colors.white,
-                    height: blockHeight,
+              children: <Widget>[
+                WeekBar(
+                 //(DateTime.now().add(Duration(days: (week-cur_week)*7))),
+                  DateTime.now(),
+                  color: Colors.white,
+                  height: blockHeight,
                   ),
                   buildBlocks(),
                 ],
@@ -275,7 +289,7 @@ class _CourseGridTable extends State{
       CourseT temp = templist[i];
       l.add(ListTile(leading: Text("课程："), title: Text(temp.name),));
       l.add(ListTile(leading:Text("时间："), title: Text('第${temp.sectionStart}-${temp.sectionEnd}节')));
-      l.add(ListTile(leading: Text("地点"), title: Text('第${temp.location}')));
+      l.add(ListTile(leading: Text("地点"), title: Text('${temp.location}')));
       l.add(ListTile(leading: Text("教师："), title: Text(temp.teacherCourse.toString())));
       l.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
     }
@@ -368,10 +382,7 @@ class WeekBar extends StatelessWidget {
               weekText[weekDay - 1],
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
-            Text(
-              '$month/$day',
-              style: TextStyle(fontSize: 10),
-            ),
+            //Text('$month/$day', style: TextStyle(fontSize: 10),),
           ],
         ),
       ),
