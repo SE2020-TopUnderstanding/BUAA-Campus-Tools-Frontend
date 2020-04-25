@@ -209,18 +209,7 @@ class _CourseGridTable extends State {
       child: FutureBuilder(
           future: loadCourse(week, GlobalUser.studentID),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            /*
-            if (snapshot.hasError) {
-              //print("catch error");
-              courses.clear();
-              return SimpleDialog(
-                title: Text('报错'),
-                children: <Widget>[
-                  Text("${snapshot.error.toString()}"),
-                ],
-              );
-            }
-             */
+
             if ((snapshot.connectionState == ConnectionState.done)
                   &&(snapshot.hasData)) {
               courses.clear();
@@ -337,8 +326,8 @@ class _CourseGridTable extends State {
               sectionList,
               size: maxLength + 1,
               height: blockHeight,
-              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
-//              backgroundColor: Color.fromARGB(255, 250, 107, 91),
+//              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
+              backgroundColor: _tableColors[sectionList.first.color%_tableColors.length],
               textColor: Colors.white,
               onTap: () => onTap(sectionList),
             ),

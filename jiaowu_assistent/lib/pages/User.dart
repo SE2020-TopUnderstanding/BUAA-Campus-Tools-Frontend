@@ -293,7 +293,7 @@ class CourseT {
   int weekDay;
   int sectionStart;
   int sectionEnd;
-
+  int color=1;
   CourseT({
     this.name,
     this.location,
@@ -334,6 +334,26 @@ class CourseT {
     }
 
   }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode {
+    return name.hashCode;
+  }
+
+  @override
+  bool operator ==(other) {
+    // TODO: implement ==
+    if(other is! CourseT){
+      return false;
+    }
+    final CourseT temp = other;
+    return (name.compareTo(temp.name)==0)?true:false;
+  }
+
+  void setColor(int color){
+    this.color = color;
+  }
 }
 
 class WeekCourseTable {
@@ -346,6 +366,20 @@ class WeekCourseTable {
   WeekCourseTable.fromJson(List<dynamic> jsonList) {
     try{
       courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+      print("before map");
+      Map<String, List<CourseT>> map = new Map.fromIterable(courses,
+          key: (key) => key.name,
+          value: (value) {
+            return courses.where((item) {
+              return (value.name.compareTo(item.name)==0)?true:false;
+            }).toList();
+          });
+      int i = 1;
+      map.forEach((k,v){
+        v.forEach((value) => value.setColor(i));
+        i++;
+      });
+      print("after map");
       //throw "error";
     }catch(e){
       throw "解析课程列表出错";
