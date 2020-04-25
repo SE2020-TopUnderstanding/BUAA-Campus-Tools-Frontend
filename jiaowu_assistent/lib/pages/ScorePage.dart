@@ -84,6 +84,7 @@ class _ScorePageState extends State<ScorePage> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('成绩查询'),
+        backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -135,7 +136,7 @@ class _ScorePageState extends State<ScorePage> {
                               Text('${gradeCenter.grades[index].credit}学分'),
                           trailing: Text('${gradeCenter.grades[index].score}'),
                           contentPadding:
-                              EdgeInsets.symmetric(horizontal: 40.0),
+                              EdgeInsets.symmetric(horizontal: 30.0),
                         ),
                         decoration: BoxDecoration(
                             border: Border(

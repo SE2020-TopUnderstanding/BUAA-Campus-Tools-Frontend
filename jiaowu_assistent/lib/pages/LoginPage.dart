@@ -12,7 +12,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new Scaffold(
+    return Scaffold(
       appBar: new AppBar(
         automaticallyImplyLeading: false,
         title: new Text("登录"),
@@ -31,17 +31,17 @@ class LoginPageBody extends StatefulWidget {
 }
 
 class _LoginPageStateBody extends State<LoginPageBody> {
-
   String userName;
   String password;
   TextEditingController _userNameController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
-  bool showPassword = false;//是否明文显示密码
+  bool showPassword = false; //是否明文显示密码
 //  bool _autoUserNameFocus = true;//焦点是否在账号密码输入框
   GlobalKey _formkey = new GlobalKey<FormState>();
   FocusNode _focusNodeUserName = new FocusNode();
   FocusNode _focusNodePassword = new FocusNode();
 
+  CancelToken _cancel = new CancelToken();
 
   @override
   void initState() {
@@ -52,8 +52,8 @@ class _LoginPageStateBody extends State<LoginPageBody> {
     super.initState();
   }
 
-  Future<Null> _focusNodeListener() async{
-    if(_focusNodeUserName.hasFocus){
+  Future<Null> _focusNodeListener() async {
+    if (_focusNodeUserName.hasFocus) {
       _focusNodePassword.unfocus();
     }
     if (_focusNodePassword.hasFocus) {
@@ -65,25 +65,26 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return GestureDetector(
-       onTap: (){
-        _focusNodeUserName.unfocus();
-        _focusNodePassword.unfocus();
-       },
+        onTap: () {
+          _focusNodeUserName.unfocus();
+          _focusNodePassword.unfocus();
+        },
         child: Center(
           child: Container(
             alignment: Alignment.center,
             padding: EdgeInsets.all(50),
             child: SingleChildScrollView(
-              child:Form(
+              child: Form(
                 key: _formkey,
                 autovalidate: false,
                 child: Column(
                   children: <Widget>[
                     TextFormField(
-                    //  autofocus: _autoUserNameFocus,
+                      //  autofocus: _autoUserNameFocus,
                       focusNode: _focusNodeUserName,
                       controller: _userNameController,
-                      validator: (v) => v.trim().isNotEmpty?Null:'请输入统一认证账号',
+                      validator: (v) =>
+                          v.trim().isNotEmpty ? Null : '请输入统一认证账号',
                       decoration: InputDecoration(
                         hintText: '统一认证账号',
                         //labelText: userName,
@@ -97,14 +98,16 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                       focusNode: _focusNodePassword,
                       controller: _passwordController,
                       obscureText: !showPassword,
-                      validator: (v) => v.trim().isNotEmpty?Null:'请输入密码',
+                      validator: (v) => v.trim().isNotEmpty ? Null : '请输入密码',
                       decoration: InputDecoration(
                         hintText: '密码',
                         //labelText: password,
                         prefixIcon: Icon(Icons.lock),
                         suffixIcon: IconButton(
-                          icon:Icon(showPassword?Icons.visibility:Icons.visibility_off),
-                          onPressed: (){
+                          icon: Icon(showPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: () {
                             setState(() {
                               showPassword = !showPassword;
                             });
@@ -142,163 +145,144 @@ class _LoginPageStateBody extends State<LoginPageBody> {
               ),
             ),
           ),
-        )
-    );
+        ));
   }
 
   void _login() async {
-    if(_userNameController.text.isEmpty||_passwordController.text.isEmpty){
+    if (_userNameController.text.isEmpty || _passwordController.text.isEmpty) {
       print('账号或密码为空，请继续输入');
       showDialog(
-          context:context,
-          builder: (BuildContext context){
+          context: context,
+          builder: (BuildContext context) {
             return SimpleDialog(
-              title: Text('报错', textAlign: TextAlign.center,),
-
+              title: Text(
+                '报错',
+                textAlign: TextAlign.center,
+              ),
               children: <Widget>[
-                Text('请将账号密码填写完整',textAlign: TextAlign.center,),
+                Text(
+                  '请将账号密码填写完整',
+                  textAlign: TextAlign.center,
+                ),
               ],
             );
-          }
-      );
-    }else{
+          });
+    } else {
       //Url请求
       BaseOptions options = new BaseOptions(
-          connectTimeout: 10000,
-          receiveTimeout: 3000,
-          //contentType: "applicatio/json",
+        connectTimeout: 10000,
+        sendTimeout: 20000,
+        receiveTimeout: 3000,
       );
       Response response;
       Dio dio = new Dio(options);
-      try{
+      try {
         showLoading(context);
-        response = await dio.request(
-            'http://114.115.208.32:8000/login/',
-            data: {"usr_name":_userNameController.text,
-              "usr_password":Encrypt.encrypt(_passwordController.text)},
-            options:Options(method: "POST", responseType: ResponseType.json));
-        print('login test');
+        response = await dio.request('http://114.115.208.32:8000/login/',
+            data: {
+              "usr_name": _userNameController.text,
+              "usr_password": Encrypt.encrypt(_passwordController.text)
+            },
+            options: Options(method: "POST", responseType: ResponseType.json),
+            cancelToken: _cancel);
+        print('response end');
         Navigator.of(context).pop();
-        if(response.statusCode == 400){
-          showDialog(
-              context:context,
-              builder: (BuildContext context){
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('账号或密码错误',textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
-        }else if(response.statusCode == 500){
-          showDialog(
-              context:context,
-              builder: (BuildContext context){
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('服务器错误',textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
-        }else if(response.statusCode == 200){
-          int state = response.data['state'];
-          if(state != 1){
-            throw '账号或密码错误';
-          }
-          //保存用户信息
-          GlobalUser.setUser(_userNameController.text, _passwordController.text,
-              response.data['name'], response.data['student_id']);
-          GlobalUser.setIsLogin(true);
-          GlobalUser.setChoice(1);//课表
-          /*
+        //保存用户信息
         GlobalUser.setUser(_userNameController.text, _passwordController.text,
-            '张艺璇', '17373182');
+            response.data['name'], response.data['student_id']);
         GlobalUser.setIsLogin(true);
-         */
-          Navigator.pushReplacementNamed(context, '/homePage');
-//          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-
-        }else{
-          throw('未知错误！');
-        }
-      }on DioError catch(e){
-        if((e.type == DioErrorType.CONNECT_TIMEOUT)||(e.type == DioErrorType.RECEIVE_TIMEOUT)){
-          showDialog(
-              context:context,
-              builder: (BuildContext context){
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('连接超时，请检查网络',textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
-        }
-      }catch(e) {
-        if (e.toString() == '未知错误！') {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('未知错误', textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
+        GlobalUser.setChoice(1); //默认课表
+        //切换页面
+        Navigator.pushReplacementNamed(context, '/homePage');
+      } on DioError catch (e) {
+        print("error type:${e.type},");
+        Navigator.of(context).pop();
+        if ((e.type == DioErrorType.CONNECT_TIMEOUT) ||
+            (e.type == DioErrorType.RECEIVE_TIMEOUT) ||
+            (e.type == DioErrorType.SEND_TIMEOUT)) {
+          showError(context, "网络请求超时");
+        } else if (e.type == DioErrorType.RESPONSE) {
+          if (e.response.statusCode == 400) {
+            showError(context, "账号或密码错误");
+          } else {
+            showError(context, "服务器错误");
+          }
+        } else if (e.type == DioErrorType.CANCEL) {
+          showError(context, "请求取消");
+        } else {
+          showError(context, "未知错误");
         }
       }
     }
-
   }
+
+  void showError(context, String str) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text(
+              '报错',
+              textAlign: TextAlign.center,
+            ),
+            children: <Widget>[
+              Text(
+                str,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          );
+        });
+  }
+
   void showLoading(context, [String text]) {
     text = text ?? "Loading...";
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) {
-          return Center(
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(3.0),
-                  boxShadow: [
-                    //阴影
-                    BoxShadow(
-                      color: Colors.black12,
-                      //offset: Offset(2.0,2.0),
-                      blurRadius: 10.0,
-                    )
-                  ]),
-              padding: EdgeInsets.all(16),
-              margin: EdgeInsets.all(16),
-              constraints: BoxConstraints(minHeight: 120, minWidth: 180),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
+          return WillPopScope(
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0),
+                    boxShadow: [
+                      //阴影
+                      BoxShadow(
+                        color: Colors.black12,
+                        //offset: Offset(2.0,2.0),
+                        blurRadius: 10.0,
+                      )
+                    ]),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Text(
-                      text,
-                      style: Theme.of(context).textTheme.body2,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Text(
+                        text,
+                        style: Theme.of(context).textTheme.body2,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
+            onWillPop: () {
+              return new Future.value(false);
+            },
           );
         });
   }

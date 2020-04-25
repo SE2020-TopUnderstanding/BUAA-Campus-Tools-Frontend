@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:provider/provider.dart';
 
-class DIYPage extends StatefulWidget{
+class DIYPage extends StatefulWidget {
   @override
   _DIYPage createState() {
     // TODO: implement createState
@@ -10,8 +10,9 @@ class DIYPage extends StatefulWidget{
   }
 }
 
-class _DIYPage extends State<DIYPage>{
+class _DIYPage extends State<DIYPage> {
   int choice;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -19,6 +20,7 @@ class _DIYPage extends State<DIYPage>{
     return Scaffold(
       appBar: AppBar(
         title: Text('自定义主页'),
+        backgroundColor: Colors.lightBlue,
       ),
       body: Column(
         children: <Widget>[
@@ -32,8 +34,8 @@ class _DIYPage extends State<DIYPage>{
               title: Text('课表查询'),
               value: 1,
               groupValue: choice,
-              onChanged: (value){
-                setState((){
+              onChanged: (value) {
+                setState(() {
                   choice = value;
                 });
                 select.setPage(value);
@@ -45,8 +47,8 @@ class _DIYPage extends State<DIYPage>{
               title: Text('成绩查询'),
               value: 2,
               groupValue: choice,
-              onChanged: (value){
-                setState((){
+              onChanged: (value) {
+                setState(() {
                   choice = value;
                 });
                 select.setPage(value);
@@ -58,8 +60,8 @@ class _DIYPage extends State<DIYPage>{
               title: Text('课程中心查询'),
               value: 3,
               groupValue: choice,
-              onChanged: (value){
-                setState((){
+              onChanged: (value) {
+                setState(() {
                   choice = value;
                 });
                 select.setPage(value);
