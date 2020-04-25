@@ -85,6 +85,30 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
           future: courseCenter,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              if (snapshot.data.courses.length == 0) {
+                return Container(
+                  padding: EdgeInsets.all(40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "目前没有获取到您的课程信息,以下是几个可能的原因及解决办法：",
+                        style: TextStyle(fontSize: 20,),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 30,),
+                      Text(
+                        "1. 爬虫努力爬取中，请稍后再试。\n\n"
+                            "2. 如果您本学期课程中心没有课程，请忽略上述提示，此时我们不再提供该功能。\n\n"
+                            "3. 您的课程中心没有“活跃站点”，请在学校“课程中心-我的工作空间-用户偏好”页面进行偏好设置，"
+                            "保证希望获取ddl的课程都属于收藏站点或活跃站点，并且活跃站点不能为空。",
+                        style: TextStyle(fontSize: 14),
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                );
+              }
               for (int i = 0; i < snapshot.data.courses.length; i++) {
                 if (!mList.contains(i)) {
                   mList.add(i);

@@ -188,6 +188,7 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
     Utf8Decoder decode = new Utf8Decoder();
     return CourseCenter.fromJson(
         json.decode(decode.convert(response.bodyBytes)));
+        //json.decode('[]'));//测试空list
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -403,7 +404,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   DateTime lastModified = file.lastModifiedSync();
   */
   CancelToken _can = new CancelToken();
-  Timer(Duration(milliseconds: 5),(){_can.cancel("定时");});
+  Timer(Duration(milliseconds: 10),(){_can.cancel("定时");});//测试错误
   String ss;
   //暂定先直接用网络请求
   print('get course table from http');
@@ -412,7 +413,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   response = await dio.request(
       'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
       options: Options(method: "GET", responseType: ResponseType.plain),);
-      //cancelToken: _can);
+      //cancelToken: _can);//测试错误
   if (response.statusCode == 200) {
     ss = response.data;
     //file.writeAsStringSync(response.data.toString());

@@ -212,6 +212,26 @@ class _CourseGridTable extends State {
 
             if ((snapshot.connectionState == ConnectionState.done)
                   &&(snapshot.hasData)) {
+              if (snapshot.data.courses.length == 0){
+                return Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "正在获取您的数据\n请稍后再试",
+                        style: TextStyle(fontSize: 24,),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 50,),
+                      Text(
+                        "如果您本学期没有课程\n请忽略上述提示\n因为此时我们不再提供课表查询功能~",
+                        style: TextStyle(fontSize: 14),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                );
+              }
               courses.clear();
               for (int i = 0; i < snapshot.data.courses.length; i++) {
                 courses.add(snapshot.data.courses[i]);
@@ -228,6 +248,16 @@ class _CourseGridTable extends State {
                 ],
               );
             } else {
+              if(snapshot.hasError){
+                return Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "网络请求出错\n请稍后再试\n",
+                    style: TextStyle(fontSize: 24,),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
               return Container(
                   alignment: Alignment.center,
                   child: CircularProgressIndicator(
