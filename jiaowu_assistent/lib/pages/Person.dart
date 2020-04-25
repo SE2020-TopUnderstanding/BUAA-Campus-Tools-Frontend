@@ -4,6 +4,7 @@ import 'package:jiaowuassistent/pages/HelpCenterPage.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:jiaowuassistent/pages/LoginPage.dart';
 import 'DIYPage.dart';
+import 'package:provider/provider.dart';
 
 class PersonPage extends StatefulWidget {
   @override
@@ -56,6 +57,7 @@ class _PersonPageState extends State<PersonPage> {
 
   @override
   Widget build(BuildContext context) {
+    PageSelect page = Provider.of<PageSelect>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -166,6 +168,7 @@ class _PersonPageState extends State<PersonPage> {
               ),
               onTap: () {
                 GlobalUser.setIsLogin(false);
+                page.setPage(1);
 //                Navigator.pushAndRemoveUntil(
 //                  context,
 //                  MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
