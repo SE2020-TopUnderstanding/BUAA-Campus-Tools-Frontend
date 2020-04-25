@@ -66,6 +66,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   };
 
   DateTime _selectedDate = DateTime.now();
+
 //  TimeOfDay selectedTime = TimeOfDay(hour: 9, minute: 30);
 
   static double size = 20;
@@ -75,7 +76,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   String response = '';
   String currBuilding = '';
   bool isDisabled = false;
-
+  int initLength = 0;
 
   Future<void> _selectDate() async {
     final DateTime date = await showDatePicker(
@@ -93,8 +94,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   }
 
   Future<void> _search() async {
-    if (!checkNull())
-      return;
+    if (!checkNull()) return;
     String section = '';
     for (int i = _selectedBegin; i <= _selectedEnd; i++) {
       section = section + i.toString() + ', ';
@@ -102,50 +102,94 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     try {
       setState(() {
         isDisabled = true;
+        initLength = 1;
       });
       currBuilding = buildingMap[_selectedCampus - 1][_selectedBuilding];
-      getEmptyRoom(context, campusMap[_selectedCampus], DateFormat('yyyy-MM-dd').format(_selectedDate), section,
-          buildingMap[_selectedCampus - 1][_selectedBuilding]).then((EmptyRoom temp) {
+      getEmptyRoom(
+              context,
+              campusMap[_selectedCampus],
+              DateFormat('yyyy-MM-dd').format(_selectedDate),
+              section,
+              buildingMap[_selectedCampus - 1][_selectedBuilding])
+          .then((EmptyRoom temp) {
         setState(() {
           if (temp == null) {
             _list = null;
-          }
-          else {
+          } else {
             response = temp.getResPonse();
             if (temp.getRooms() == null) {
               _list = null;
-            }
-            else {
+            } else {
               _list = temp.getRooms();
             }
           }
           isDisabled = false;
         });
       });
-    }
-    catch(e) {
+    } catch (e) {
       print(e);
     }
   }
 
   List<DropdownMenuItem> getListData() {
-    List<DropdownMenuItem> items=
-      [
-        DropdownMenuItem(child: Text('第一节课'), value: 1,),
-        DropdownMenuItem(child: Text('第二节课'), value: 2,),
-        DropdownMenuItem(child: Text('第三节课'), value: 3,),
-        DropdownMenuItem(child: Text('第四节课'), value: 4,),
-        DropdownMenuItem(child: Text('第五节课'), value: 5,),
-        DropdownMenuItem(child: Text('第六节课'), value: 6,),
-        DropdownMenuItem(child: Text('第七节课'), value: 7,),
-        DropdownMenuItem(child: Text('第八节课'), value: 8,),
-        DropdownMenuItem(child: Text('第九节课'), value: 9,),
-        DropdownMenuItem(child: Text('第十节课'), value: 10,),
-        DropdownMenuItem(child: Text('第十一节课'), value: 11,),
-        DropdownMenuItem(child: Text('第十二节课'), value: 12,),
-        DropdownMenuItem(child: Text('第十三节课'), value: 13,),
-        DropdownMenuItem(child: Text('第十四节课'), value: 14,),
-      ];
+    List<DropdownMenuItem> items = [
+      DropdownMenuItem(
+        child: Text('第一节课'),
+        value: 1,
+      ),
+      DropdownMenuItem(
+        child: Text('第二节课'),
+        value: 2,
+      ),
+      DropdownMenuItem(
+        child: Text('第三节课'),
+        value: 3,
+      ),
+      DropdownMenuItem(
+        child: Text('第四节课'),
+        value: 4,
+      ),
+      DropdownMenuItem(
+        child: Text('第五节课'),
+        value: 5,
+      ),
+      DropdownMenuItem(
+        child: Text('第六节课'),
+        value: 6,
+      ),
+      DropdownMenuItem(
+        child: Text('第七节课'),
+        value: 7,
+      ),
+      DropdownMenuItem(
+        child: Text('第八节课'),
+        value: 8,
+      ),
+      DropdownMenuItem(
+        child: Text('第九节课'),
+        value: 9,
+      ),
+      DropdownMenuItem(
+        child: Text('第十节课'),
+        value: 10,
+      ),
+      DropdownMenuItem(
+        child: Text('第十一节课'),
+        value: 11,
+      ),
+      DropdownMenuItem(
+        child: Text('第十二节课'),
+        value: 12,
+      ),
+      DropdownMenuItem(
+        child: Text('第十三节课'),
+        value: 13,
+      ),
+      DropdownMenuItem(
+        child: Text('第十四节课'),
+        value: 14,
+      ),
+    ];
     return items;
   }
 
@@ -153,57 +197,80 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     if (_list == null) {
       return Container(
         child: ListTile(
-          title: Text("Sorry, No Empty Room!",
+          title: Text(
+            "Sorry, No Empty Room!",
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.red, fontSize: 20),
           ),
 //          subtitle: Text(response),
 //          subtitle: Text(buildingMap[_selectedBuilding] + " " + lessonMap[_selectedBegin] + "->" + lessonMap[_selectedEnd], textAlign: TextAlign.center,),
-          trailing: Icon(Icons.not_interested, color: Colors.red,),
+          trailing: Icon(
+            Icons.not_interested,
+            color: Colors.red,
+          ),
         ),
-        decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.black))),
+        decoration: BoxDecoration(
+            border: Border(top: BorderSide(width: 1, color: Colors.black))),
       );
     }
     return Container(
       child: ListTile(
-        title:  Text(_list[index]),
+        title: Text(_list[index]),
         subtitle: Text(currBuilding),
-        trailing: Icon(Icons.directions_run, color: Colors.blue,),
+        trailing: Icon(
+          Icons.directions_run,
+          color: Colors.blue,
+        ),
       ),
-      decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.black))),
+      decoration: BoxDecoration(
+          border: Border(top: BorderSide(width: 1, color: Colors.black))),
     );
   }
 
   void _showAlertDialog() {
     showDialog(
-      // 设置点击 dialog 外部不取消 dialog，默认能够取消
+        // 设置点击 dialog 外部不取消 dialog，默认能够取消
         barrierDismissible: false,
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('错误提示', textAlign: TextAlign.center,),
-          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // 标题文字样式
-          content: Text(r'  结束时间段要求在开始时间段之后\(^o^)/~'),
-          contentTextStyle: TextStyle(color: Colors.white, fontSize: 17), // 内容文字样式
-          backgroundColor: CupertinoColors.systemGrey,
-          elevation: 8.0, // 投影的阴影高度
-          semanticLabel: 'Label', // 这个用于无障碍下弹出 dialog 的提示
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
-          actions: <Widget>[
-            // 点击增加显示的值
+              title: Text(
+                '错误提示',
+                textAlign: TextAlign.center,
+              ),
+              titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+              // 标题文字样式
+              content: Text(r'  结束时间段要求在开始时间段之后\(^o^)/~'),
+              contentTextStyle: TextStyle(color: Colors.white, fontSize: 17),
+              // 内容文字样式
+              backgroundColor: CupertinoColors.systemGrey,
+              elevation: 8.0,
+              // 投影的阴影高度
+              semanticLabel: 'Label',
+              // 这个用于无障碍下弹出 dialog 的提示
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
+              actions: <Widget>[
+                // 点击增加显示的值
 //            FlatButton(onPressed: increase, child: Text('点我增加')),
 //            // 点击减少显示的值
 //            FlatButton(onPressed: decrease, child: Text('点我减少')),
 //            // 点击关闭 dialog，需要通过 Navigator 进行操作
-            FlatButton(onPressed: () => Navigator.pop(context),
-                child: Text('知道了', style: TextStyle(color: CupertinoColors.white),)),
-          ],
-        ));
+                FlatButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      '知道了',
+                      style: TextStyle(color: CupertinoColors.white),
+                    )),
+              ],
+            ));
   }
 
   bool checkNull() {
-    if (_selectedEnd != null && _selectedBegin != null
-        && _selectedBuilding != null && _selectedCampus != null)
+    if (_selectedEnd != null &&
+        _selectedBegin != null &&
+        _selectedBuilding != null &&
+        _selectedCampus != null)
       return true;
     else
       return false;
@@ -213,30 +280,96 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
 
   List<List<DropdownMenuItem>> _BuildingList = [
     [
-      DropdownMenuItem(child: Text('教零'), value: 1,),
-      DropdownMenuItem(child: Text('教一'), value: 2,),
-      DropdownMenuItem(child: Text('教二'), value: 3,),
-      DropdownMenuItem(child: Text('教三'), value: 4,),
-      DropdownMenuItem(child: Text('教四'), value: 5,),
-      DropdownMenuItem(child: Text('教五'), value: 6,),
+      DropdownMenuItem(
+        child: Text('教零'),
+        value: 1,
+      ),
+      DropdownMenuItem(
+        child: Text('教一'),
+        value: 2,
+      ),
+      DropdownMenuItem(
+        child: Text('教二'),
+        value: 3,
+      ),
+      DropdownMenuItem(
+        child: Text('教三'),
+        value: 4,
+      ),
+      DropdownMenuItem(
+        child: Text('教四'),
+        value: 5,
+      ),
+      DropdownMenuItem(
+        child: Text('教五'),
+        value: 6,
+      ),
     ],
     [
-      DropdownMenuItem(child: Text('一号楼'), value: 1,),
-      DropdownMenuItem(child: Text('二号楼'), value: 2,),
-      DropdownMenuItem(child: Text('三号楼'), value: 3,),
-      DropdownMenuItem(child: Text('四号楼'), value: 4,),
-      DropdownMenuItem(child: Text('主M'), value: 5,),
-      DropdownMenuItem(child: Text('主北'), value: 6,),
-      DropdownMenuItem(child: Text('主南'), value: 7,),
-      DropdownMenuItem(child: Text('主楼'), value: 8,),
-      DropdownMenuItem(child: Text('新主楼A座'), value: 9,),
-      DropdownMenuItem(child: Text('新主楼B座'), value: 10,),
-      DropdownMenuItem(child: Text('新主楼C座'), value: 11,),
-      DropdownMenuItem(child: Text('新主楼D座'), value: 12,),
-      DropdownMenuItem(child: Text('新主楼E座'), value: 13,),
-      DropdownMenuItem(child: Text('新主楼F座'), value: 14,),
-      DropdownMenuItem(child: Text('新主楼G座'), value: 15,),
-      DropdownMenuItem(child: Text('新主楼H座'), value: 16,),
+      DropdownMenuItem(
+        child: Text('一号楼'),
+        value: 1,
+      ),
+      DropdownMenuItem(
+        child: Text('二号楼'),
+        value: 2,
+      ),
+      DropdownMenuItem(
+        child: Text('三号楼'),
+        value: 3,
+      ),
+      DropdownMenuItem(
+        child: Text('四号楼'),
+        value: 4,
+      ),
+      DropdownMenuItem(
+        child: Text('主M'),
+        value: 5,
+      ),
+      DropdownMenuItem(
+        child: Text('主北'),
+        value: 6,
+      ),
+      DropdownMenuItem(
+        child: Text('主南'),
+        value: 7,
+      ),
+      DropdownMenuItem(
+        child: Text('主楼'),
+        value: 8,
+      ),
+      DropdownMenuItem(
+        child: Text('新主楼A座'),
+        value: 9,
+      ),
+      DropdownMenuItem(
+        child: Text('新主楼B座'),
+        value: 10,
+      ),
+      DropdownMenuItem(
+        child: Text('新主楼C座'),
+        value: 11,
+      ),
+      DropdownMenuItem(
+        child: Text('新主楼D座'),
+        value: 12,
+      ),
+      DropdownMenuItem(
+        child: Text('新主楼E座'),
+        value: 13,
+      ),
+      DropdownMenuItem(
+        child: Text('新主楼F座'),
+        value: 14,
+      ),
+      DropdownMenuItem(
+        child: Text('新主楼G座'),
+        value: 15,
+      ),
+      DropdownMenuItem(
+        child: Text('新主楼H座'),
+        value: 16,
+      ),
     ]
   ];
 
@@ -245,13 +378,16 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('空教室查询'),
+          backgroundColor: Colors.lightBlue,
           elevation: 0.0,
         ),
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -264,32 +400,45 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                           onTap: _selectDate,
                           child: Row(
                             children: <Widget>[
-                              Icon(Icons.date_range, size: 30,),
-                              SizedBox(width: 20,),
-                              Text(DateFormat.yMMMMd().format(_selectedDate), style: textStyle,),   //
-                              Icon(Icons.arrow_drop_down, size: size,),
+                              Icon(
+                                Icons.date_range,
+                                size: 30,
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                DateFormat.yMMMMd().format(_selectedDate),
+                                style: textStyle,
+                              ), //
+                              Icon(
+                                Icons.arrow_drop_down,
+                                size: size,
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                    SizedBox(width: 10),
-                    CupertinoButton(
-                      child: Text("查询"),
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      color: Colors.grey,
-                      onPressed: () {
-                        if (isDisabled)
-                          return null;
-                        else
-                          _search();
-                      },
-                      pressedOpacity: 0.8,
-                    )
+                  SizedBox(width: 10),
+                  CupertinoButton(
+                    child: Text("查询"),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    color: Colors.lightBlue,
+                    onPressed: () {
+                      if (isDisabled)
+                        return null;
+                      else
+                        _search();
+                    },
+                    pressedOpacity: 0.8,
+                  )
                 ],
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -300,10 +449,16 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     iconEnabledColor: Colors.black,
                     hint: Text('请选择校区'),
                     items: [
-                      DropdownMenuItem(child: Text('沙河校区'), value: 1,),
-                      DropdownMenuItem(child: Text('学院路校区'), value: 2,),
+                      DropdownMenuItem(
+                        child: Text('沙河校区'),
+                        value: 1,
+                      ),
+                      DropdownMenuItem(
+                        child: Text('学院路校区'),
+                        value: 2,
+                      ),
                     ],
-                    onChanged: (value){
+                    onChanged: (value) {
                       setState(() {
                         _selectedCampus = value;
                         _buildingList = _BuildingList[_selectedCampus - 1];
@@ -339,12 +494,11 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       iconEnabledColor: Colors.black,
                       hint: Text('请选择开始时间段'),
                       items: getListData(),
-                      onChanged: (value){
+                      onChanged: (value) {
                         setState(() {
                           if (_selectedEnd != null && value > _selectedEnd) {
                             _showAlertDialog();
-                          }
-                          else {
+                          } else {
                             _selectedBegin = value;
 //                            if (checkNull())
 //                              _search();
@@ -352,7 +506,11 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                         });
                       },
                     ),
-                    Icon(Icons.arrow_forward, size: 25, color: Colors.grey,),
+                    Icon(
+                      Icons.arrow_forward,
+                      size: 25,
+                      color: Colors.grey,
+                    ),
                     DropdownButton(
                       value: _selectedEnd,
                       icon: Icon(Icons.arrow_drop_down),
@@ -360,12 +518,12 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       iconEnabledColor: Colors.black,
                       hint: Text('请选择结束时间段'),
                       items: getListData(),
-                      onChanged: (value){
+                      onChanged: (value) {
                         setState(() {
-                          if (_selectedBegin != null && value < _selectedBegin) {
+                          if (_selectedBegin != null &&
+                              value < _selectedBegin) {
                             _showAlertDialog();
-                          }
-                          else {
+                          } else {
                             _selectedEnd = value;
 //                            if (checkNull())
 //                              _search();
@@ -373,24 +531,24 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                         });
                       },
                     ),
-                  ]
+                  ]),
+              SizedBox(
+                height: 40,
               ),
-              SizedBox(height: 40,),
-            Column(
-              children: <Widget>[
-                Container(
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: (_list == null) ? 1 : _list.length,
-                    itemBuilder: _buildListItem,
-                  ),
-                )
-              ],
-            )
+              Column(
+                children: <Widget>[
+                  Container(
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: (_list == null) ? initLength : _list.length,
+                      itemBuilder: _buildListItem,
+                    ),
+                  )
+                ],
+              )
             ],
           ),
-        )
-    );
+        ));
   }
 }

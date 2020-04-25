@@ -9,7 +9,8 @@ import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:provider/provider.dart';
 
 class FirstPage extends StatelessWidget {
-  int choice=1;
+  int choice = 1;
+
   @override
   Widget build(BuildContext context) {
     PageSelect page = Provider.of<PageSelect>(context);
@@ -25,8 +26,8 @@ class FirstPage extends StatelessWidget {
   }
 }
 
-Widget getFirstPage(int type){
-  switch(type) {
+Widget getFirstPage(int type) {
+  switch (type) {
     case 1:
       return CourseTablePage();
     case 2:
