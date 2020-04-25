@@ -86,70 +86,89 @@ class _ScorePageState extends State<ScorePage> {
         title: new Text('成绩查询'),
         backgroundColor: Colors.lightBlue,
       ),
-      body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: <
-              Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            DropdownButton(
-              value: semester,
-              icon: Icon(Icons.arrow_drop_down),
-              iconSize: 30,
-              iconEnabledColor: Colors.black,
-              hint: Text('请选择学期'),
-              items: semesterList,
-              onChanged: (value) {
-                setState(() {
-                  semester = value;
-                  searchGrade();
-                });
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Column(
-              children: <Widget>[
-                Container(
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount:
-                        (gradeCenter == null) ? 1 : gradeCenter.grades.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (gradeCenter == null) {
-                        return Container(
-                          child: ListTile(
-                            title: Text(
-                              "",
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                      }
-                      return Container(
-                        child: ListTile(
-                          title: Text(gradeCenter.grades[index].name),
-                          subtitle:
-                              Text('${gradeCenter.grades[index].credit}学分'),
-                          trailing: Text('${gradeCenter.grades[index].score}'),
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 30.0),
+      body: gradeCenter == null
+          ? Container(
+              alignment: Alignment(0.0, 0.0),
+              child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+              ))
+          : SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          margin: const EdgeInsets.only(left: 30.0),
+                          child: Text('加权平均分： ${gradeCenter.averageScore}',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom:
-                                    BorderSide(width: 1, color: Colors.grey),
-                                top: BorderSide(width: 1, color: Colors.grey))),
-                      );
-                    },
-                  ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 30.0),
+                          child: Text('GPA： ${gradeCenter.gpa}',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 30.0, right: 30.0),
+                      child: DropdownButton(
+                        value: semester,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 30,
+                        iconEnabledColor: Colors.black,
+                        hint: Text('请选择学期'),
+                        items: semesterList,
+                        onChanged: (value) {
+                          setState(() {
+                            semester = value;
+                            searchGrade();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: gradeCenter.grades.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            child: ListTile(
+                              title: Text(gradeCenter.grades[index].name),
+                              subtitle:
+                                  Text('${gradeCenter.grades[index].credit}学分'),
+                              trailing:
+                                  Text('${gradeCenter.grades[index].score}'),
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 30.0),
+                            ),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: BorderSide(
+                                        width: 1, color: Colors.grey))),
+                          );
+                        },
+                      ),
+                    )
+                  ],
                 )
-              ],
-            )
-          ])),
+              ])),
     );
   }
 }

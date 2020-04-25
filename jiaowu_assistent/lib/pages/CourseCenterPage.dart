@@ -48,12 +48,17 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                     course.content[i].status.contains('重新提交') ||
                     course.content[i].status.contains('已返还') ||
                     course.content[i].time == ""
-                ? Icon(Icons.check_circle_outline)
+                ? Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.green,
+                  )
                 : duration.inHours < 0
-                    ? Text('已截止')
+                    ? Text('已截止', style: TextStyle(color: Colors.red))
                     : duration.inDays > 0
-                        ? Text('剩${duration.inDays.toString()}天')
-                        : Text('剩${duration.inHours.toString()}时'),
+                        ? Text('剩${duration.inDays.toString()}天',
+                            style: TextStyle(color: Colors.orange))
+                        : Text('剩${duration.inHours.toString()}时',
+                            style: TextStyle(color: Colors.deepOrange)),
           ),
           DataCell(Text('${course.content[i].text}')),
           DataCell(course.content[i].time == ""
@@ -112,7 +117,8 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                                   label: Text('状态',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue)),
                                 ),
                                 DataColumn(
                                   label: Text('作业内容',

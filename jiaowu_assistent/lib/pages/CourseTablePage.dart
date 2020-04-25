@@ -249,17 +249,48 @@ class _CourseGridTable extends State {
     );
   }
 
+  List<Color> _tableColors = [
+    Colors.brown,
+    Colors.deepOrange,
+    Colors.blue,
+    Colors.red[500],
+    Colors.green,
+    Colors.pink,
+    Colors.deepPurple[200],
+    Colors.blueGrey,
+    Colors.yellow[800],
+  ];
+
+  List<String> _beginTime = [
+    '8:00',
+    '8:50',
+    '9:50',
+    '10:40',
+    '11:30',
+    '14:00',
+    '14:50',
+    '15:50',
+    '16:40',
+    '17:30',
+    '19:00',
+    '19:50',
+    '20:40',
+    '21:30'
+  ];
+
   // 左边显示节数的列
   Widget buildLeftColumn() {
     return Column(
       children: List<Widget>.generate(
         14,
         (index) => Container(
-          width: 30,
+          width: 40,
           height: blockHeight,
           color: Colors.white,
           child: Center(
-            child: Text('${index + 1}'),
+            child: Text('${_beginTime[index]}\n${index + 1}',
+              softWrap: true,
+              textAlign: TextAlign.center,),
           ),
         ),
       ),
@@ -306,7 +337,8 @@ class _CourseGridTable extends State {
               sectionList,
               size: maxLength + 1,
               height: blockHeight,
-              backgroundColor: Color.fromARGB(255, 250, 107, 91),
+              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
+//              backgroundColor: Color.fromARGB(255, 250, 107, 91),
               textColor: Colors.white,
               onTap: () => onTap(sectionList),
             ),
@@ -500,11 +532,11 @@ class CourseBlock extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: height * size,
-        margin: EdgeInsets.all(1),
-        padding: EdgeInsets.all(1),
+        margin: EdgeInsets.all(0),
+        padding: EdgeInsets.all(0),
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+//          borderRadius: BorderRadius.all(Radius.circular(5)),
         ),
         child: getCourseBlocks(course),
       ),
@@ -516,12 +548,12 @@ Widget getCourseBlocks(List<CourseT> list) {
   if (list.length == 1) {
     return Text(
       '${list.first.name}@${list.first.location}',
-      style: TextStyle(color: Colors.black),
+      style: TextStyle(color: Colors.white),
     );
   } else {
     return Text(
       '多节课，请点开查看',
-      style: TextStyle(color: Colors.black),
+      style: TextStyle(color: Colors.white),
     );
   }
 }

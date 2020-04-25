@@ -38,7 +38,7 @@ class _DIYPage extends State<DIYPage> {
                 setState(() {
                   choice = value;
                 });
-                select.setPage(value);
+//                select.setPage(value);
               },
             ),
           ),
@@ -51,7 +51,7 @@ class _DIYPage extends State<DIYPage> {
                 setState(() {
                   choice = value;
                 });
-                select.setPage(value);
+//                select.setPage(value);
               },
             ),
           ),
@@ -64,10 +64,15 @@ class _DIYPage extends State<DIYPage> {
                 setState(() {
                   choice = value;
                 });
-                select.setPage(value);
+//                select.setPage(value);
               },
             ),
           ),
+          FlatButton(
+            onPressed: () => {select.setPage(choice)},
+            child: Text("确认"),
+            color: Colors.blue,
+          )
         ],
       ),
     );
