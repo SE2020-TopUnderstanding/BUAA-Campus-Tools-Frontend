@@ -190,7 +190,7 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load course center');
+    throw Exception('Failed to load grade center');
   }
 }
 
@@ -258,6 +258,39 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
     // If the server did not return a 200 OK response,
     // then throw an exception.
     throw Exception('Failed to load course center');
+  }
+}
+
+//更新用
+class UpdateInfo {
+  final String version;
+  final String date;
+  final String info;
+  final String address;
+
+  UpdateInfo({this.version, this.date, this.info, this.address});
+
+  factory UpdateInfo.fromJson(Map<String, dynamic> parsedJson) {
+    return UpdateInfo(
+        version: parsedJson['version_number'],
+        date: parsedJson['update_date'],
+        info: parsedJson['announcement'],
+        address: parsedJson['download_address']);
+  }
+}
+
+Future<UpdateInfo> getUpdateInfo() async {
+  final response = await http.get('http://114.115.208.32:8000/version');
+  print('http://114.115.208.32:8000/version');
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return UpdateInfo.fromJson(json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load update info');
   }
 }
 

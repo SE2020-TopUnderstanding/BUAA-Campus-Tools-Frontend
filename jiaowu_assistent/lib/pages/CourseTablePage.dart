@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'dart:math';
 import 'package:jiaowuassistent/GlobalUser.dart';
@@ -263,7 +262,7 @@ class _CourseGridTable extends State {
     Colors.green,
     Colors.pink,
     Colors.deepPurple[200],
-    Colors.blueGrey,
+    Color(0xFF0097A7),
     Colors.yellow[800],
   ];
 

@@ -28,7 +28,7 @@ dependencies:
   provider: ^2.0.1+1
   dio_cookie_manager: 1.0.0
   #path_provider: ^0.4.1
-  gbk2utf8:
+  package_info: ^0.4.0+2
 
 
 dev_dependencies:
