@@ -212,12 +212,21 @@ class Grade {
 
 class GradeCenter {
   final List<Grade> grades;
+  final String gpa;
+  final String averageScore;
 
-  GradeCenter({this.grades});
+  GradeCenter({this.grades, this.gpa, this.averageScore});
 
-  factory GradeCenter.fromJson(List<dynamic> parsedJson) {
+  factory GradeCenter.fromJson(
+    List<dynamic> parsedJson,
+    Map<String, dynamic> avg,
+    Map<String, dynamic> gpa,
+  ) {
     List<Grade> gradeList = parsedJson.map((i) => Grade.fromJson(i)).toList();
-    return GradeCenter(grades: gradeList);
+    return GradeCenter(
+        grades: gradeList,
+        gpa: gpa['gpa'].toStringAsFixed(4),
+        averageScore: avg['score'].toStringAsFixed(2));
   }
 }
 
@@ -230,12 +239,21 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
       'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
   print(
       'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+  final averageScore = await http
+      .get('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
+  print('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
+  final gpa = await http
+      .get('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
+  print('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
+
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
     Utf8Decoder decode = new Utf8Decoder();
     return GradeCenter.fromJson(
-        json.decode(decode.convert(response.bodyBytes)));
+        json.decode(decode.convert(response.bodyBytes)),
+        json.decode(decode.convert(averageScore.bodyBytes)),
+        json.decode(decode.convert(gpa.bodyBytes)));
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
