@@ -1,4 +1,3 @@
-import 'package:jiaowuassistent/Pages/PersonalPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseTablePage.dart';
@@ -47,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
 //        onPageChanged: onPageChanged,
       ),
       bottomNavigationBar: new BottomNavigationBar(
+        selectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.shifting,
         items: [
           BottomNavigationBarItem(
             activeIcon: Icon(
@@ -68,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Icons.list,
               color: _bottomNavigationColor,
             ),
-            title: Text("分类"),
+            title: Text("功能"),
           ),
           BottomNavigationBarItem(
             activeIcon: Icon(
@@ -81,11 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             title: Text("个人中心"),
           ),
-
         ],
         onTap: onTap,
         currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
       ),
     );
   }
