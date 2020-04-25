@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       child: Consumer(
           builder: (BuildContext context, PageSelect select, Widget child) {
         return MaterialApp(
-          title: 'BUAA',
+          title: '航胥',
           theme: ThemeData(
             primaryColor: Colors.grey,
           ),
