@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -286,29 +287,34 @@ class CourseT {
   });
 
   CourseT.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    if (json['teacher_course'] != null) {
-      teacherCourse = new List<TeacherCourse>();
-      json['teacher_course'].forEach((v) {
-        teacherCourse.add(new TeacherCourse.fromJson(v));
-      });
-    } else {
-      teacherCourse = new List<TeacherCourse>();
-      teacherCourse.add(TeacherCourse(name: "未知"));
+    try{
+      name = json['name'];
+      if (json['teacher_course'] != null) {
+        teacherCourse = new List<TeacherCourse>();
+        json['teacher_course'].forEach((v) {
+          teacherCourse.add(new TeacherCourse.fromJson(v));
+        });
+      } else {
+        teacherCourse = new List<TeacherCourse>();
+        teacherCourse.add(TeacherCourse(name: "未知"));
+      }
+      String weeks = json['week'] as String;
+      List<String> weekss = weeks.split(',');
+      String times = json['time'] as String;
+      List<String> timess = times.split('_');
+      if (json['place'] == null) {
+        location = '未知';
+      } else {
+        location = json['place'];
+      }
+      week = weekss;
+      weekDay = int.parse(timess[0]);
+      sectionStart = int.parse(timess[1]);
+      sectionEnd = int.parse(timess[2]);
+    }catch(e){
+      throw "解析课程出错";
     }
-    String weeks = json['week'] as String;
-    List<String> weekss = weeks.split(',');
-    String times = json['time'] as String;
-    List<String> timess = times.split('_');
-    if (json['place'] == null) {
-      location = '未知';
-    } else {
-      location = json['place'];
-    }
-    week = weekss;
-    weekDay = int.parse(timess[0]);
-    sectionStart = int.parse(timess[1]);
-    sectionEnd = int.parse(timess[2]);
+
   }
 }
 
@@ -320,7 +326,13 @@ class WeekCourseTable {
   }
 
   WeekCourseTable.fromJson(List<dynamic> jsonList) {
-    courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+    try{
+      courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+      //throw "error";
+    }catch(e){
+      throw "解析课程列表出错";
+    }
+
   }
 }
 
@@ -338,6 +350,8 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   // ignore: unrelated_type_equality_checks
   DateTime lastModified = file.lastModifiedSync();
   */
+  CancelToken _can = new CancelToken();
+  Timer(Duration(milliseconds: 5),(){_can.cancel("定时");});
   String ss;
   //暂定先直接用网络请求
   print('get course table from http');
@@ -345,7 +359,8 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   Response response;
   response = await dio.request(
       'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
-      options: Options(method: "GET", responseType: ResponseType.plain));
+      options: Options(method: "GET", responseType: ResponseType.plain),);
+      //cancelToken: _can);
   if (response.statusCode == 200) {
     ss = response.data;
     //file.writeAsStringSync(response.data.toString());
@@ -355,7 +370,6 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
-    print(jsonList.length);
     WeekCourseTable temp = new WeekCourseTable.fromJson(jsonList);
     return temp;
   } catch (e) {
