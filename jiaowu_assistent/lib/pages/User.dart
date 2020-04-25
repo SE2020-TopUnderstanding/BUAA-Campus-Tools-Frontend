@@ -34,8 +34,8 @@ class EmptyRoom {
   }
 }
 
-Future<EmptyRoom> getEmptyRoom(BuildContext context, String campus, String date, String section,
-    String building) async {
+Future<EmptyRoom> getEmptyRoom(BuildContext context, String campus, String date,
+    String section, String building) async {
   try {
     Response response = await Dio().get(
         'http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section',
@@ -60,33 +60,44 @@ Future<EmptyRoom> getEmptyRoom(BuildContext context, String campus, String date,
           listJson.map((value) => value['classroom'].toString()).toList();
       return EmptyRoom(building, list, response.data);
     }
-  }on DioError catch(e) {
+  } on DioError catch (e) {
     print(formatError(e));
     showDialog(
-      // 设置点击 dialog 外部不取消 dialog，默认能够取消
+        // 设置点击 dialog 外部不取消 dialog，默认能够取消
         barrierDismissible: false,
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('错误提示', textAlign: TextAlign.center,),
-          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20), // 标题文字样式
-          content: Text(formatError(e) + "  " + e.type.toString()),
-          contentTextStyle: TextStyle(color: Colors.white, fontSize: 17), // 内容文字样式
-          backgroundColor: CupertinoColors.systemGrey,
-          elevation: 8.0, // 投影的阴影高度
-          semanticLabel: 'Label', // 这个用于无障碍下弹出 dialog 的提示
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
-          actions: <Widget>[
-            // 点击增加显示的值
+              title: Text(
+                '错误提示',
+                textAlign: TextAlign.center,
+              ),
+              titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+              // 标题文字样式
+              content: Text(formatError(e) + "  " + e.type.toString()),
+              contentTextStyle: TextStyle(color: Colors.white, fontSize: 17),
+              // 内容文字样式
+              backgroundColor: CupertinoColors.systemGrey,
+              elevation: 8.0,
+              // 投影的阴影高度
+              semanticLabel: 'Label',
+              // 这个用于无障碍下弹出 dialog 的提示
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              // dialog 的操作按钮，actions 的个数尽量控制不要过多，否则会溢出 `Overflow`
+              actions: <Widget>[
+                // 点击增加显示的值
 //            FlatButton(onPressed: increase, child: Text('点我增加')),
 //            // 点击减少显示的值
 //            FlatButton(onPressed: decrease, child: Text('点我减少')),
 //            // 点击关闭 dialog，需要通过 Navigator 进行操作
-            FlatButton(onPressed: () => Navigator.pop(context),
-                child: Text('知道了', style: TextStyle(color: CupertinoColors.white),)),
-          ],
-        )
-    );
+                FlatButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      '知道了',
+                      style: TextStyle(color: CupertinoColors.white),
+                    )),
+              ],
+            ));
     return null;
   }
 }
@@ -94,22 +105,22 @@ Future<EmptyRoom> getEmptyRoom(BuildContext context, String campus, String date,
 String formatError(DioError e) {
   if (e.type == DioErrorType.CONNECT_TIMEOUT) {
     // It occurs when url is opened timeout.
-    return("连接超时");
+    return ("连接超时");
   } else if (e.type == DioErrorType.SEND_TIMEOUT) {
     // It occurs when url is sent timeout.
-    return("请求超时");
+    return ("请求超时");
   } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
     //It occurs when receiving timeout
-    return("响应超时");
+    return ("响应超时");
   } else if (e.type == DioErrorType.RESPONSE) {
     // When the server response, but with a incorrect status, such as 404, 503...
-    return("出现异常");
+    return ("出现异常");
   } else if (e.type == DioErrorType.CANCEL) {
     // When the request is cancelled, dio will throw a error with this type.
-    return("请求取消");
+    return ("请求取消");
   } else {
     //DEFAULT Default error type, Some other Error. In this case, you can read the DioError.error if it is not null.
-    return("未知错误");
+    return ("未知错误");
   }
 }
 
@@ -217,7 +228,8 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
 
   final response = await http.get(
       'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
-  print('http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+  print(
+      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -234,31 +246,36 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
 //课表用
 class TeacherCourse {
   String name;
+
   TeacherCourse({this.name});
+
   TeacherCourse.fromJson(Map<String, dynamic> json) {
     name = json['name'];
   }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     return data;
   }
+
   @override
   String toString() {
     // TODO: implement toString
     return name;
   }
 }
-class CourseT {
-   String name;
-   String location;
-   List<TeacherCourse> teacherCourse;
-   List<String> week;
-   int weekDay;
-   int sectionStart;
-   int sectionEnd;
 
-   CourseT({
+class CourseT {
+  String name;
+  String location;
+  List<TeacherCourse> teacherCourse;
+  List<String> week;
+  int weekDay;
+  int sectionStart;
+  int sectionEnd;
+
+  CourseT({
     this.name,
     this.location,
     this.teacherCourse,
@@ -268,44 +285,46 @@ class CourseT {
     this.sectionEnd,
   });
 
-   CourseT.fromJson(Map<String, dynamic> json) {
-     name = json['name'];
-     if (json['teacher_course'] != null) {
-       teacherCourse = new List<TeacherCourse>();
-       json['teacher_course'].forEach((v) {
-         teacherCourse.add(new TeacherCourse.fromJson(v));
-       });
-     }else{
-       teacherCourse = new List<TeacherCourse>();
-       teacherCourse.add(TeacherCourse(name: "未知"));
-     }
-     String weeks = json['week'] as String;
-     List<String> weekss= weeks.split(',');
-     String times = json['time'] as String;
-     List<String> timess = times.split('_');
-     if(json['place']==null){
-       location = '未知';
-     }else{
-       location = json['place'];
-     }
-     week = weekss;
-     weekDay= int.parse(timess[0]);
-     sectionStart= int.parse(timess[1]);
-     sectionEnd= int.parse(timess[2]);
-   }
+  CourseT.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    if (json['teacher_course'] != null) {
+      teacherCourse = new List<TeacherCourse>();
+      json['teacher_course'].forEach((v) {
+        teacherCourse.add(new TeacherCourse.fromJson(v));
+      });
+    } else {
+      teacherCourse = new List<TeacherCourse>();
+      teacherCourse.add(TeacherCourse(name: "未知"));
+    }
+    String weeks = json['week'] as String;
+    List<String> weekss = weeks.split(',');
+    String times = json['time'] as String;
+    List<String> timess = times.split('_');
+    if (json['place'] == null) {
+      location = '未知';
+    } else {
+      location = json['place'];
+    }
+    week = weekss;
+    weekDay = int.parse(timess[0]);
+    sectionStart = int.parse(timess[1]);
+    sectionEnd = int.parse(timess[2]);
+  }
 }
 
 class WeekCourseTable {
-   List<CourseT> courses;
-   WeekCourseTable(List<CourseT> courses){
-     this.courses = courses;
-   }
-   WeekCourseTable.fromJson(List<dynamic> jsonList) {
-     courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
-   }
+  List<CourseT> courses;
+
+  WeekCourseTable(List<CourseT> courses) {
+    this.courses = courses;
+  }
+
+  WeekCourseTable.fromJson(List<dynamic> jsonList) {
+    courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+  }
 }
 
-Future<WeekCourseTable> loadCourse(int week, String studentID) async{
+Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   /*
   Directory dir = await getApplicationDocumentsDirectory();
   File file;
@@ -321,40 +340,41 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async{
   */
   String ss;
   //暂定先直接用网络请求
-    print('get course table from http');
-    Dio dio = new Dio();
-    Response response;
-    response = await dio.request('http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
-        options: Options(method: "GET", responseType: ResponseType.plain));
-    if(response.statusCode == 200) {
-      ss = response.data;
-      //file.writeAsStringSync(response.data.toString());
-    }else {
-      throw "网络错误";
-    }
-  try{
+  print('get course table from http');
+  Dio dio = new Dio();
+  Response response;
+  response = await dio.request(
+      'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
+      options: Options(method: "GET", responseType: ResponseType.plain));
+  if (response.statusCode == 200) {
+    ss = response.data;
+    //file.writeAsStringSync(response.data.toString());
+  } else {
+    throw "网络错误";
+  }
+  try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
     print(jsonList.length);
     WeekCourseTable temp = new WeekCourseTable.fromJson(jsonList);
     return temp;
-  } catch(e){
+  } catch (e) {
     throw "文件读取错误";
   }
 }
 
-Future<int> getWeek() async{
+Future<int> getWeek() async {
   //获取当前周
-  Dio dio =  new Dio();
+  Dio dio = new Dio();
   Response response;
   DateTime now = DateTime.now();
-  try{
+  try {
     response = await dio.request(
         'http://114.115.208.32:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
-    options: Options(method: "GET",responseType: ResponseType.json));
-  }catch(e){
+        options: Options(method: "GET", responseType: ResponseType.json));
+  } catch (e) {
     e.toString();
-    print('response:'+response.toString());
+    print('response:' + response.toString());
     return 9;
   }
   print(response.data.toString());
