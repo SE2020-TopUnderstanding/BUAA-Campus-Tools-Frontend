@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -212,12 +213,21 @@ class Grade {
 
 class GradeCenter {
   final List<Grade> grades;
+  final String gpa;
+  final String averageScore;
 
-  GradeCenter({this.grades});
+  GradeCenter({this.grades, this.gpa, this.averageScore});
 
-  factory GradeCenter.fromJson(List<dynamic> parsedJson) {
+  factory GradeCenter.fromJson(
+    List<dynamic> parsedJson,
+    Map<String, dynamic> avg,
+    Map<String, dynamic> gpa,
+  ) {
     List<Grade> gradeList = parsedJson.map((i) => Grade.fromJson(i)).toList();
-    return GradeCenter(grades: gradeList);
+    return GradeCenter(
+        grades: gradeList,
+        gpa: gpa['gpa'].toStringAsFixed(4),
+        averageScore: avg['score'].toStringAsFixed(2));
   }
 }
 
@@ -230,12 +240,21 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
       'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
   print(
       'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+  final averageScore = await http
+      .get('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
+  print('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
+  final gpa = await http
+      .get('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
+  print('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
+
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
     Utf8Decoder decode = new Utf8Decoder();
     return GradeCenter.fromJson(
-        json.decode(decode.convert(response.bodyBytes)));
+        json.decode(decode.convert(response.bodyBytes)),
+        json.decode(decode.convert(averageScore.bodyBytes)),
+        json.decode(decode.convert(gpa.bodyBytes)));
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -274,7 +293,7 @@ class CourseT {
   int weekDay;
   int sectionStart;
   int sectionEnd;
-
+  int color=1;
   CourseT({
     this.name,
     this.location,
@@ -286,29 +305,54 @@ class CourseT {
   });
 
   CourseT.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    if (json['teacher_course'] != null) {
-      teacherCourse = new List<TeacherCourse>();
-      json['teacher_course'].forEach((v) {
-        teacherCourse.add(new TeacherCourse.fromJson(v));
-      });
-    } else {
-      teacherCourse = new List<TeacherCourse>();
-      teacherCourse.add(TeacherCourse(name: "未知"));
+    try{
+      name = json['name'];
+      if (json['teacher_course'] != null) {
+        teacherCourse = new List<TeacherCourse>();
+        json['teacher_course'].forEach((v) {
+          teacherCourse.add(new TeacherCourse.fromJson(v));
+        });
+      } else {
+        teacherCourse = new List<TeacherCourse>();
+        teacherCourse.add(TeacherCourse(name: "未知"));
+      }
+      String weeks = json['week'] as String;
+      List<String> weekss = weeks.split(',');
+      String times = json['time'] as String;
+      List<String> timess = times.split('_');
+      if (json['place'] == null) {
+        location = '未知';
+      } else {
+        location = json['place'];
+      }
+      week = weekss;
+      weekDay = int.parse(timess[0]);
+      sectionStart = int.parse(timess[1]);
+      sectionEnd = int.parse(timess[2]);
+    }catch(e){
+      throw "解析课程出错";
     }
-    String weeks = json['week'] as String;
-    List<String> weekss = weeks.split(',');
-    String times = json['time'] as String;
-    List<String> timess = times.split('_');
-    if (json['place'] == null) {
-      location = '未知';
-    } else {
-      location = json['place'];
+
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode {
+    return name.hashCode;
+  }
+
+  @override
+  bool operator ==(other) {
+    // TODO: implement ==
+    if(other is! CourseT){
+      return false;
     }
-    week = weekss;
-    weekDay = int.parse(timess[0]);
-    sectionStart = int.parse(timess[1]);
-    sectionEnd = int.parse(timess[2]);
+    final CourseT temp = other;
+    return (name.compareTo(temp.name)==0)?true:false;
+  }
+
+  void setColor(int color){
+    this.color = color;
   }
 }
 
@@ -320,7 +364,27 @@ class WeekCourseTable {
   }
 
   WeekCourseTable.fromJson(List<dynamic> jsonList) {
-    courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+    try{
+      courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+      print("before map");
+      Map<String, List<CourseT>> map = new Map.fromIterable(courses,
+          key: (key) => key.name,
+          value: (value) {
+            return courses.where((item) {
+              return (value.name.compareTo(item.name)==0)?true:false;
+            }).toList();
+          });
+      int i = 1;
+      map.forEach((k,v){
+        v.forEach((value) => value.setColor(i));
+        i++;
+      });
+      print("after map");
+      //throw "error";
+    }catch(e){
+      throw "解析课程列表出错";
+    }
+
   }
 }
 
@@ -338,6 +402,8 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   // ignore: unrelated_type_equality_checks
   DateTime lastModified = file.lastModifiedSync();
   */
+  CancelToken _can = new CancelToken();
+  Timer(Duration(milliseconds: 5),(){_can.cancel("定时");});
   String ss;
   //暂定先直接用网络请求
   print('get course table from http');
@@ -345,7 +411,8 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   Response response;
   response = await dio.request(
       'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
-      options: Options(method: "GET", responseType: ResponseType.plain));
+      options: Options(method: "GET", responseType: ResponseType.plain),);
+      //cancelToken: _can);
   if (response.statusCode == 200) {
     ss = response.data;
     //file.writeAsStringSync(response.data.toString());
@@ -355,7 +422,6 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
-    print(jsonList.length);
     WeekCourseTable temp = new WeekCourseTable.fromJson(jsonList);
     return temp;
   } catch (e) {

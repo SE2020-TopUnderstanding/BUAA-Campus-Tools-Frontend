@@ -158,9 +158,8 @@ class _CourseTablePage extends State<CourseTablePage> {
             //IconButton(icon: Icon(Icons.refresh), onPressed: null,),暂不支持手动刷新
           ],
         ),
-        body: SingleChildScrollView(
-          child: CourseGridTable(),
-        ),
+        body:  CourseGridTable(),
+
       ),
     );
   }
@@ -210,32 +209,12 @@ class _CourseGridTable extends State {
       child: FutureBuilder(
           future: loadCourse(week, GlobalUser.studentID),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              print('waiting');
-            }
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SimpleDialog(
-                        title: Text('报错'),
-                        children: <Widget>[
-                          Text("${snapshot.error.toString()}"),
-                        ],
-                      );
-                    });
-                courses.clear();
-              } else {
-                if (snapshot.data == null) {
-                  courses.clear();
-                  print('no data');
-                } else {
-                  courses.clear();
-                  for (int i = 0; i < snapshot.data.courses.length; i++) {
-                    courses.add(snapshot.data.courses[i]);
-                  }
-                }
+
+            if ((snapshot.connectionState == ConnectionState.done)
+                  &&(snapshot.hasData)) {
+              courses.clear();
+              for (int i = 0; i < snapshot.data.courses.length; i++) {
+                courses.add(snapshot.data.courses[i]);
               }
               return Stack(
                 children: <Widget>[
@@ -249,11 +228,44 @@ class _CourseGridTable extends State {
                 ],
               );
             } else {
-              return Text('loading');
+              return Container(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ));
             }
           }),
     );
   }
+
+  List<Color> _tableColors = [
+    Colors.brown,
+    Colors.deepOrange,
+    Colors.blue,
+    Colors.red[500],
+    Colors.green,
+    Colors.pink,
+    Colors.deepPurple[200],
+    Colors.blueGrey,
+    Colors.yellow[800],
+  ];
+
+  List<String> _beginTime = [
+    '8:00',
+    '8:50',
+    '9:50',
+    '10:40',
+    '11:30',
+    '14:00',
+    '14:50',
+    '15:50',
+    '16:40',
+    '17:30',
+    '19:00',
+    '19:50',
+    '20:40',
+    '21:30'
+  ];
 
   // 左边显示节数的列
   Widget buildLeftColumn() {
@@ -261,11 +273,13 @@ class _CourseGridTable extends State {
       children: List<Widget>.generate(
         14,
         (index) => Container(
-          width: 30,
+          width: 40,
           height: blockHeight,
           color: Colors.white,
           child: Center(
-            child: Text('${index + 1}'),
+            child: Text('${_beginTime[index]}\n${index + 1}',
+              softWrap: true,
+              textAlign: TextAlign.center,),
           ),
         ),
       ),
@@ -312,7 +326,8 @@ class _CourseGridTable extends State {
               sectionList,
               size: maxLength + 1,
               height: blockHeight,
-              backgroundColor: Color.fromARGB(255, 250, 107, 91),
+//              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
+              backgroundColor: _tableColors[sectionList.first.color%_tableColors.length],
               textColor: Colors.white,
               onTap: () => onTap(sectionList),
             ),
@@ -506,11 +521,11 @@ class CourseBlock extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: height * size,
-        margin: EdgeInsets.all(1),
-        padding: EdgeInsets.all(1),
+        margin: EdgeInsets.all(0),
+        padding: EdgeInsets.all(0),
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+//          borderRadius: BorderRadius.all(Radius.circular(5)),
         ),
         child: getCourseBlocks(course),
       ),
@@ -522,12 +537,12 @@ Widget getCourseBlocks(List<CourseT> list) {
   if (list.length == 1) {
     return Text(
       '${list.first.name}@${list.first.location}',
-      style: TextStyle(color: Colors.black),
+      style: TextStyle(color: Colors.white),
     );
   } else {
     return Text(
       '多节课，请点开查看',
-      style: TextStyle(color: Colors.black),
+      style: TextStyle(color: Colors.white),
     );
   }
 }
