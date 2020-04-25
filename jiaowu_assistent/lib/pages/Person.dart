@@ -111,7 +111,6 @@ class _PersonPageState extends State<PersonPage> {
             height: 40,
           ),
           Container(
-            color: Colors.white,
             child: ListTile(
               leading: Icon(
                 Icons.help_outline,
@@ -130,12 +129,12 @@ class _PersonPageState extends State<PersonPage> {
                     MaterialPageRoute(builder: (context) => HelpCenterPage()));
               },
             ),
+//            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
           ),
           SizedBox(
             height: 10,
           ),
           Container(
-            color: Colors.white,
             child: ListTile(
               leading: Icon(
                 Icons.view_stream,
@@ -145,6 +144,7 @@ class _PersonPageState extends State<PersonPage> {
                 "主页选择",
                 style: TextStyle(fontSize: 20),
               ),
+
               trailing: Icon(
                 Icons.keyboard_arrow_right,
                 size: 20,
@@ -154,6 +154,7 @@ class _PersonPageState extends State<PersonPage> {
                     MaterialPageRoute(builder: (context) => DIYPage()));
               },
             ),
+//            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
           ),
           SizedBox(
             height: 40,
