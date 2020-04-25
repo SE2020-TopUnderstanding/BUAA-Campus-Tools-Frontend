@@ -76,6 +76,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   String response = '';
   String currBuilding = '';
   bool isDisabled = false;
+  int initLength = 0;
 
   Future<void> _selectDate() async {
     final DateTime date = await showDatePicker(
@@ -101,6 +102,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     try {
       setState(() {
         isDisabled = true;
+        initLength = 1;
       });
       currBuilding = buildingMap[_selectedCampus - 1][_selectedBuilding];
       getEmptyRoom(
@@ -539,7 +541,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     child: ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: (_list == null) ? 1 : _list.length,
+                      itemCount: (_list == null) ? initLength : _list.length,
                       itemBuilder: _buildListItem,
                     ),
                   )
