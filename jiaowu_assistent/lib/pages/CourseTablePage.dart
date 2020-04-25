@@ -157,9 +157,8 @@ class _CourseTablePage extends State<CourseTablePage> {
             //IconButton(icon: Icon(Icons.refresh), onPressed: null,),暂不支持手动刷新
           ],
         ),
-        body: SingleChildScrollView(
-          child: CourseGridTable(),
-        ),
+        body:  CourseGridTable(),
+
       ),
     );
   }
@@ -209,32 +208,12 @@ class _CourseGridTable extends State {
       child: FutureBuilder(
           future: loadCourse(week, GlobalUser.studentID),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              print('waiting');
-            }
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SimpleDialog(
-                        title: Text('报错'),
-                        children: <Widget>[
-                          Text("${snapshot.error.toString()}"),
-                        ],
-                      );
-                    });
-                courses.clear();
-              } else {
-                if (snapshot.data == null) {
-                  courses.clear();
-                  print('no data');
-                } else {
-                  courses.clear();
-                  for (int i = 0; i < snapshot.data.courses.length; i++) {
-                    courses.add(snapshot.data.courses[i]);
-                  }
-                }
+
+            if ((snapshot.connectionState == ConnectionState.done)
+                  &&(snapshot.hasData)) {
+              courses.clear();
+              for (int i = 0; i < snapshot.data.courses.length; i++) {
+                courses.add(snapshot.data.courses[i]);
               }
               return Stack(
                 children: <Widget>[
@@ -248,7 +227,11 @@ class _CourseGridTable extends State {
                 ],
               );
             } else {
-              return Text('loading');
+              return Container(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ));
             }
           }),
     );
@@ -342,8 +325,8 @@ class _CourseGridTable extends State {
               sectionList,
               size: maxLength + 1,
               height: blockHeight,
-              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
-//              backgroundColor: Color.fromARGB(255, 250, 107, 91),
+//              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
+              backgroundColor: _tableColors[sectionList.first.color%_tableColors.length],
               textColor: Colors.white,
               onTap: () => onTap(sectionList),
             ),
