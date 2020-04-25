@@ -12,15 +12,16 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new Scaffold(
-      appBar: new AppBar(
-        automaticallyImplyLeading: false,
-        title: new Text("登录"),
-        backgroundColor: Colors.lightBlue,
-      ),
-      body: new LoginPageBody(),
-    );
+    return Scaffold(
+        appBar: new AppBar(
+          automaticallyImplyLeading: false,
+          title: new Text("登录"),
+          backgroundColor: Colors.lightBlue,
+        ),
+        body: new LoginPageBody(),
+      );
   }
+
 }
 
 class LoginPageBody extends StatefulWidget {
@@ -42,7 +43,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   FocusNode _focusNodeUserName = new FocusNode();
   FocusNode _focusNodePassword = new FocusNode();
 
-
+  CancelToken _cancel = new CancelToken();
   @override
   void initState() {
     // TODO: implement initState
@@ -116,25 +117,25 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                       padding: const EdgeInsets.fromLTRB(50, 50, 50, 0),
                       child: ConstrainedBox(
                         constraints: BoxConstraints.expand(height: 50),
-                        child: RaisedButton(
-                          color: Colors.lightBlue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                          child: RaisedButton(
+                            color: Colors.lightBlue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                            ),
+                            child: Text(
+                              '登录',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  letterSpacing: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24,
+                                  color: Colors.black54),
+                            ),
+                            onPressed: () {
+                              _login();
+                            },
+                            disabledColor: Colors.grey,
                           ),
-                          child: Text(
-                            '登录',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                letterSpacing: 20,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                                color: Colors.black54),
-                          ),
-                          onPressed: () {
-                            _login();
-                          },
-                          disabledColor: Colors.grey,
-                        ),
                       ),
                     ),
                   ],
@@ -165,8 +166,8 @@ class _LoginPageStateBody extends State<LoginPageBody> {
       //Url请求
       BaseOptions options = new BaseOptions(
           connectTimeout: 10000,
+          sendTimeout: 20000,
           receiveTimeout: 3000,
-          //contentType: "applicatio/json",
       );
       Response response;
       Dio dio = new Dio(options);
@@ -176,129 +177,101 @@ class _LoginPageStateBody extends State<LoginPageBody> {
             'http://114.115.208.32:8000/login/',
             data: {"usr_name":_userNameController.text,
               "usr_password":Encrypt.encrypt(_passwordController.text)},
-            options:Options(method: "POST", responseType: ResponseType.json));
-        print('login test');
+            options:Options(method: "POST", responseType: ResponseType.json),
+            cancelToken: _cancel);
+        print('response end');
         Navigator.of(context).pop();
-        if(response.statusCode == 400){
-          showDialog(
-              context:context,
-              builder: (BuildContext context){
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('账号或密码错误',textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
-        }else if(response.statusCode == 500){
-          showDialog(
-              context:context,
-              builder: (BuildContext context){
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('服务器错误',textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
-        }else if(response.statusCode == 200){
-          int state = response.data['state'];
-          if(state != 1){
-            throw '账号或密码错误';
-          }
-          //保存用户信息
-          GlobalUser.setUser(_userNameController.text, _passwordController.text,
-              response.data['name'], response.data['student_id']);
-          GlobalUser.setIsLogin(true);
-          GlobalUser.setChoice(1);//课表
-          /*
+        //保存用户信息
         GlobalUser.setUser(_userNameController.text, _passwordController.text,
-            '张艺璇', '17373182');
+            response.data['name'], response.data['student_id']);
         GlobalUser.setIsLogin(true);
-         */
-          Navigator.pushReplacementNamed(context, '/homePage');
-//          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-
-        }else{
-          throw('未知错误！');
-        }
+        GlobalUser.setChoice(1);//默认课表
+        //切换页面
+        Navigator.pushReplacementNamed(context, '/homePage');
       }on DioError catch(e){
-        if((e.type == DioErrorType.CONNECT_TIMEOUT)||(e.type == DioErrorType.RECEIVE_TIMEOUT)){
-          showDialog(
-              context:context,
-              builder: (BuildContext context){
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('连接超时，请检查网络',textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
-        }
-      }catch(e) {
-        if (e.toString() == '未知错误！') {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return SimpleDialog(
-                  title: Text('报错', textAlign: TextAlign.center,),
-                  children: <Widget>[
-                    Text('未知错误', textAlign: TextAlign.center,),
-                  ],
-                );
-              }
-          );
+        print("error type:${e.type},");
+        Navigator.of(context).pop();
+        if((e.type == DioErrorType.CONNECT_TIMEOUT)
+            ||(e.type == DioErrorType.RECEIVE_TIMEOUT)
+            ||(e.type == DioErrorType.SEND_TIMEOUT)){
+          showError(context, "网络请求超时");
+        }else if(e.type == DioErrorType.RESPONSE){
+          if(e.response.statusCode == 400){
+            showError(context, "账户或密码错误");
+          }else{
+            showError(context, "服务器错误");
+          }
+        }else if(e.type == DioErrorType.CANCEL){
+          showError(context, "请求取消");
+        }else{
+          showError(context, "未知错误");
         }
       }
     }
 
   }
+  void showError(context,String str){
+    showDialog(
+        context:context,
+        builder: (BuildContext context){
+          return SimpleDialog(
+            title: Text('报错', textAlign: TextAlign.center,),
+            children: <Widget>[
+              Text(str, textAlign: TextAlign.center,),
+            ],
+          );
+        }
+    );
+  }
+
   void showLoading(context, [String text]) {
     text = text ?? "Loading...";
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) {
-          return Center(
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(3.0),
-                  boxShadow: [
-                    //阴影
-                    BoxShadow(
-                      color: Colors.black12,
-                      //offset: Offset(2.0,2.0),
-                      blurRadius: 10.0,
-                    )
-                  ]),
-              padding: EdgeInsets.all(16),
-              margin: EdgeInsets.all(16),
-              constraints: BoxConstraints(minHeight: 120, minWidth: 180),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 30,
-                    width: 30,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
+          return WillPopScope(
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0),
+                    boxShadow: [
+                      //阴影
+                      BoxShadow(
+                        color: Colors.black12,
+                        //offset: Offset(2.0,2.0),
+                        blurRadius: 10.0,
+                      )
+                    ]),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Text(
-                      text,
-                      style: Theme.of(context).textTheme.body2,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Text(
+                        text,
+                        style: Theme.of(context).textTheme.body2,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
+            onWillPop: (){
+              return new Future.value(false);
+            },
           );
         });
   }
