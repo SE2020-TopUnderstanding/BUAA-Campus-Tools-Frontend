@@ -238,8 +238,12 @@ class _CourseGridTable extends State {
   }
 
   List<Color> _tableColors = [
-    Colors.brown,
+    Color(0xFFE57373),
+    Color(0xFFAB47BC),
     Colors.deepOrange,
+    Color(0xFF00BFA5),
+    Color(0xFF43A047),
+    Color(0xFF1E88E5),
     Colors.blue,
     Colors.red[500],
     Colors.green,

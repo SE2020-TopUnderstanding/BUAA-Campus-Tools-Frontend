@@ -138,60 +138,60 @@ class _MyHomePageState extends State<MyHomePage> {
     if (isUpdate != 0) {
       return new Scaffold();
     } else {
-    return new Scaffold(
-      body: PageView(
-        onPageChanged: _pageChange,
-        children: <Widget>[
-          FirstPage(),
-          //CourseTablePage(),
-          FunctionsPage(),
-          PersonPage(),
-        ],
-        controller: _controller,
+      return new Scaffold(
+        body: PageView(
+          onPageChanged: _pageChange,
+          children: <Widget>[
+            FirstPage(),
+            //CourseTablePage(),
+            FunctionsPage(),
+            PersonPage(),
+          ],
+          controller: _controller,
 //        onPageChanged: onPageChanged,
-      ),
-      bottomNavigationBar: new BottomNavigationBar(
-        selectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.shifting,
-        items: [
-          BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.date_range,
-              color: _bottomNavigationSelectColor,
+        ),
+        bottomNavigationBar: new BottomNavigationBar(
+          selectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.shifting,
+          items: [
+            BottomNavigationBarItem(
+              activeIcon: Icon(
+                Icons.date_range,
+                color: _bottomNavigationSelectColor,
+              ),
+              icon: Icon(
+                Icons.date_range,
+                color: _bottomNavigationColor,
+              ),
+              title: Text("主页"),
             ),
-            icon: Icon(
-              Icons.date_range,
-              color: _bottomNavigationColor,
+            BottomNavigationBarItem(
+              activeIcon: Icon(
+                Icons.list,
+                color: _bottomNavigationSelectColor,
+              ),
+              icon: Icon(
+                Icons.list,
+                color: _bottomNavigationColor,
+              ),
+              title: Text("功能"),
             ),
-            title: Text("主页"),
-          ),
-          BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.list,
-              color: _bottomNavigationSelectColor,
+            BottomNavigationBarItem(
+              activeIcon: Icon(
+                Icons.person,
+                color: _bottomNavigationSelectColor,
+              ),
+              icon: Icon(
+                Icons.person,
+                color: _bottomNavigationColor,
+              ),
+              title: Text("个人中心"),
             ),
-            icon: Icon(
-              Icons.list,
-              color: _bottomNavigationColor,
-            ),
-            title: Text("功能"),
-          ),
-          BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.person,
-              color: _bottomNavigationSelectColor,
-            ),
-            icon: Icon(
-              Icons.person,
-              color: _bottomNavigationColor,
-            ),
-            title: Text("个人中心"),
-          ),
-        ],
-        onTap: onTap,
-        currentIndex: _currentIndex,
-      ),
-    );
+          ],
+          onTap: onTap,
+          currentIndex: _currentIndex,
+        ),
+      );
     }
   }
 
