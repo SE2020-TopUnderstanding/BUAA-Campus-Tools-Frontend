@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-class HelpCenterPage extends StatelessWidget{
-
+class HelpCenterPage extends StatelessWidget {
 //  _launchURL(String url) async {
 //    if (await canLaunch(url)) {
 //      await launch(url);
@@ -16,31 +15,30 @@ class HelpCenterPage extends StatelessWidget{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text("帮助中心"),
-        elevation: 0,
-      ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(20),
-              child: Text("使用中若遇到问题，请通过下面的链接联系我们^_^",
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center
-              ),
-              alignment: Alignment.center,
-            ),
-            Container(
-              alignment: Alignment.center,
-              child: ListTile(
-                title: Text("https://www.cnblogs.com/se2020djlj/",
+        appBar: AppBar(
+          title: Text("帮助中心"),
+          backgroundColor: Colors.lightBlue,
+          elevation: 0,
+        ),
+        body: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(20),
+                child: Text("使用中若遇到问题，请通过下面的链接联系我们^_^",
                     style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center
+                    textAlign: TextAlign.center),
+                alignment: Alignment.center,
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: ListTile(
+                  title: Text("https://www.cnblogs.com/se2020djlj/",
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center),
                 ),
               ),
-            ),
 //            RaisedButton(
 //              child: Text('打开外部浏览器'),
 //              onPressed: () async{
@@ -52,9 +50,8 @@ class HelpCenterPage extends StatelessWidget{
 //                }
 //              },
 //            ),
-          ],
-        ),
-      )
-    );
+            ],
+          ),
+        ));
   }
 }
