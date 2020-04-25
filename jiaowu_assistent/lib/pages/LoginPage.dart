@@ -165,9 +165,9 @@ class _LoginPageStateBody extends State<LoginPageBody> {
     }else{
       //Url请求
       BaseOptions options = new BaseOptions(
-          connectTimeout: 10000,
-          sendTimeout: 20000,
-          receiveTimeout: 3000,
+          connectTimeout: 30000,
+          sendTimeout: 30000,
+          receiveTimeout: 30000,
       );
       Response response;
       Dio dio = new Dio(options);
