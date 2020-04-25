@@ -6,6 +6,7 @@ import 'package:jiaowuassistent/pages/HomePage.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/encrypt.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -129,7 +130,10 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                                 fontSize: 24,
                                 color: Colors.black54),
                           ),
-                          onPressed: _login,
+                          onPressed: () {
+                            _login();
+                          },
+                          disabledColor: Colors.grey,
                         ),
                       ),
                     ),
@@ -143,14 +147,6 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   }
 
   void _login() async {
-    //if((_formkey.currentState as FormState).validate()){
-    //}
-/*
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-    return;
-
- */
-
     if(_userNameController.text.isEmpty||_passwordController.text.isEmpty){
       print('账号或密码为空，请继续输入');
       showDialog(
@@ -175,12 +171,14 @@ class _LoginPageStateBody extends State<LoginPageBody> {
       Response response;
       Dio dio = new Dio(options);
       try{
+        showLoading(context);
         response = await dio.request(
             'http://114.115.208.32:8000/login/',
             data: {"usr_name":_userNameController.text,
               "usr_password":Encrypt.encrypt(_passwordController.text)},
             options:Options(method: "POST", responseType: ResponseType.json));
         print('login test');
+        Navigator.of(context).pop();
         if(response.statusCode == 400){
           showDialog(
               context:context,
@@ -222,6 +220,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
          */
           Navigator.pushReplacementNamed(context, '/homePage');
 //          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+
         }else{
           throw('未知错误！');
         }
@@ -256,5 +255,51 @@ class _LoginPageStateBody extends State<LoginPageBody> {
       }
     }
 
+  }
+  void showLoading(context, [String text]) {
+    text = text ?? "Loading...";
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return Center(
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(3.0),
+                  boxShadow: [
+                    //阴影
+                    BoxShadow(
+                      color: Colors.black12,
+                      //offset: Offset(2.0,2.0),
+                      blurRadius: 10.0,
+                    )
+                  ]),
+              padding: EdgeInsets.all(16),
+              margin: EdgeInsets.all(16),
+              constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Text(
+                      text,
+                      style: Theme.of(context).textTheme.body2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

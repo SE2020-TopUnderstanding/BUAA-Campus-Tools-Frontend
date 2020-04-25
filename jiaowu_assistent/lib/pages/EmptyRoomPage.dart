@@ -248,7 +248,6 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
           elevation: 0.0,
         ),
         body: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
