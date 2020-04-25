@@ -73,6 +73,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("课程中心DDL"),
+        backgroundColor: Colors.lightBlue,
       ),
       //加入可滚动组件(ExpansionPanelList必须使用可滚动的组件)
       body: FutureBuilder<CourseCenter>(

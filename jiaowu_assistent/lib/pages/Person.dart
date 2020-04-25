@@ -12,7 +12,6 @@ class PersonPage extends StatefulWidget {
 }
 
 class _PersonPageState extends State<PersonPage> {
-
   void editOnPressed() {
     showCupertinoDialog(
         context: context,
@@ -28,7 +27,7 @@ class _PersonPageState extends State<PersonPage> {
                         hintText: '请输入你的昵称',
                         filled: true,
                         fillColor: Colors.grey.shade50),
-                    onChanged: (text){
+                    onChanged: (text) {
                       _name = text;
                     },
                   ),
@@ -44,16 +43,14 @@ class _PersonPageState extends State<PersonPage> {
               ),
               CupertinoDialogAction(
                 onPressed: () {
-                  setState(() {
-                  });
+                  setState(() {});
                   Navigator.pop(context);
                 },
                 child: Text('确定'),
               ),
             ],
           );
-        }
-    );
+        });
   }
 
   String _name = GlobalUser.name;
@@ -67,6 +64,7 @@ class _PersonPageState extends State<PersonPage> {
         //backgroundColor: Colors.white,
         title: Text('个人中心'),
         elevation: 0,
+        backgroundColor: Colors.lightBlue,
         automaticallyImplyLeading: false,
       ),
       body: Column(
@@ -82,7 +80,9 @@ class _PersonPageState extends State<PersonPage> {
                     contentPadding: EdgeInsets.all(0),
                     title: Text(
                       _name,
-                      style: TextStyle(fontSize: 25,),
+                      style: TextStyle(
+                        fontSize: 25,
+                      ),
                     ),
                     subtitle: Text("学号:${GlobalUser.studentID}"),
                   ),
@@ -113,11 +113,21 @@ class _PersonPageState extends State<PersonPage> {
           Container(
             color: Colors.white,
             child: ListTile(
-              leading: Icon(Icons.help_outline, size: 20,),
-              title: Text("帮助中心", style: TextStyle(fontSize: 20),),
-              trailing: Icon(Icons.keyboard_arrow_right, size: 20,),
+              leading: Icon(
+                Icons.help_outline,
+                size: 20,
+              ),
+              title: Text(
+                "帮助中心",
+                style: TextStyle(fontSize: 20),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right,
+                size: 20,
+              ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => HelpCenterPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HelpCenterPage()));
               },
             ),
           ),
@@ -127,18 +137,35 @@ class _PersonPageState extends State<PersonPage> {
           Container(
             color: Colors.white,
             child: ListTile(
-              leading: Icon(Icons.view_stream, size: 20,),
-              title: Text("主页选择", style: TextStyle(fontSize: 20),),
-              trailing: Icon(Icons.keyboard_arrow_right, size: 20,),
+              leading: Icon(
+                Icons.view_stream,
+                size: 20,
+              ),
+              title: Text(
+                "主页选择",
+                style: TextStyle(fontSize: 20),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right,
+                size: 20,
+              ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => DIYPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => DIYPage()));
               },
             ),
           ),
-          SizedBox(height: 40,),
+          SizedBox(
+            height: 40,
+          ),
           Container(
+            margin: const EdgeInsets.only(left: 20.0, right: 20.0),
             child: ListTile(
-              title: Text("退出登录", style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
+              title: Text(
+                "退出登录",
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               onTap: () {
                 GlobalUser.setIsLogin(false);
                 page.setPage(1);
@@ -147,7 +174,8 @@ class _PersonPageState extends State<PersonPage> {
 //                  MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
 //                      (Route<dynamic> route) => false,
 //                );
-                Navigator.pushNamedAndRemoveUntil(context, '/loginPage', ModalRoute.withName("/loginPage"));
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/loginPage', ModalRoute.withName("/loginPage"));
                 //Navigator.popUntil(context, ModalRoute.withName("/loginPage"));
               },
             ),

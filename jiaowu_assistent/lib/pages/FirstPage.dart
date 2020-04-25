@@ -24,8 +24,8 @@ class FirstPage extends StatelessWidget {
   }
 }
 
-Widget getFirstPage(int type){
-  switch(type) {
+Widget getFirstPage(int type) {
+  switch (type) {
     case 1:
       return CourseTablePage();
     case 2:
