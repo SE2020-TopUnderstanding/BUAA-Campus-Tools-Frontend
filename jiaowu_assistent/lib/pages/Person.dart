@@ -144,7 +144,6 @@ class _PersonPageState extends State<PersonPage> {
                 "主页选择",
                 style: TextStyle(fontSize: 20),
               ),
-
               trailing: Icon(
                 Icons.keyboard_arrow_right,
                 size: 20,
@@ -161,13 +160,16 @@ class _PersonPageState extends State<PersonPage> {
           ),
           Container(
             margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-            child: ListTile(
-              title: Text(
+            child: MaterialButton(
+              color: Color(0x99FFFFFF),
+              minWidth: double.infinity,
+              height: 50,
+              child: Text(
                 "退出登录",
                 style: TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),
-              onTap: () {
+              onPressed: () {
                 GlobalUser.setIsLogin(false);
                 page.setPage(1);
 //                Navigator.pushAndRemoveUntil(
@@ -180,7 +182,7 @@ class _PersonPageState extends State<PersonPage> {
                 //Navigator.popUntil(context, ModalRoute.withName("/loginPage"));
               },
             ),
-            decoration: BoxDecoration(border: Border.all(width: 1)),
+//            decoration: BoxDecoration(border: Border.all(width: 1)),
           )
         ],
       ),

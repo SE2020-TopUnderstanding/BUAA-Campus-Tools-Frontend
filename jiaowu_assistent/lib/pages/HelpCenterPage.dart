@@ -1,15 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HelpCenterPage extends StatelessWidget {
-//  _launchURL(String url) async {
-//    if (await canLaunch(url)) {
-//      await launch(url);
-//    } else {
-//      throw 'Could not launch $url';
-//    }
-//  }
+  launchURL() {
+    launch('https://www.cnblogs.com/se2020djlj/');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +19,11 @@ class HelpCenterPage extends StatelessWidget {
         ),
         body: Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(20),
-                child: Text("使用中若遇到问题，请通过下面的链接联系我们^_^",
+                child: Text("使用中若遇到问题，请通过下面的链接反馈给我们^_^",
                     style: TextStyle(fontSize: 20),
                     textAlign: TextAlign.center),
                 alignment: Alignment.center,
@@ -39,17 +36,15 @@ class HelpCenterPage extends StatelessWidget {
                       textAlign: TextAlign.center),
                 ),
               ),
-//            RaisedButton(
-//              child: Text('打开外部浏览器'),
-//              onPressed: () async{
-//                const url = 'https://cflutter.com';
-//                if (await canLaunch(url)) {
-//                  await launch(url);
-//                } else {
-//                  throw 'Could not launch $url';
-//                }
-//              },
-//            ),
+              Container(
+                  margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                  child: MaterialButton(
+                    onPressed: launchURL,
+                    child: Text("点击进入"),
+                    color: Color(0x99FFFFFF),
+                    minWidth: double.infinity,
+                    height: 50,
+                  ))
             ],
           ),
         ));
