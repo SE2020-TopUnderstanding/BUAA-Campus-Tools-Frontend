@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -187,10 +188,11 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
     Utf8Decoder decode = new Utf8Decoder();
     return CourseCenter.fromJson(
         json.decode(decode.convert(response.bodyBytes)));
+        //json.decode('[]'));//测试空list
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load course center');
+    throw Exception('Failed to load grade center');
   }
 }
 
@@ -261,6 +263,39 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
   }
 }
 
+//更新用
+class UpdateInfo {
+  final String version;
+  final String date;
+  final String info;
+  final String address;
+
+  UpdateInfo({this.version, this.date, this.info, this.address});
+
+  factory UpdateInfo.fromJson(Map<String, dynamic> parsedJson) {
+    return UpdateInfo(
+        version: parsedJson['version_number'],
+        date: parsedJson['update_date'],
+        info: parsedJson['announcement'],
+        address: parsedJson['download_address']);
+  }
+}
+
+Future<UpdateInfo> getUpdateInfo() async {
+  final response = await http.get('http://114.115.208.32:8000/version');
+  print('http://114.115.208.32:8000/version');
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return UpdateInfo.fromJson(json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load update info');
+  }
+}
+
 //课表用
 class TeacherCourse {
   String name;
@@ -292,7 +327,7 @@ class CourseT {
   int weekDay;
   int sectionStart;
   int sectionEnd;
-
+  int color=1;
   CourseT({
     this.name,
     this.location,
@@ -304,29 +339,54 @@ class CourseT {
   });
 
   CourseT.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    if (json['teacher_course'] != null) {
-      teacherCourse = new List<TeacherCourse>();
-      json['teacher_course'].forEach((v) {
-        teacherCourse.add(new TeacherCourse.fromJson(v));
-      });
-    } else {
-      teacherCourse = new List<TeacherCourse>();
-      teacherCourse.add(TeacherCourse(name: "未知"));
+    try{
+      name = json['name'];
+      if (json['teacher_course'] != null) {
+        teacherCourse = new List<TeacherCourse>();
+        json['teacher_course'].forEach((v) {
+          teacherCourse.add(new TeacherCourse.fromJson(v));
+        });
+      } else {
+        teacherCourse = new List<TeacherCourse>();
+        teacherCourse.add(TeacherCourse(name: "未知"));
+      }
+      String weeks = json['week'] as String;
+      List<String> weekss = weeks.split(',');
+      String times = json['time'] as String;
+      List<String> timess = times.split('_');
+      if (json['place'] == null) {
+        location = '未知';
+      } else {
+        location = json['place'];
+      }
+      week = weekss;
+      weekDay = int.parse(timess[0]);
+      sectionStart = int.parse(timess[1]);
+      sectionEnd = int.parse(timess[2]);
+    }catch(e){
+      throw "解析课程出错";
     }
-    String weeks = json['week'] as String;
-    List<String> weekss = weeks.split(',');
-    String times = json['time'] as String;
-    List<String> timess = times.split('_');
-    if (json['place'] == null) {
-      location = '未知';
-    } else {
-      location = json['place'];
+
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode {
+    return name.hashCode;
+  }
+
+  @override
+  bool operator ==(other) {
+    // TODO: implement ==
+    if(other is! CourseT){
+      return false;
     }
-    week = weekss;
-    weekDay = int.parse(timess[0]);
-    sectionStart = int.parse(timess[1]);
-    sectionEnd = int.parse(timess[2]);
+    final CourseT temp = other;
+    return (name.compareTo(temp.name)==0)?true:false;
+  }
+
+  void setColor(int color){
+    this.color = color;
   }
 }
 
@@ -338,7 +398,27 @@ class WeekCourseTable {
   }
 
   WeekCourseTable.fromJson(List<dynamic> jsonList) {
-    courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+    try{
+      courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
+      print("before map");
+      Map<String, List<CourseT>> map = new Map.fromIterable(courses,
+          key: (key) => key.name,
+          value: (value) {
+            return courses.where((item) {
+              return (value.name.compareTo(item.name)==0)?true:false;
+            }).toList();
+          });
+      int i = 1;
+      map.forEach((k,v){
+        v.forEach((value) => value.setColor(i));
+        i++;
+      });
+      print("after map");
+      //throw "error";
+    }catch(e){
+      throw "解析课程列表出错";
+    }
+
   }
 }
 
@@ -356,6 +436,8 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   // ignore: unrelated_type_equality_checks
   DateTime lastModified = file.lastModifiedSync();
   */
+  CancelToken _can = new CancelToken();
+  Timer(Duration(milliseconds: 10),(){_can.cancel("定时");});//测试错误
   String ss;
   //暂定先直接用网络请求
   print('get course table from http');
@@ -363,7 +445,8 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   Response response;
   response = await dio.request(
       'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
-      options: Options(method: "GET", responseType: ResponseType.plain));
+      options: Options(method: "GET", responseType: ResponseType.plain),);
+      //cancelToken: _can);//测试错误
   if (response.statusCode == 200) {
     ss = response.data;
     //file.writeAsStringSync(response.data.toString());
@@ -373,7 +456,6 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
-    print(jsonList.length);
     WeekCourseTable temp = new WeekCourseTable.fromJson(jsonList);
     return temp;
   } catch (e) {

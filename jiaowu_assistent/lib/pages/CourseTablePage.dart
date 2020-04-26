@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'dart:math';
 import 'package:jiaowuassistent/GlobalUser.dart';
@@ -158,9 +157,8 @@ class _CourseTablePage extends State<CourseTablePage> {
             //IconButton(icon: Icon(Icons.refresh), onPressed: null,),暂不支持手动刷新
           ],
         ),
-        body: SingleChildScrollView(
-          child: CourseGridTable(),
-        ),
+        body:  CourseGridTable(),
+
       ),
     );
   }
@@ -210,32 +208,32 @@ class _CourseGridTable extends State {
       child: FutureBuilder(
           future: loadCourse(week, GlobalUser.studentID),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              print('waiting');
-            }
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SimpleDialog(
-                        title: Text('报错'),
-                        children: <Widget>[
-                          Text("${snapshot.error.toString()}"),
-                        ],
-                      );
-                    });
-                courses.clear();
-              } else {
-                if (snapshot.data == null) {
-                  courses.clear();
-                  print('no data');
-                } else {
-                  courses.clear();
-                  for (int i = 0; i < snapshot.data.courses.length; i++) {
-                    courses.add(snapshot.data.courses[i]);
-                  }
-                }
+
+            if ((snapshot.connectionState == ConnectionState.done)
+                  &&(snapshot.hasData)) {
+              if (snapshot.data.courses.length == 0){
+                return Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "正在获取您的数据\n请稍后再试",
+                        style: TextStyle(fontSize: 24,),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 50,),
+                      Text(
+                        "如果您本学期没有课程\n请忽略上述提示\n因为此时我们不再提供课表查询功能~",
+                        style: TextStyle(fontSize: 14),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                );
+              }
+              courses.clear();
+              for (int i = 0; i < snapshot.data.courses.length; i++) {
+                courses.add(snapshot.data.courses[i]);
               }
               return Stack(
                 children: <Widget>[
@@ -249,21 +247,39 @@ class _CourseGridTable extends State {
                 ],
               );
             } else {
-              return Text('loading');
+              if(snapshot.hasError){
+                return Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "网络请求出错\n请稍后再试\n",
+                    style: TextStyle(fontSize: 24,),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+              return Container(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ));
             }
           }),
     );
   }
 
   List<Color> _tableColors = [
-    Colors.brown,
+    Color(0xFFE57373),
+    Color(0xFFAB47BC),
     Colors.deepOrange,
+    Color(0xFF00BFA5),
+    Color(0xFF43A047),
+    Color(0xFF1E88E5),
     Colors.blue,
     Colors.red[500],
     Colors.green,
     Colors.pink,
     Colors.deepPurple[200],
-    Colors.blueGrey,
+    Color(0xFF0097A7),
     Colors.yellow[800],
   ];
 
@@ -343,8 +359,8 @@ class _CourseGridTable extends State {
               sectionList,
               size: maxLength + 1,
               height: blockHeight,
-              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
-//              backgroundColor: Color.fromARGB(255, 250, 107, 91),
+//              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
+              backgroundColor: _tableColors[sectionList.first.color%_tableColors.length],
               textColor: Colors.white,
               onTap: () => onTap(sectionList),
             ),
