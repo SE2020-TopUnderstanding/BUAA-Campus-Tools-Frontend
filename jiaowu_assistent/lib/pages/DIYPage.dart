@@ -69,7 +69,10 @@ class _DIYPage extends State<DIYPage> {
             ),
           ),
           FlatButton(
-            onPressed: () => {select.setPage(choice)},
+            onPressed: () {
+              select.setPage(choice);
+              Navigator.pop(context);
+              },
             child: Text("确认"),
             color: Colors.blue,
           )
