@@ -11,10 +11,13 @@ class WelcomePage extends StatelessWidget {
         child: new Column(
           children: <Widget>[
             const SizedBox(height: 100),
-            Image.asset(
-              'assets/images/welcome.png',
-              width: 300.0,
-              height: 300.0,
+            Container(
+              alignment: Alignment(0, -1),
+              child: Image.asset(
+                'assets/images/welcome.png',
+                width: 300.0,
+                height: 300.0,
+              ),
             ),
             const SizedBox(height: 50),
             Text(
