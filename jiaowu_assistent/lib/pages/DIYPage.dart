@@ -72,7 +72,10 @@ class _DIYPage extends State<DIYPage> {
           Container(
               margin: const EdgeInsets.only(left: 20.0, right: 20.0),
               child: MaterialButton(
-                onPressed: () => {select.setPage(choice)},
+                onPressed: () {
+                  select.setPage(choice);
+                  Navigator.pop(context);
+                },
                 child: Text("确认"),
                 color: Color(0x99FFFFFF),
                 minWidth: double.infinity,
