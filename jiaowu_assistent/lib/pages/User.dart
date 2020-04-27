@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:jiaowuassistent/encrypt.dart';
 
 //import 'package:path_provider/path_provider.dart';
 
@@ -188,7 +189,7 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
     Utf8Decoder decode = new Utf8Decoder();
     return CourseCenter.fromJson(
         json.decode(decode.convert(response.bodyBytes)));
-        //json.decode('[]'));//测试空list
+    //json.decode('[]'));//测试空list
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -327,7 +328,8 @@ class CourseT {
   int weekDay;
   int sectionStart;
   int sectionEnd;
-  int color=1;
+  int color = 1;
+
   CourseT({
     this.name,
     this.location,
@@ -339,7 +341,7 @@ class CourseT {
   });
 
   CourseT.fromJson(Map<String, dynamic> json) {
-    try{
+    try {
       name = json['name'];
       if (json['teacher_course'] != null) {
         teacherCourse = new List<TeacherCourse>();
@@ -363,10 +365,9 @@ class CourseT {
       weekDay = int.parse(timess[0]);
       sectionStart = int.parse(timess[1]);
       sectionEnd = int.parse(timess[2]);
-    }catch(e){
+    } catch (e) {
       throw "解析课程出错";
     }
-
   }
 
   @override
@@ -378,14 +379,14 @@ class CourseT {
   @override
   bool operator ==(other) {
     // TODO: implement ==
-    if(other is! CourseT){
+    if (other is! CourseT) {
       return false;
     }
     final CourseT temp = other;
-    return (name.compareTo(temp.name)==0)?true:false;
+    return (name.compareTo(temp.name) == 0) ? true : false;
   }
 
-  void setColor(int color){
+  void setColor(int color) {
     this.color = color;
   }
 }
@@ -398,27 +399,26 @@ class WeekCourseTable {
   }
 
   WeekCourseTable.fromJson(List<dynamic> jsonList) {
-    try{
+    try {
       courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
       print("before map");
       Map<String, List<CourseT>> map = new Map.fromIterable(courses,
           key: (key) => key.name,
           value: (value) {
             return courses.where((item) {
-              return (value.name.compareTo(item.name)==0)?true:false;
+              return (value.name.compareTo(item.name) == 0) ? true : false;
             }).toList();
           });
       int i = 1;
-      map.forEach((k,v){
+      map.forEach((k, v) {
         v.forEach((value) => value.setColor(i));
         i++;
       });
       print("after map");
       //throw "error";
-    }catch(e){
+    } catch (e) {
       throw "解析课程列表出错";
     }
-
   }
 }
 
@@ -437,16 +437,19 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   DateTime lastModified = file.lastModifiedSync();
   */
   CancelToken _can = new CancelToken();
-  Timer(Duration(milliseconds: 10),(){_can.cancel("定时");});//测试错误
+  Timer(Duration(milliseconds: 10), () {
+    _can.cancel("定时");
+  }); //测试错误
   String ss;
   //暂定先直接用网络请求
   print('get course table from http');
   Dio dio = new Dio();
   Response response;
   response = await dio.request(
-      'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
-      options: Options(method: "GET", responseType: ResponseType.plain),);
-      //cancelToken: _can);//测试错误
+    'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
+    options: Options(method: "GET", responseType: ResponseType.plain),
+  );
+  //cancelToken: _can);//测试错误
   if (response.statusCode == 200) {
     ss = response.data;
     //file.writeAsStringSync(response.data.toString());
