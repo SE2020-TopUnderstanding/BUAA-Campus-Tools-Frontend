@@ -10,16 +10,15 @@ class WelcomePage extends StatelessWidget {
       child: new Center(
         child: new Column(
           children: <Widget>[
-            const SizedBox(height: 100),
+            const SizedBox(height: 50),
             Container(
-              alignment: Alignment(0, -1),
               child: Image.asset(
                 'assets/images/welcome.png',
                 width: 300.0,
                 height: 300.0,
               ),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
             Text(
               '北航教务助手,方便你的校园生活',
               style: TextStyle(
@@ -28,7 +27,7 @@ class WelcomePage extends StatelessWidget {
                 decoration: TextDecoration.none,
               ),
             ),
-            const SizedBox(height: 100),
+            const SizedBox(height: 50),
             SizedBox(
               width: 200.0,
               height: 50.0,
