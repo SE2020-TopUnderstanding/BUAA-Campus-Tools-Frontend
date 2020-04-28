@@ -131,7 +131,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                                 letterSpacing: 20,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 24,
-                                color: Colors.black54),
+                                color: Colors.white),
                           ),
                           onPressed: () {
                             _login();
@@ -170,9 +170,9 @@ class _LoginPageStateBody extends State<LoginPageBody> {
     } else {
       //Url请求
       BaseOptions options = new BaseOptions(
-          connectTimeout: 30000,
-          sendTimeout: 30000,
-          receiveTimeout: 30000,
+        connectTimeout: 30000,
+        sendTimeout: 30000,
+        receiveTimeout: 30000,
       );
       Response response;
       Dio dio = new Dio(options);
@@ -202,8 +202,10 @@ class _LoginPageStateBody extends State<LoginPageBody> {
             (e.type == DioErrorType.SEND_TIMEOUT)) {
           showError(context, "网络请求超时");
         } else if (e.type == DioErrorType.RESPONSE) {
-          if (e.response.statusCode == 400) {
+          if (e.response.statusCode == 401) {
             showError(context, "账号或密码错误");
+          } else if(e.response.statusCode == 402){
+            showError(context, "您的账号被锁定，请十分钟后再试");
           } else {
             showError(context, "服务器错误");
           }

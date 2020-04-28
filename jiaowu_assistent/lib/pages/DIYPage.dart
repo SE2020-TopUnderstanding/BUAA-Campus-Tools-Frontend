@@ -24,11 +24,11 @@ class _DIYPage extends State<DIYPage> {
       ),
       body: Column(
         children: <Widget>[
-          SizedBox(height: 50),
+          SizedBox(height: 30),
           SizedBox(
             child: Text('您可以自定义您的主页显示下方三个选项中的任一项'),
           ),
-          SizedBox(height: 50),
+          SizedBox(height: 20),
           Flexible(
             child: RadioListTile(
               title: Text('课表查询'),
@@ -68,11 +68,19 @@ class _DIYPage extends State<DIYPage> {
               },
             ),
           ),
-          FlatButton(
-            onPressed: () => {select.setPage(choice)},
-            child: Text("确认"),
-            color: Colors.blue,
-          )
+          SizedBox(height: 20),
+          Container(
+              margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+              child: MaterialButton(
+                onPressed: () {
+                  select.setPage(choice);
+                  Navigator.pop(context);
+                },
+                child: Text("确认"),
+                color: Color(0x99FFFFFF),
+                minWidth: double.infinity,
+                height: 50,
+              ))
         ],
       ),
     );
