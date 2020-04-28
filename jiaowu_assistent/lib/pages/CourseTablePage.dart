@@ -185,12 +185,8 @@ class _CourseGridTable extends State {
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    week = ShareWeekWidget
-        .of(context)
-        .week;
-    cur_week = ShareWeekWidget
-        .of(context)
-        .curWeek;
+    week = ShareWeekWidget.of(context).week;
+    cur_week = ShareWeekWidget.of(context).curWeek;
 
     super.didChangeDependencies();
     //print('didChangeDependencies:$week');
@@ -253,32 +249,37 @@ class _CourseGridTable extends State {
                 ],
               );
             } else {
-              if(snapshot.hasError){
-                if(snapshot.error == 401){
+              if (snapshot.hasError) {
+                if (snapshot.error == 401) {
                   return Container(
                     alignment: Alignment.center,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text("账号密码已失效，\n这可能是因为您修改了统一认证密码，\n请点击下方按钮以重新登录。"),
-                        SizedBox(height: 30,),
+                        SizedBox(
+                          height: 30,
+                        ),
                         RaisedButton(
                           child: Text("重新登录"),
-                          onPressed: (){
+                          onPressed: () {
                             GlobalUser.setIsLogin(false);
                             page.setPage(1);
-                            Navigator.of(context).pushNamedAndRemoveUntil('/loginPage', (Route route) =>false);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/loginPage', (Route route) => false);
                           },
                         ),
                       ],
                     ),
                   );
-                }else{
+                } else {
                   return Container(
                     alignment: Alignment.center,
                     child: Text(
                       "网络请求出错\n请稍后再试\n",
-                      style: TextStyle(fontSize: 24,),
+                      style: TextStyle(
+                        fontSize: 24,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -332,19 +333,18 @@ class _CourseGridTable extends State {
     return Column(
       children: List<Widget>.generate(
         14,
-            (index) =>
-            Container(
-              width: 40,
-              height: blockHeight,
-              color: Colors.white,
-              child: Center(
-                child: Text(
-                  '${_beginTime[index]}\n${index + 1}',
-                  softWrap: true,
-                  textAlign: TextAlign.center,
-                ),
-              ),
+        (index) => Container(
+          width: 40,
+          height: blockHeight,
+          color: Colors.white,
+          child: Center(
+            child: Text(
+              '${_beginTime[index]}\n${index + 1}',
+              softWrap: true,
+              textAlign: TextAlign.center,
             ),
+          ),
+        ),
       ),
     );
   }
@@ -352,16 +352,16 @@ class _CourseGridTable extends State {
   // 中间的所有列
   List<Widget> buildMainColumns() {
     Iterable<CourseT> weekcourses =
-    courses.where((c) => c.week.contains(week.toString())); //当周的课
+        courses.where((c) => c.week.contains(week.toString())); //当周的课
 
     return List<Widget>.generate(7, (index) {
       Iterable<CourseT> day =
-      weekcourses.where((c) => c.weekDay == index + 1); // 当天的课
+          weekcourses.where((c) => c.weekDay == index + 1); // 当天的课
 
       List<Widget> cols = new List();
       for (int i = 1; i <= 14; i++) {
         Iterable<CourseT> section =
-        day.where((c) => c.sectionStart == i); //当节的课
+            day.where((c) => c.sectionStart == i); //当节的课
         List<CourseT> sectionList = section.toList();
         // 没找到就用空块填充
         if (sectionList.length == 0) {
@@ -391,7 +391,7 @@ class _CourseGridTable extends State {
               height: blockHeight,
 //              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
               backgroundColor:
-              _tableColors[sectionList.first.color % _tableColors.length],
+                  _tableColors[sectionList.first.color % _tableColors.length],
               textColor: Colors.white,
               onTap: () => onTap(sectionList),
             ),
@@ -416,8 +416,7 @@ class _CourseGridTable extends State {
         child: Row(
           children: <Widget>[
             buildLeftColumn(),
-          ]
-            ..addAll(buildMainColumns()),
+          ]..addAll(buildMainColumns()),
         ),
       ),
     );
@@ -443,9 +442,9 @@ class _CourseGridTable extends State {
         contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
       ));
       l.add(ListTile(
-          leading: Text("时间："),
-          title: Text(timeStr(temp.sectionStart, temp.sectionEnd)),
-          contentPadding: EdgeInsets.symmetric(horizontal: 30.0),));
+        title: Text("时间：  ${timeStr(temp.sectionStart, temp.sectionEnd)}"),
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+      ));
       l.add(ListTile(
         title: Text("地点：  ${temp.location}"),
         contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
@@ -461,10 +460,10 @@ class _CourseGridTable extends State {
     return l;
   }
 
-  String timeStr(int start, int end){
-    if(start!=end){
+  String timeStr(int start, int end) {
+    if (start != end) {
       return "第$start-$end节";
-    }else{
+    } else {
       return "第$start节";
     }
   }
@@ -514,10 +513,7 @@ class WeekBar extends StatelessWidget {
     return Positioned(
       top: 0,
       child: Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        width: MediaQuery.of(context).size.width,
         color: color,
         child: Row(
           children: <Widget>[
@@ -604,7 +600,8 @@ class CourseBlock extends StatelessWidget {
   final double height;
   final onTap;
 
-  CourseBlock(this.course, {
+  CourseBlock(
+    this.course, {
     this.backgroundColor = Colors.black12,
     this.textColor = Colors.grey,
     this.size = 1,
