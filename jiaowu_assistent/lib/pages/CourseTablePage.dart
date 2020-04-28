@@ -1,10 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:jiaowuassistent/pages/User.dart';
-import 'dart:math';
 import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:provider/provider.dart';
 
 class ShareWeekWidget extends InheritedWidget {
   //跨组件共享指定week和当前week
@@ -203,7 +202,7 @@ class _CourseGridTable extends State {
 
   @override
   Widget build(BuildContext context) {
-    //print('build:$week');
+    PageSelect page = Provider.of<PageSelect>(context);
     // TODO: implement build
     return Center(
       child: FutureBuilder(
@@ -249,14 +248,35 @@ class _CourseGridTable extends State {
               );
             } else {
               if(snapshot.hasError){
-                return Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "网络请求出错\n请稍后再试\n",
-                    style: TextStyle(fontSize: 24,),
-                    textAlign: TextAlign.center,
-                  ),
-                );
+                if(snapshot.error == 401){
+                  return Container(
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("账号密码已失效，\n这可能是因为您修改了统一认证密码，\n请点击下方按钮以重新登录。"),
+                        SizedBox(height: 30,),
+                        RaisedButton(
+                          child: Text("重新登录"),
+                          onPressed: (){
+                            GlobalUser.setIsLogin(false);
+                            page.setPage(1);
+                            Navigator.of(context).pushNamedAndRemoveUntil('/loginPage', (Route route) =>false);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }else{
+                  return Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "网络请求出错\n请稍后再试\n",
+                      style: TextStyle(fontSize: 24,),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
               }
               return Container(
                   alignment: Alignment.center,
@@ -398,7 +418,7 @@ class _CourseGridTable extends State {
       ));
       l.add(ListTile(
           leading: Text("时间："),
-          title: Text('第${temp.sectionStart}-${temp.sectionEnd}节')));
+          title: Text(timeStr(temp.sectionStart, temp.sectionEnd))));
       l.add(ListTile(leading: Text("地点："), title: Text('${temp.location}')));
       l.add(ListTile(
           leading: Text("教师："), title: Text(temp.teacherCourse.toString())));
@@ -406,6 +426,15 @@ class _CourseGridTable extends State {
     }
     l.removeLast();
     return l;
+  }
+
+  String timeStr(int start, int end){
+    String str;
+    if(start!=end){
+      return "第$start-$end节";
+    }else{
+      return "第$start节";
+    }
   }
 
   onTap(List<CourseT> course) {
