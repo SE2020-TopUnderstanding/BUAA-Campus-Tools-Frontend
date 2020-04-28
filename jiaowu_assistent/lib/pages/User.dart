@@ -181,8 +181,9 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 //  return CourseCenter.fromJson(json.decode(response));
 
   final response =
-      await http.get('http://114.115.208.32:8000/ddl/?student_id=$studentID');
-  print('http://114.115.208.32:8000/ddl/?student_id=$studentID');
+      await http.get('http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt("1737345217373452")}');
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -239,15 +240,15 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
 //  return temp;
 
   final response = await http.get(
-      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
   print(
-      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
   final averageScore = await http
-      .get('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
-  print('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
+      .get('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+  print('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
   final gpa = await http
-      .get('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
-  print('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
+      .get('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+  print('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -446,7 +447,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   Dio dio = new Dio();
   Response response;
   response = await dio.request(
-    'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
+    'http://114.115.208.32:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
     options: Options(method: "GET", responseType: ResponseType.plain),
   );
   //cancelToken: _can);//测试错误
