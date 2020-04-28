@@ -131,7 +131,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                                 letterSpacing: 20,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 24,
-                                color: Colors.black54),
+                                color: Colors.white),
                           ),
                           onPressed: () {
                             _login();
@@ -170,9 +170,9 @@ class _LoginPageStateBody extends State<LoginPageBody> {
     } else {
       //Url请求
       BaseOptions options = new BaseOptions(
-          connectTimeout: 30000,
-          sendTimeout: 30000,
-          receiveTimeout: 30000,
+        connectTimeout: 30000,
+        sendTimeout: 30000,
+        receiveTimeout: 30000,
       );
       Response response;
       Dio dio = new Dio(options);

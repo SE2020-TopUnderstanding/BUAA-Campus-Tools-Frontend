@@ -66,18 +66,20 @@ class GlobalUser {
     return _sp.getString('studentID');
   }
 
-  static int get pageChoice{
-    return _sp.getInt('pageChoice')?? 1;
+  static int get pageChoice {
+    return _sp.getInt('pageChoice') ?? 1;
   }
 }
 
-class PageSelect with ChangeNotifier{
+class PageSelect with ChangeNotifier {
   int _choice = GlobalUser.pageChoice;
-  void setPage(int type){
+
+  void setPage(int type) {
     _choice = type;
     print('type:$type, final:$_choice');
     GlobalUser.setChoice(type);
     notifyListeners();
   }
+
   get choice => _choice;
 }
