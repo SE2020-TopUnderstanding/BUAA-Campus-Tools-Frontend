@@ -443,16 +443,27 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   print('get course table from http');
   Dio dio = new Dio();
   Response response;
-  response = await dio.request(
+  try{
+    response = await dio.request(
       'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
       options: Options(method: "GET", responseType: ResponseType.plain),);
       //cancelToken: _can);//测试错误
-  if (response.statusCode == 200) {
-    ss = response.data;
-    //file.writeAsStringSync(response.data.toString());
-  } else {
-    throw "网络错误";
+  } on DioError catch(e){
+    //throw 401;//测试
+    if(e.type == DioErrorType.RESPONSE){
+      if(e.response.statusCode == 401){
+        throw 401;
+      }else if(e.response.statusCode == 402){
+        throw 402;
+      }else{
+        throw "网络请求出错";
+      }
+    }else{
+      throw "网络请求出错";
+    }
   }
+  ss = response.data;
+
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
