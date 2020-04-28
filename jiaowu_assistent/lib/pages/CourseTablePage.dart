@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'dart:math';
 import 'package:jiaowuassistent/GlobalUser.dart';
@@ -158,8 +157,7 @@ class _CourseTablePage extends State<CourseTablePage> {
             //IconButton(icon: Icon(Icons.refresh), onPressed: null,),暂不支持手动刷新
           ],
         ),
-        body:  CourseGridTable(),
-
+        body: CourseGridTable(),
       ),
     );
   }
@@ -187,8 +185,12 @@ class _CourseGridTable extends State {
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    week = ShareWeekWidget.of(context).week;
-    cur_week = ShareWeekWidget.of(context).curWeek;
+    week = ShareWeekWidget
+        .of(context)
+        .week;
+    cur_week = ShareWeekWidget
+        .of(context)
+        .curWeek;
 
     super.didChangeDependencies();
     //print('didChangeDependencies:$week');
@@ -209,20 +211,23 @@ class _CourseGridTable extends State {
       child: FutureBuilder(
           future: loadCourse(week, GlobalUser.studentID),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-
-            if ((snapshot.connectionState == ConnectionState.done)
-                  &&(snapshot.hasData)) {
-              if (snapshot.data.courses.length == 0){
+            if ((snapshot.connectionState == ConnectionState.done) &&
+                (snapshot.hasData)) {
+              if (snapshot.data.courses.length == 0) {
                 return Container(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
                         "正在获取您的数据\n请稍后再试",
-                        style: TextStyle(fontSize: 24,),
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 50,),
+                      SizedBox(
+                        height: 50,
+                      ),
                       Text(
                         "如果您本学期没有课程\n请忽略上述提示\n因为此时我们不再提供课表查询功能~",
                         style: TextStyle(fontSize: 14),
@@ -248,12 +253,14 @@ class _CourseGridTable extends State {
                 ],
               );
             } else {
-              if(snapshot.hasError){
+              if (snapshot.hasError) {
                 return Container(
                   alignment: Alignment.center,
                   child: Text(
                     "网络请求出错\n请稍后再试\n",
-                    style: TextStyle(fontSize: 24,),
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 );
@@ -269,14 +276,18 @@ class _CourseGridTable extends State {
   }
 
   List<Color> _tableColors = [
-    Colors.brown,
+    Color(0xFFE57373),
+    Color(0xFFAB47BC),
     Colors.deepOrange,
+    Color(0xFF00BFA5),
+    Color(0xFF43A047),
+    Color(0xFF1E88E5),
     Colors.blue,
     Colors.red[500],
     Colors.green,
     Colors.pink,
     Colors.deepPurple[200],
-    Colors.blueGrey,
+    Color(0xFF0097A7),
     Colors.yellow[800],
   ];
 
@@ -302,16 +313,19 @@ class _CourseGridTable extends State {
     return Column(
       children: List<Widget>.generate(
         14,
-        (index) => Container(
-          width: 40,
-          height: blockHeight,
-          color: Colors.white,
-          child: Center(
-            child: Text('${_beginTime[index]}\n${index + 1}',
-              softWrap: true,
-              textAlign: TextAlign.center,),
-          ),
-        ),
+            (index) =>
+            Container(
+              width: 40,
+              height: blockHeight,
+              color: Colors.white,
+              child: Center(
+                child: Text(
+                  '${_beginTime[index]}\n${index + 1}',
+                  softWrap: true,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
       ),
     );
   }
@@ -319,16 +333,16 @@ class _CourseGridTable extends State {
   // 中间的所有列
   List<Widget> buildMainColumns() {
     Iterable<CourseT> weekcourses =
-        courses.where((c) => c.week.contains(week.toString())); //当周的课
+    courses.where((c) => c.week.contains(week.toString())); //当周的课
 
     return List<Widget>.generate(7, (index) {
       Iterable<CourseT> day =
-          weekcourses.where((c) => c.weekDay == index + 1); // 当天的课
+      weekcourses.where((c) => c.weekDay == index + 1); // 当天的课
 
       List<Widget> cols = new List();
       for (int i = 1; i <= 14; i++) {
         Iterable<CourseT> section =
-            day.where((c) => c.sectionStart == i); //当节的课
+        day.where((c) => c.sectionStart == i); //当节的课
         List<CourseT> sectionList = section.toList();
         // 没找到就用空块填充
         if (sectionList.length == 0) {
@@ -357,7 +371,8 @@ class _CourseGridTable extends State {
               size: maxLength + 1,
               height: blockHeight,
 //              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
-              backgroundColor: _tableColors[sectionList.first.color%_tableColors.length],
+              backgroundColor:
+              _tableColors[sectionList.first.color % _tableColors.length],
               textColor: Colors.white,
               onTap: () => onTap(sectionList),
             ),
@@ -382,10 +397,22 @@ class _CourseGridTable extends State {
         child: Row(
           children: <Widget>[
             buildLeftColumn(),
-          ]..addAll(buildMainColumns()),
+          ]
+            ..addAll(buildMainColumns()),
         ),
       ),
     );
+  }
+
+  String buildString(List<TeacherCourse> teacherCourse) {
+    String out = "";
+    for (int i = 0; i < teacherCourse.length; i++) {
+      if (i != 0) {
+        out = out + ", ";
+      }
+      out = out + teacherCourse[i].toString();
+    }
+    return out;
   }
 
   List<Widget> showCourse(List<CourseT> templist) {
@@ -393,15 +420,21 @@ class _CourseGridTable extends State {
     for (int i = 0; i < templist.length; i++) {
       CourseT temp = templist[i];
       l.add(ListTile(
-        leading: Text("课程："),
-        title: Text(temp.name),
+        title: Text("课程：  ${temp.name}"),
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
       ));
       l.add(ListTile(
-          leading: Text("时间："),
-          title: Text('第${temp.sectionStart}-${temp.sectionEnd}节')));
-      l.add(ListTile(leading: Text("地点："), title: Text('${temp.location}')));
+        title: Text("时间：  第${temp.sectionStart}-${temp.sectionEnd}节"),
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+      ));
       l.add(ListTile(
-          leading: Text("教师："), title: Text(temp.teacherCourse.toString())));
+        title: Text("地点：  ${temp.location}"),
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+      ));
+      l.add(ListTile(
+        title: Text("教师：  ${buildString(temp.teacherCourse)}"),
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+      ));
       l.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
     }
     l.removeLast();
@@ -413,11 +446,12 @@ class _CourseGridTable extends State {
       context: context,
       builder: (ctx) {
         return SimpleDialog(
+          titlePadding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 0.0),
           title: Text(
-            '查看',
+            '查  看',
             textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          titlePadding: EdgeInsets.all(10),
           elevation: 5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
@@ -427,6 +461,9 @@ class _CourseGridTable extends State {
           children: <Widget>[
             SingleChildScrollView(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[]..addAll(showCourse(course)),
               ),
             ),
@@ -449,7 +486,10 @@ class WeekBar extends StatelessWidget {
     return Positioned(
       top: 0,
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         color: color,
         child: Row(
           children: <Widget>[
@@ -536,8 +576,7 @@ class CourseBlock extends StatelessWidget {
   final double height;
   final onTap;
 
-  CourseBlock(
-    this.course, {
+  CourseBlock(this.course, {
     this.backgroundColor = Colors.black12,
     this.textColor = Colors.grey,
     this.size = 1,
