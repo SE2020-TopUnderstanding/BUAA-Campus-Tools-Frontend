@@ -181,9 +181,8 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 //  return CourseCenter.fromJson(json.decode(response));
 
   final response =
-      await http.get('http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
-  print(
-      'http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt("1737345217373452")}');
+      await http.get('http://114.115.208.32:8000/ddl/?student_id=$studentID');
+  print('http://114.115.208.32:8000/ddl/?student_id=$studentID');
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -240,15 +239,15 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
 //  return temp;
 
   final response = await http.get(
-      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
+      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
   print(
-      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
+      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
   final averageScore = await http
-      .get('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
-  print('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+      .get('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
+  print('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
   final gpa = await http
-      .get('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
-  print('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+      .get('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
+  print('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -446,17 +445,28 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   print('get course table from http');
   Dio dio = new Dio();
   Response response;
-  response = await dio.request(
-    'http://114.115.208.32:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
-    options: Options(method: "GET", responseType: ResponseType.plain),
-  );
-  //cancelToken: _can);//测试错误
-  if (response.statusCode == 200) {
-    ss = response.data;
-    //file.writeAsStringSync(response.data.toString());
-  } else {
-    throw "网络错误";
+  try {
+    response = await dio.request(
+      'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
+      options: Options(method: "GET", responseType: ResponseType.plain),
+    );
+    //cancelToken: _can);//测试错误
+  } on DioError catch (e) {
+    //throw 401;//测试
+    if (e.type == DioErrorType.RESPONSE) {
+      if (e.response.statusCode == 401) {
+        throw 401;
+      } else if (e.response.statusCode == 402) {
+        throw 402;
+      } else {
+        throw "网络请求出错";
+      }
+    } else {
+      throw "网络请求出错";
+    }
   }
+  ss = response.data;
+
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
