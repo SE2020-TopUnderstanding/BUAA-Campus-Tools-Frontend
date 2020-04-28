@@ -1,9 +1,9 @@
 import 'dart:async' show Future;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:jiaowuassistent/pages/User.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:provider/provider.dart';
 
 class CourseCenterPage extends StatefulWidget {
   @override
@@ -75,6 +75,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
 
   @override
   Widget build(BuildContext context) {
+    PageSelect page = Provider.of<PageSelect>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("课程中心DDL"),
@@ -93,15 +94,19 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                     children: <Widget>[
                       Text(
                         "目前没有获取到您的课程信息,以下是几个可能的原因及解决办法：",
-                        style: TextStyle(fontSize: 20,),
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 30,),
+                      SizedBox(
+                        height: 30,
+                      ),
                       Text(
                         "1. 爬虫努力爬取中，请稍后再试。\n\n"
-                            "2. 如果您本学期课程中心没有课程，请忽略上述提示，此时我们不再提供该功能。\n\n"
-                            "3. 您的课程中心没有“活跃站点”，请在学校“课程中心-我的工作空间-用户偏好”页面进行偏好设置，"
-                            "保证希望获取ddl的课程都属于收藏站点或活跃站点，并且活跃站点不能为空。",
+                        "2. 如果您本学期课程中心没有课程，请忽略上述提示，此时我们不再提供该功能。\n\n"
+                        "3. 您的课程中心没有“活跃站点”，请在学校“课程中心-我的工作空间-用户偏好”页面进行偏好设置，"
+                        "保证希望获取ddl的课程都属于收藏站点或活跃站点，并且活跃站点不能为空。",
                         style: TextStyle(fontSize: 14),
                         textAlign: TextAlign.start,
                       ),
@@ -163,6 +168,28 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                         ),
                         isExpanded: courseList[index].isOpen);
                   }).toList(),
+                ),
+              );
+            } else if (snapshot.error == 401) {
+              return Container(
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("账号密码已失效，\n这可能是因为您修改了统一认证密码，\n请点击下方按钮以重新登录。"),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    RaisedButton(
+                      child: Text("重新登录"),
+                      onPressed: () {
+                        GlobalUser.setIsLogin(false);
+                        page.setPage(1);
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/loginPage', (Route route) => false);
+                      },
+                    ),
+                  ],
                 ),
               );
             } else {
