@@ -7,6 +7,20 @@ class Encrypt {
       final key = Key.fromUtf8('2020042820200428');
       final encrypter = Encrypter(AES(key, mode: AESMode.ecb));
       final encrypted = encrypter.encrypt(str);
+      print('加密后：${Uri.encodeComponent(encrypted.base64)}');
+      return Uri.encodeComponent(encrypted.base64);
+    } catch (err) {
+      print("aes encode error:$err");
+      return str;
+    }
+  }
+
+  static String encrypt2(String str) {
+    try {
+      print(str);
+      final key = Key.fromUtf8('2020042820200428');
+      final encrypter = Encrypter(AES(key, mode: AESMode.ecb));
+      final encrypted = encrypter.encrypt(str);
       print('加密后：${encrypted.base64}');
       return encrypted.base64;
     } catch (err) {

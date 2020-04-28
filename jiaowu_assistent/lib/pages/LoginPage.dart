@@ -181,7 +181,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
         response = await dio.request('http://114.115.208.32:8000/login/',
             data: {
               "usr_name": _userNameController.text,
-              "usr_password": Encrypt.encrypt(_passwordController.text)
+              "usr_password": Encrypt.encrypt2(_passwordController.text)
             },
             options: Options(method: "POST", responseType: ResponseType.json),
             cancelToken: _cancel);

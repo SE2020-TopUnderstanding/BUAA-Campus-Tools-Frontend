@@ -69,7 +69,6 @@ class _ScorePageState extends State<ScorePage> {
 
   Future<void> searchGrade() async {
     try {
-      print("1");
       getGrade(GlobalUser.studentID, semesterMap[semester])
           .then((GradeCenter temp) {
         setState(() {

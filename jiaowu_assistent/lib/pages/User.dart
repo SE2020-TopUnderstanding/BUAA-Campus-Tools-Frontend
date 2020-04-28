@@ -203,7 +203,7 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 class Grade {
   final String name;
   final double credit;
-  final int score;
+  final String score;
 
   Grade({this.name, this.credit, this.score});
 
@@ -211,7 +211,7 @@ class Grade {
     return Grade(
         name: parsedJson['course_name'],
         credit: parsedJson['credit'],
-        score: parsedJson['score']);
+        score: parsedJson['origin_score']);
   }
 }
 
