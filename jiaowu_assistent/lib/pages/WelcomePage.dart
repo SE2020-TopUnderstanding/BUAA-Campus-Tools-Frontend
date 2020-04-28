@@ -9,8 +9,9 @@ class WelcomePage extends StatelessWidget {
     return new Container(
       child: new Center(
         child: new Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            const SizedBox(height: 50),
+//            const SizedBox(height: 50),
             Container(
               child: Image.asset(
                 'assets/images/welcome.png',
@@ -18,7 +19,7 @@ class WelcomePage extends StatelessWidget {
                 height: 300.0,
               ),
             ),
-            const SizedBox(height: 30),
+//            const SizedBox(height: 30),
             Text(
               '北航教务助手,方便你的校园生活',
               style: TextStyle(
@@ -27,7 +28,7 @@ class WelcomePage extends StatelessWidget {
                 decoration: TextDecoration.none,
               ),
             ),
-            const SizedBox(height: 50),
+//            const SizedBox(height: 50),
             SizedBox(
               width: 200.0,
               height: 50.0,
@@ -40,7 +41,7 @@ class WelcomePage extends StatelessWidget {
                       letterSpacing: 5,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black54,
+                      color: Colors.white,
                     )),
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, '/loginPage');

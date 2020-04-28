@@ -1,9 +1,9 @@
 import 'dart:async' show Future;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:jiaowuassistent/pages/User.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:provider/provider.dart';
 
 class ScorePage extends StatefulWidget {
   @override
@@ -13,6 +13,7 @@ class ScorePage extends StatefulWidget {
 class _ScorePageState extends State<ScorePage> {
   GradeCenter gradeCenter;
   var semester = 7;
+  var quit = 0;
 
   Map<int, String> semesterMap = {
     1: "2016秋季",
@@ -68,11 +69,19 @@ class _ScorePageState extends State<ScorePage> {
 
   Future<void> searchGrade() async {
     try {
+      print("1");
       getGrade(GlobalUser.studentID, semesterMap[semester])
           .then((GradeCenter temp) {
         setState(() {
           gradeCenter = temp;
         });
+      }).catchError((e) {
+        print(e);
+        if (e == 401) {
+          setState(() {
+            quit = 1;
+          });
+        }
       });
     } catch (e) {
       print(e);
@@ -81,94 +90,120 @@ class _ScorePageState extends State<ScorePage> {
 
   @override
   Widget build(BuildContext context) {
+    PageSelect page = Provider.of<PageSelect>(context);
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('成绩查询'),
         backgroundColor: Colors.lightBlue,
       ),
-      body: gradeCenter == null
+      body: quit == 1
           ? Container(
-              alignment: Alignment(0.0, 0.0),
-              child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-              ))
-          : SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(children: <Widget>[
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("账号密码已失效，\n这可能是因为您修改了统一认证密码，\n请点击下方按钮以重新登录。"),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  RaisedButton(
+                    child: Text("重新登录"),
+                    onPressed: () {
+                      GlobalUser.setIsLogin(false);
+                      page.setPage(1);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/loginPage', (Route route) => false);
+                    },
+                  ),
+                ],
+              ),
+            )
+          : gradeCenter == null
+              ? Container(
+                  alignment: Alignment(0.0, 0.0),
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ))
+              : SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(children: <Widget>[
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(left: 30.0),
-                          child: Text('加权平均分： ${gradeCenter.averageScore}',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              margin: const EdgeInsets.only(left: 30.0),
+                              child: Text('加权平均分： ${gradeCenter.averageScore}',
+                                  textAlign: TextAlign.left,
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 30.0),
+                              child: Text('GPA： ${gradeCenter.gpa}',
+                                  textAlign: TextAlign.left,
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                          ],
                         ),
                         Container(
-                          margin: const EdgeInsets.only(left: 30.0),
-                          child: Text('GPA： ${gradeCenter.gpa}',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          margin:
+                              const EdgeInsets.only(left: 30.0, right: 30.0),
+                          child: DropdownButton(
+                            value: semester,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 30,
+                            iconEnabledColor: Colors.black,
+                            hint: Text('请选择学期'),
+                            items: semesterList,
+                            onChanged: (value) {
+                              setState(() {
+                                semester = value;
+                                searchGrade();
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 30.0, right: 30.0),
-                      child: DropdownButton(
-                        value: semester,
-                        icon: Icon(Icons.arrow_drop_down),
-                        iconSize: 30,
-                        iconEnabledColor: Colors.black,
-                        hint: Text('请选择学期'),
-                        items: semesterList,
-                        onChanged: (value) {
-                          setState(() {
-                            semester = value;
-                            searchGrade();
-                          });
-                        },
-                      ),
+                    SizedBox(
+                      height: 20,
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Column(
-                  children: <Widget>[
-                    Container(
-                      child: ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: gradeCenter.grades.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            child: ListTile(
-                              title: Text(gradeCenter.grades[index].name),
-                              subtitle:
-                                  Text('${gradeCenter.grades[index].credit}学分'),
-                              trailing:
-                                  Text('${gradeCenter.grades[index].score}'),
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 30.0),
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    top: BorderSide(
-                                        width: 1, color: Colors.grey))),
-                          );
-                        },
-                      ),
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: gradeCenter.grades.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                child: ListTile(
+                                  title: Text(gradeCenter.grades[index].name),
+                                  subtitle: Text(
+                                      '${gradeCenter.grades[index].credit}学分'),
+                                  trailing: Text(
+                                      '${gradeCenter.grades[index].score}'),
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 30.0),
+                                ),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        top: BorderSide(
+                                            width: 1, color: Colors.grey))),
+                              );
+                            },
+                          ),
+                        )
+                      ],
                     )
-                  ],
-                )
-              ])),
+                  ])),
     );
   }
 }
