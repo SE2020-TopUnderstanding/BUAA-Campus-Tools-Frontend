@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jiaowuassistent/pages/CourseTablePage.dart';
 import 'package:jiaowuassistent/pages/FirstPage.dart';
 import 'package:jiaowuassistent/pages/FunctionsPage.dart';
 import 'package:jiaowuassistent/pages/Person.dart';

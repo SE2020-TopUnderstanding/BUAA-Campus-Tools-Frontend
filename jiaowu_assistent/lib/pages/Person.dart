@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/HelpCenterPage.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
-import 'package:jiaowuassistent/pages/LoginPage.dart';
 import 'DIYPage.dart';
 import 'package:provider/provider.dart';
 

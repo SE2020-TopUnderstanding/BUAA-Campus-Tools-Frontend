@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CourseCenterPage extends StatefulWidget {
   @override
@@ -12,11 +14,105 @@ class CourseCenterPage extends StatefulWidget {
 
 class _CourseCenterPageState extends State<CourseCenterPage> {
   Future<CourseCenter> courseCenter;
+  UpdateInfo remoteInfo;
+  static int isUpdate = 1;
 
   @override
   initState() {
     super.initState();
+    check(showInstallUpdateDialog);
     courseCenter = getCourseCenter(GlobalUser.studentID);
+  }
+
+  check(Function showDialog) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    remoteInfo = await getUpdateInfo();
+    print(packageInfo.version);
+    print(remoteInfo.version);
+    if (packageInfo.version.hashCode == remoteInfo.version.hashCode) {
+      print('无新版本');
+      setState(() {
+        isUpdate = 0;
+      });
+      return;
+    }
+    print('有新版本');
+    showInstallUpdateDialog();
+  }
+
+  launchURL() {
+    launch(remoteInfo.address);
+  }
+
+  void showInstallUpdateDialog() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return WillPopScope(
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0),
+                    boxShadow: [
+                      //阴影
+                      BoxShadow(
+                        color: Colors.black12,
+                        //offset: Offset(2.0,2.0),
+                        blurRadius: 10.0,
+                      )
+                    ]),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+                      child: Text(
+                        '航胥 v${remoteInfo.version} 版本更新',
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新日期：${remoteInfo.date}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新内容：${remoteInfo.info}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: MaterialButton(
+                        color: Color(0x99FFFFFF),
+                        onPressed: launchURL,
+                        minWidth: double.infinity,
+                        child: Text(
+                          '点击下载',
+                          style: Theme.of(context).textTheme.body2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            onWillPop: () {
+              return new Future.value(false);
+            },
+          );
+        });
   }
 
   //修改展开与闭合的内部方法
@@ -76,6 +172,9 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
   @override
   Widget build(BuildContext context) {
     PageSelect page = Provider.of<PageSelect>(context);
+    if (isUpdate == 1) {
+      return new Scaffold();
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("课程中心DDL"),

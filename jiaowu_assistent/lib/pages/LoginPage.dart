@@ -1,17 +1,13 @@
-import 'dart:convert';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jiaowuassistent/pages/HomePage.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/encrypt.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: new AppBar(
         automaticallyImplyLeading: false,
@@ -45,7 +41,6 @@ class _LoginPageStateBody extends State<LoginPageBody> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _focusNodeUserName.addListener(_focusNodeListener);
     _focusNodePassword.addListener(_focusNodeListener);
     GlobalUser.setIsFirst(false);
@@ -63,7 +58,6 @@ class _LoginPageStateBody extends State<LoginPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return GestureDetector(
         onTap: () {
           _focusNodeUserName.unfocus();
