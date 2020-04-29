@@ -14,7 +14,7 @@ class ScorePage extends StatefulWidget {
 
 class _ScorePageState extends State<ScorePage> {
   GradeCenter gradeCenter;
-  var semester = 7;
+  var semester = 10;
   var quit = 0;
   UpdateInfo remoteInfo;
   static int isUpdate = 1;
@@ -22,12 +22,15 @@ class _ScorePageState extends State<ScorePage> {
   Map<int, String> semesterMap = {
     1: "2016秋季",
     2: "2017春季",
-    3: "2017秋季",
-    4: "2018春季",
-    5: "2018秋季",
-    6: "2019春季",
-    7: "2019秋季",
-    8: "2020春季",
+    3: "2017夏季",
+    4: "2017秋季",
+    5: "2018春季",
+    6: "2018夏季",
+    7: "2018秋季",
+    8: "2019春季",
+    9: "2019夏季",
+    10: "2019秋季",
+    11: "2020春季",
   };
 
   List<DropdownMenuItem> semesterList = [
@@ -40,28 +43,40 @@ class _ScorePageState extends State<ScorePage> {
       value: 2,
     ),
     DropdownMenuItem(
-      child: Text('2017秋季'),
+      child: Text('2017夏季'),
       value: 3,
     ),
     DropdownMenuItem(
-      child: Text('2018春季'),
+      child: Text('2017秋季'),
       value: 4,
     ),
     DropdownMenuItem(
-      child: Text('2018秋季'),
+      child: Text('2018春季'),
       value: 5,
     ),
     DropdownMenuItem(
-      child: Text('2019春季'),
+      child: Text('2018夏季'),
       value: 6,
     ),
     DropdownMenuItem(
-      child: Text('2019秋季'),
+      child: Text('2018秋季'),
       value: 7,
     ),
     DropdownMenuItem(
-      child: Text('2020春季'),
+      child: Text('2019春季'),
       value: 8,
+    ),
+    DropdownMenuItem(
+      child: Text('2019夏季'),
+      value: 9,
+    ),
+    DropdownMenuItem(
+      child: Text('2019秋季'),
+      value: 10,
+    ),
+    DropdownMenuItem(
+      child: Text('2020春季'),
+      value: 11,
     ),
   ];
 
