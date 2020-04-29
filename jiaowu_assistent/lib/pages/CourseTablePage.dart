@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ShareWeekWidget extends InheritedWidget {
   //跨组件共享指定week和当前week
@@ -22,7 +24,6 @@ class ShareWeekWidget extends InheritedWidget {
 
   @override
   bool updateShouldNotify(ShareWeekWidget oldWidget) {
-    // TODO: implement updateShouldNotify
     return ((oldWidget.week != week) || (oldWidget.curWeek != curWeek));
   }
 }
@@ -33,8 +34,10 @@ class CourseTablePage extends StatefulWidget {
 }
 
 class _CourseTablePage extends State<CourseTablePage> {
-  int week_value;
-  int cur_week_value;
+  int weekValue;
+  int curWeekValue;
+  UpdateInfo remoteInfo;
+  static int isUpdate = 1;
 
   List<DropdownMenuItem> getWeekItem() {
     List<DropdownMenuItem> weekItems = [
@@ -120,36 +123,129 @@ class _CourseTablePage extends State<CourseTablePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    check(showInstallUpdateDialog);
     //print('course table init');
     getWeek().then((value) {
       setState(() {
-        week_value = value;
-        cur_week_value = value;
+        weekValue = value;
+        curWeekValue = value;
         //print('set cur week:$week_value');
       });
     });
     super.initState();
   }
 
+  check(Function showDialog) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    remoteInfo = await getUpdateInfo();
+    print(packageInfo.version);
+    print(remoteInfo.version);
+    if (packageInfo.version.hashCode == remoteInfo.version.hashCode) {
+      print('无新版本');
+      setState(() {
+        isUpdate = 0;
+      });
+      return;
+    }
+    print('有新版本');
+    showInstallUpdateDialog();
+  }
+
+  launchURL() {
+    launch(remoteInfo.address);
+  }
+
+  void showInstallUpdateDialog() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return WillPopScope(
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0),
+                    boxShadow: [
+                      //阴影
+                      BoxShadow(
+                        color: Colors.black12,
+                        //offset: Offset(2.0,2.0),
+                        blurRadius: 10.0,
+                      )
+                    ]),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+                      child: Text(
+                        '航胥 v${remoteInfo.version} 版本更新',
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新日期：${remoteInfo.date}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新内容：${remoteInfo.info}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: MaterialButton(
+                        color: Color(0x99FFFFFF),
+                        onPressed: launchURL,
+                        minWidth: double.infinity,
+                        child: Text(
+                          '点击下载',
+                          style: Theme.of(context).textTheme.body2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            onWillPop: () {
+              return new Future.value(false);
+            },
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    if (isUpdate == 1) {
+      return new Scaffold();
+    }
     return ShareWeekWidget(
-      week: week_value,
-      curWeek: cur_week_value,
+      week: weekValue,
+      curWeek: curWeekValue,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.lightBlue,
           title: Text('课程表'),
           actions: <Widget>[
             DropdownButton(
-              value: week_value,
-              hint: Text('第$week_value周'),
+              value: weekValue,
+              hint: Text('第$weekValue周'),
               items: getWeekItem(),
               onChanged: (_value) {
                 setState(() {
-                  week_value = _value;
+                  weekValue = _value;
                 });
               },
               iconSize: 20,
@@ -170,7 +266,7 @@ class CourseGridTable extends StatefulWidget {
 
 class _CourseGridTable extends State {
   int week;
-  int cur_week;
+  int curWeek;
 
   //Future<WeekCourseTable> courseList;
   final double blockHeight = 60;
@@ -178,15 +274,13 @@ class _CourseGridTable extends State {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     week = ShareWeekWidget.of(context).week;
-    cur_week = ShareWeekWidget.of(context).curWeek;
+    curWeek = ShareWeekWidget.of(context).curWeek;
 
     super.didChangeDependencies();
     //print('didChangeDependencies:$week');
@@ -194,7 +288,6 @@ class _CourseGridTable extends State {
 
   @override
   void didUpdateWidget(StatefulWidget oldWidget) {
-    // TODO: implement didUpdateWidget
     //print('didUpdateWidget:$week');
     super.didUpdateWidget(oldWidget);
   }
@@ -202,7 +295,6 @@ class _CourseGridTable extends State {
   @override
   Widget build(BuildContext context) {
     PageSelect page = Provider.of<PageSelect>(context);
-    // TODO: implement build
     return Center(
       child: FutureBuilder(
           future: loadCourse(week, GlobalUser.studentID),
@@ -549,10 +641,6 @@ class WeekBar extends StatelessWidget {
   ];
 
   Widget buildWeek(int weekDay) {
-    DateTime dateTime = now.add(Duration(days: -now.weekday + weekDay));
-    int month = dateTime.month;
-    int day = dateTime.day;
-
     return Expanded(
       child: Center(
         child: Column(

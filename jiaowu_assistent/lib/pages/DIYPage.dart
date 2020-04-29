@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 class DIYPage extends StatefulWidget {
   @override
   _DIYPage createState() {
-    // TODO: implement createState
     return _DIYPage();
   }
 }
@@ -15,7 +14,6 @@ class _DIYPage extends State<DIYPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     final select = Provider.of<PageSelect>(context);
     return Scaffold(
       appBar: AppBar(

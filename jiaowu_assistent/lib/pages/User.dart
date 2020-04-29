@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
-import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:jiaowuassistent/encrypt.dart';
 
 //import 'package:path_provider/path_provider.dart';
@@ -318,7 +314,6 @@ class TeacherCourse {
 
   @override
   String toString() {
-    // TODO: implement toString
     return name;
   }
 }
@@ -374,14 +369,12 @@ class CourseT {
   }
 
   @override
-  // TODO: implement hashCode
   int get hashCode {
     return name.hashCode;
   }
 
   @override
   bool operator ==(other) {
-    // TODO: implement ==
     if (other is! CourseT) {
       return false;
     }
