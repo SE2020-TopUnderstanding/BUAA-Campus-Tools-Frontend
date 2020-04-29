@@ -6,8 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/encrypt.dart';
 
-//import 'package:path_provider/path_provider.dart';
-
 class EmptyRoom {
   String _building;
   List<String> _rooms;
@@ -397,7 +395,7 @@ class WeekCourseTable {
   WeekCourseTable.fromJson(List<dynamic> jsonList) {
     try {
       courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
-      print("before map");
+//      print("before map");
       Map<String, List<CourseT>> map = new Map.fromIterable(courses,
           key: (key) => key.name,
           value: (value) {
@@ -410,7 +408,7 @@ class WeekCourseTable {
         v.forEach((value) => value.setColor(i));
         i++;
       });
-      print("after map");
+//      print("after map");
       //throw "error";
     } catch (e) {
       throw "解析课程列表出错";

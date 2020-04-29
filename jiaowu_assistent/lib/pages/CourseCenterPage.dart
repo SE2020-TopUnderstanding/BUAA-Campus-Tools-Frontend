@@ -27,16 +27,16 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
   check(Function showDialog) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     remoteInfo = await getUpdateInfo();
-    print(packageInfo.version);
-    print(remoteInfo.version);
+//    print(packageInfo.version);
+//    print(remoteInfo.version);
     if (packageInfo.version.hashCode == remoteInfo.version.hashCode) {
-      print('无新版本');
+//      print('无新版本');
       setState(() {
         isUpdate = 0;
       });
       return;
     }
-    print('有新版本');
+//    print('有新版本');
     showInstallUpdateDialog();
   }
 
