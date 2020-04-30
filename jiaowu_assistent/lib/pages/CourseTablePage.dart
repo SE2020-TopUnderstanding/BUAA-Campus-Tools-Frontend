@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ShareWeekWidget extends InheritedWidget {
   //跨组件共享指定week和当前week
@@ -22,7 +24,6 @@ class ShareWeekWidget extends InheritedWidget {
 
   @override
   bool updateShouldNotify(ShareWeekWidget oldWidget) {
-    // TODO: implement updateShouldNotify
     return ((oldWidget.week != week) || (oldWidget.curWeek != curWeek));
   }
 }
@@ -33,8 +34,10 @@ class CourseTablePage extends StatefulWidget {
 }
 
 class _CourseTablePage extends State<CourseTablePage> {
-  int week_value;
-  int cur_week_value;
+  int weekValue;
+  int curWeekValue;
+  UpdateInfo remoteInfo;
+  static int isUpdate = 1;
 
   List<DropdownMenuItem> getWeekItem() {
     List<DropdownMenuItem> weekItems = [
@@ -120,36 +123,129 @@ class _CourseTablePage extends State<CourseTablePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    check(showInstallUpdateDialog);
     //print('course table init');
     getWeek().then((value) {
       setState(() {
-        week_value = value;
-        cur_week_value = value;
+        weekValue = value;
+        curWeekValue = value;
         //print('set cur week:$week_value');
       });
     });
     super.initState();
   }
 
+  check(Function showDialog) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    remoteInfo = await getUpdateInfo();
+//    print(packageInfo.version);
+//    print(remoteInfo.version);
+    if (packageInfo.version.hashCode == remoteInfo.version.hashCode) {
+//      print('无新版本');
+      setState(() {
+        isUpdate = 0;
+      });
+      return;
+    }
+//    print('有新版本');
+    showInstallUpdateDialog();
+  }
+
+  launchURL() {
+    launch(remoteInfo.address);
+  }
+
+  void showInstallUpdateDialog() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return WillPopScope(
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0),
+                    boxShadow: [
+                      //阴影
+                      BoxShadow(
+                        color: Colors.black12,
+                        //offset: Offset(2.0,2.0),
+                        blurRadius: 10.0,
+                      )
+                    ]),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+                      child: Text(
+                        '航胥 v${remoteInfo.version} 版本更新',
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新日期：${remoteInfo.date}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新内容：${remoteInfo.info}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: MaterialButton(
+                        color: Color(0x99FFFFFF),
+                        onPressed: launchURL,
+                        minWidth: double.infinity,
+                        child: Text(
+                          '点击下载',
+                          style: Theme.of(context).textTheme.body2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            onWillPop: () {
+              return new Future.value(false);
+            },
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    if (isUpdate == 1) {
+      return new Scaffold();
+    }
     return ShareWeekWidget(
-      week: week_value,
-      curWeek: cur_week_value,
+      week: weekValue,
+      curWeek: curWeekValue,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.lightBlue,
           title: Text('课程表'),
           actions: <Widget>[
             DropdownButton(
-              value: week_value,
-              hint: Text('第$week_value周'),
+              value: weekValue,
+              hint: Text('第$weekValue周'),
               items: getWeekItem(),
               onChanged: (_value) {
                 setState(() {
-                  week_value = _value;
+                  weekValue = _value;
                 });
               },
               iconSize: 20,
@@ -170,7 +266,7 @@ class CourseGridTable extends StatefulWidget {
 
 class _CourseGridTable extends State {
   int week;
-  int cur_week;
+  int curWeek;
 
   //Future<WeekCourseTable> courseList;
   final double blockHeight = 60;
@@ -178,19 +274,13 @@ class _CourseGridTable extends State {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    week = ShareWeekWidget
-        .of(context)
-        .week;
-    cur_week = ShareWeekWidget
-        .of(context)
-        .curWeek;
+    week = ShareWeekWidget.of(context).week;
+    curWeek = ShareWeekWidget.of(context).curWeek;
 
     super.didChangeDependencies();
     //print('didChangeDependencies:$week');
@@ -198,7 +288,6 @@ class _CourseGridTable extends State {
 
   @override
   void didUpdateWidget(StatefulWidget oldWidget) {
-    // TODO: implement didUpdateWidget
     //print('didUpdateWidget:$week');
     super.didUpdateWidget(oldWidget);
   }
@@ -206,7 +295,6 @@ class _CourseGridTable extends State {
   @override
   Widget build(BuildContext context) {
     PageSelect page = Provider.of<PageSelect>(context);
-    // TODO: implement build
     return Center(
       child: FutureBuilder(
           future: loadCourse(week, GlobalUser.studentID),
@@ -253,32 +341,37 @@ class _CourseGridTable extends State {
                 ],
               );
             } else {
-              if(snapshot.hasError){
-                if(snapshot.error == 401){
+              if (snapshot.hasError) {
+                if (snapshot.error == 401) {
                   return Container(
                     alignment: Alignment.center,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text("账号密码已失效，\n这可能是因为您修改了统一认证密码，\n请点击下方按钮以重新登录。"),
-                        SizedBox(height: 30,),
+                        SizedBox(
+                          height: 30,
+                        ),
                         RaisedButton(
                           child: Text("重新登录"),
-                          onPressed: (){
+                          onPressed: () {
                             GlobalUser.setIsLogin(false);
                             page.setPage(1);
-                            Navigator.of(context).pushNamedAndRemoveUntil('/loginPage', (Route route) =>false);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/loginPage', (Route route) => false);
                           },
                         ),
                       ],
                     ),
                   );
-                }else{
+                } else {
                   return Container(
                     alignment: Alignment.center,
                     child: Text(
                       "网络请求出错\n请稍后再试\n",
-                      style: TextStyle(fontSize: 24,),
+                      style: TextStyle(
+                        fontSize: 24,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -332,19 +425,18 @@ class _CourseGridTable extends State {
     return Column(
       children: List<Widget>.generate(
         14,
-            (index) =>
-            Container(
-              width: 40,
-              height: blockHeight,
-              color: Colors.white,
-              child: Center(
-                child: Text(
-                  '${_beginTime[index]}\n${index + 1}',
-                  softWrap: true,
-                  textAlign: TextAlign.center,
-                ),
-              ),
+        (index) => Container(
+          width: 40,
+          height: blockHeight,
+          color: Colors.white,
+          child: Center(
+            child: Text(
+              '${_beginTime[index]}\n${index + 1}',
+              softWrap: true,
+              textAlign: TextAlign.center,
             ),
+          ),
+        ),
       ),
     );
   }
@@ -352,16 +444,16 @@ class _CourseGridTable extends State {
   // 中间的所有列
   List<Widget> buildMainColumns() {
     Iterable<CourseT> weekcourses =
-    courses.where((c) => c.week.contains(week.toString())); //当周的课
+        courses.where((c) => c.week.contains(week.toString())); //当周的课
 
     return List<Widget>.generate(7, (index) {
       Iterable<CourseT> day =
-      weekcourses.where((c) => c.weekDay == index + 1); // 当天的课
+          weekcourses.where((c) => c.weekDay == index + 1); // 当天的课
 
       List<Widget> cols = new List();
       for (int i = 1; i <= 14; i++) {
         Iterable<CourseT> section =
-        day.where((c) => c.sectionStart == i); //当节的课
+            day.where((c) => c.sectionStart == i); //当节的课
         List<CourseT> sectionList = section.toList();
         // 没找到就用空块填充
         if (sectionList.length == 0) {
@@ -391,7 +483,7 @@ class _CourseGridTable extends State {
               height: blockHeight,
 //              backgroundColor: _tableColors[Random().nextInt(_tableColors.length)],
               backgroundColor:
-              _tableColors[sectionList.first.color % _tableColors.length],
+                  _tableColors[sectionList.first.color % _tableColors.length],
               textColor: Colors.white,
               onTap: () => onTap(sectionList),
             ),
@@ -416,8 +508,7 @@ class _CourseGridTable extends State {
         child: Row(
           children: <Widget>[
             buildLeftColumn(),
-          ]
-            ..addAll(buildMainColumns()),
+          ]..addAll(buildMainColumns()),
         ),
       ),
     );
@@ -443,9 +534,9 @@ class _CourseGridTable extends State {
         contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
       ));
       l.add(ListTile(
-          leading: Text("时间："),
-          title: Text(timeStr(temp.sectionStart, temp.sectionEnd)),
-          contentPadding: EdgeInsets.symmetric(horizontal: 30.0),));
+        title: Text("时间：  ${timeStr(temp.sectionStart, temp.sectionEnd)}"),
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+      ));
       l.add(ListTile(
         title: Text("地点：  ${temp.location}"),
         contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
@@ -461,10 +552,10 @@ class _CourseGridTable extends State {
     return l;
   }
 
-  String timeStr(int start, int end){
-    if(start!=end){
+  String timeStr(int start, int end) {
+    if (start != end) {
       return "第$start-$end节";
-    }else{
+    } else {
       return "第$start节";
     }
   }
@@ -514,10 +605,7 @@ class WeekBar extends StatelessWidget {
     return Positioned(
       top: 0,
       child: Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        width: MediaQuery.of(context).size.width,
         color: color,
         child: Row(
           children: <Widget>[
@@ -553,10 +641,6 @@ class WeekBar extends StatelessWidget {
   ];
 
   Widget buildWeek(int weekDay) {
-    DateTime dateTime = now.add(Duration(days: -now.weekday + weekDay));
-    int month = dateTime.month;
-    int day = dateTime.day;
-
     return Expanded(
       child: Center(
         child: Column(
@@ -604,7 +688,8 @@ class CourseBlock extends StatelessWidget {
   final double height;
   final onTap;
 
-  CourseBlock(this.course, {
+  CourseBlock(
+    this.course, {
     this.backgroundColor = Colors.black12,
     this.textColor = Colors.grey,
     this.size = 1,

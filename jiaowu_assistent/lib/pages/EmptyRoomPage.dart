@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:dio/dio.dart';
 import 'dart:async';
 import 'package:jiaowuassistent/pages/User.dart';
-
-import 'package:jiaowuassistent/pages/CourseTablePage.dart';
-import 'package:jiaowuassistent/pages/User.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EmptyRoomPage extends StatefulWidget {
   @override
@@ -77,6 +75,105 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   String currBuilding = '';
   bool isDisabled = false;
   int initLength = 0;
+  UpdateInfo remoteInfo;
+  static int isUpdate = 1;
+
+  @override
+  initState() {
+    super.initState();
+    check(showInstallUpdateDialog);
+  }
+
+  check(Function showDialog) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    remoteInfo = await getUpdateInfo();
+    print(packageInfo.version);
+    print(remoteInfo.version);
+    if (packageInfo.version.hashCode == remoteInfo.version.hashCode) {
+      print('无新版本');
+      setState(() {
+        isUpdate = 0;
+      });
+      return;
+    }
+    print('有新版本');
+    showInstallUpdateDialog();
+  }
+
+  launchURL() {
+    launch(remoteInfo.address);
+  }
+
+  void showInstallUpdateDialog() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return WillPopScope(
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0),
+                    boxShadow: [
+                      //阴影
+                      BoxShadow(
+                        color: Colors.black12,
+                        //offset: Offset(2.0,2.0),
+                        blurRadius: 10.0,
+                      )
+                    ]),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+                      child: Text(
+                        '航胥 v${remoteInfo.version} 版本更新',
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新日期：${remoteInfo.date}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新内容：${remoteInfo.info}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: MaterialButton(
+                        color: Color(0x99FFFFFF),
+                        onPressed: launchURL,
+                        minWidth: double.infinity,
+                        child: Text(
+                          '点击下载',
+                          style: Theme.of(context).textTheme.body2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            onWillPop: () {
+              return new Future.value(false);
+            },
+          );
+        });
+  }
 
   Future<void> _selectDate() async {
     final DateTime date = await showDatePicker(
@@ -278,7 +375,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
 
   List<DropdownMenuItem> _buildingList = [];
 
-  List<List<DropdownMenuItem>> _BuildingList = [
+  List<List<DropdownMenuItem>> _buildingList2 = [
     [
       DropdownMenuItem(
         child: Text('教零'),
@@ -375,6 +472,9 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isUpdate == 1) {
+      return new Scaffold();
+    }
     return Scaffold(
         appBar: AppBar(
           title: Text('空教室查询'),
@@ -461,7 +561,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     onChanged: (value) {
                       setState(() {
                         _selectedCampus = value;
-                        _buildingList = _BuildingList[_selectedCampus - 1];
+                        _buildingList = _buildingList2[_selectedCampus - 1];
 //                        if (checkNull())
 //                          _search();
                       });

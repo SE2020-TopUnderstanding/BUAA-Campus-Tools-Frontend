@@ -1,15 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
-import 'package:jiaowuassistent/GlobalUser.dart';
-
-//import 'package:path_provider/path_provider.dart';
+import 'package:jiaowuassistent/encrypt.dart';
 
 class EmptyRoom {
   String _building;
@@ -180,19 +175,21 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 //  return CourseCenter.fromJson(json.decode(response));
 
   final response =
-      await http.get('http://114.115.208.32:8000/ddl/?student_id=$studentID');
-  print('http://114.115.208.32:8000/ddl/?student_id=$studentID');
+      await http.get('http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+  print('http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+//  throw 401;
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
     Utf8Decoder decode = new Utf8Decoder();
     return CourseCenter.fromJson(
         json.decode(decode.convert(response.bodyBytes)));
-        //json.decode('[]'));//测试空list
+    //json.decode('[]'));//测试空list
   } else {
+    throw response.statusCode;
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load grade center');
+//    throw Exception('Failed to load grade center');
   }
 }
 
@@ -200,7 +197,7 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 class Grade {
   final String name;
   final double credit;
-  final int score;
+  final String score;
 
   Grade({this.name, this.credit, this.score});
 
@@ -208,7 +205,7 @@ class Grade {
     return Grade(
         name: parsedJson['course_name'],
         credit: parsedJson['credit'],
-        score: parsedJson['score']);
+        score: parsedJson['origin_score']);
   }
 }
 
@@ -238,15 +235,15 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
 //  return temp;
 
   final response = await http.get(
-      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
   print(
-      'http://114.115.208.32:8000/score/?student_id=$studentID&semester=$semester');
+      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
   final averageScore = await http
-      .get('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
-  print('http://114.115.208.32:8000/score/avg_score/?student_id=$studentID');
+      .get('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+  print('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
   final gpa = await http
-      .get('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
-  print('http://114.115.208.32:8000/score/gpa/?student_id=$studentID');
+      .get('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+  print('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -257,9 +254,10 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
         json.decode(decode.convert(averageScore.bodyBytes)),
         json.decode(decode.convert(gpa.bodyBytes)));
   } else {
+    throw response.statusCode;
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load course center');
+//    throw Exception('Failed to load course center');
   }
 }
 
@@ -314,7 +312,6 @@ class TeacherCourse {
 
   @override
   String toString() {
-    // TODO: implement toString
     return name;
   }
 }
@@ -327,7 +324,8 @@ class CourseT {
   int weekDay;
   int sectionStart;
   int sectionEnd;
-  int color=1;
+  int color = 1;
+
   CourseT({
     this.name,
     this.location,
@@ -339,7 +337,7 @@ class CourseT {
   });
 
   CourseT.fromJson(Map<String, dynamic> json) {
-    try{
+    try {
       name = json['name'];
       if (json['teacher_course'] != null) {
         teacherCourse = new List<TeacherCourse>();
@@ -363,29 +361,26 @@ class CourseT {
       weekDay = int.parse(timess[0]);
       sectionStart = int.parse(timess[1]);
       sectionEnd = int.parse(timess[2]);
-    }catch(e){
+    } catch (e) {
       throw "解析课程出错";
     }
-
   }
 
   @override
-  // TODO: implement hashCode
   int get hashCode {
     return name.hashCode;
   }
 
   @override
   bool operator ==(other) {
-    // TODO: implement ==
-    if(other is! CourseT){
+    if (other is! CourseT) {
       return false;
     }
     final CourseT temp = other;
-    return (name.compareTo(temp.name)==0)?true:false;
+    return (name.compareTo(temp.name) == 0) ? true : false;
   }
 
-  void setColor(int color){
+  void setColor(int color) {
     this.color = color;
   }
 }
@@ -398,27 +393,26 @@ class WeekCourseTable {
   }
 
   WeekCourseTable.fromJson(List<dynamic> jsonList) {
-    try{
+    try {
       courses = jsonList.map((i) => CourseT.fromJson(i)).toList();
-      print("before map");
+//      print("before map");
       Map<String, List<CourseT>> map = new Map.fromIterable(courses,
           key: (key) => key.name,
           value: (value) {
             return courses.where((item) {
-              return (value.name.compareTo(item.name)==0)?true:false;
+              return (value.name.compareTo(item.name) == 0) ? true : false;
             }).toList();
           });
       int i = 1;
-      map.forEach((k,v){
+      map.forEach((k, v) {
         v.forEach((value) => value.setColor(i));
         i++;
       });
-      print("after map");
+//      print("after map");
       //throw "error";
-    }catch(e){
+    } catch (e) {
       throw "解析课程列表出错";
     }
-
   }
 }
 
@@ -437,28 +431,31 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   DateTime lastModified = file.lastModifiedSync();
   */
   CancelToken _can = new CancelToken();
-  Timer(Duration(milliseconds: 10),(){_can.cancel("定时");});//测试错误
+  Timer(Duration(milliseconds: 10), () {
+    _can.cancel("定时");
+  }); //测试错误
   String ss;
   //暂定先直接用网络请求
   print('get course table from http');
   Dio dio = new Dio();
   Response response;
-  try{
+  try {
     response = await dio.request(
-      'http://114.115.208.32:8000/timetable/?student_id=$studentID&week=all',
-      options: Options(method: "GET", responseType: ResponseType.plain),);
-      //cancelToken: _can);//测试错误
-  } on DioError catch(e){
+      'http://114.115.208.32:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
+      options: Options(method: "GET", responseType: ResponseType.plain),
+    );
+    //cancelToken: _can);//测试错误
+  } on DioError catch (e) {
     //throw 401;//测试
-    if(e.type == DioErrorType.RESPONSE){
-      if(e.response.statusCode == 401){
+    if (e.type == DioErrorType.RESPONSE) {
+      if (e.response.statusCode == 401) {
         throw 401;
-      }else if(e.response.statusCode == 402){
+      } else if (e.response.statusCode == 402) {
         throw 402;
-      }else{
+      } else {
         throw "网络请求出错";
       }
-    }else{
+    } else {
       throw "网络请求出错";
     }
   }

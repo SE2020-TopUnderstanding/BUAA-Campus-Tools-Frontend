@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../GlobalUser.dart';
-import '../GlobalUser.dart';
 import 'CourseCenterPage.dart';
 import 'CourseTablePage.dart';
 import 'ScorePage.dart';
