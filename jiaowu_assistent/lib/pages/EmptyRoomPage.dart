@@ -73,7 +73,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
   List<String> _list;
   String response = '';
   String currBuilding = '';
-  bool isDisabled = false;
+  bool isDisabled = true;
   int initLength = 0;
   UpdateInfo remoteInfo;
   static int isUpdate = 1;
@@ -198,7 +198,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     }
     try {
       setState(() {
-        isDisabled = true;
+        isDisabled = false;
         initLength = 1;
       });
       currBuilding = buildingMap[_selectedCampus - 1][_selectedBuilding];
@@ -220,7 +220,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
               _list = temp.getRooms();
             }
           }
-          isDisabled = false;
+          isDisabled = true;
         });
       });
     } catch (e) {
@@ -525,13 +525,15 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                   CupertinoButton(
                     child: Text("查询"),
                     padding: EdgeInsets.symmetric(horizontal: 20),
+                    disabledColor: Colors.grey,
                     color: Colors.lightBlue,
-                    onPressed: () {
-                      if (isDisabled)
-                        return null;
-                      else
-                        _search();
-                    },
+                    onPressed: isDisabled ? null : ()=>{_search()},
+//                    onPressed: () {
+//                      if (isDisabled)
+//                        null;
+//                      else
+//                        _search();
+//                    },
                     pressedOpacity: 0.8,
                   )
                 ],
@@ -562,6 +564,8 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       setState(() {
                         _selectedCampus = value;
                         _buildingList = _buildingList2[_selectedCampus - 1];
+                        if (checkNull())
+                          isDisabled = false;
 //                        if (checkNull())
 //                          _search();
                       });
@@ -577,6 +581,8 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     onChanged: (value) {
                       setState(() {
                         _selectedBuilding = value;
+                        if (checkNull())
+                          isDisabled = false;
 //                        if (checkNull())
 //                          _search();
                       });
@@ -600,6 +606,8 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                             _showAlertDialog();
                           } else {
                             _selectedBegin = value;
+                            if (checkNull())
+                              isDisabled = false;
 //                            if (checkNull())
 //                              _search();
                           }
@@ -625,6 +633,8 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                             _showAlertDialog();
                           } else {
                             _selectedEnd = value;
+                            if (checkNull())
+                              isDisabled = false;
 //                            if (checkNull())
 //                              _search();
                           }

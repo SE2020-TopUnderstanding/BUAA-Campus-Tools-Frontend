@@ -132,6 +132,12 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     List<DataRow> dataRows = [];
     var now = DateTime.now();
     for (int i = 0; i < course.content.length; i++) {
+      if ((course.content[i].status.contains('已提交') ||
+          course.content[i].status.contains('重新提交') ||
+          course.content[i].status.contains('已返还') ||
+          course.content[i].time == "")
+      && (ifShowAll == 0 ? false : true))
+        continue;
       var time, duration;
       if (course.content[i].time != "") {
         time = DateTime.parse(course.content[i].time);
@@ -168,6 +174,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
 
   List<int> mList = []; //组成一个int类型数组，用来控制索引
   List<ExpandStateBean> courseList = [];
+  int ifShowAll = 0;  // 0->展示全部ddl，1->不展示全部ddl
 
   @override
   Widget build(BuildContext context) {
@@ -179,6 +186,30 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
       appBar: AppBar(
         title: Text("课程中心DDL"),
         backgroundColor: Colors.lightBlue,
+        actions: <Widget>[
+          DropdownButton(
+            icon: Icon(Icons.arrow_drop_down),
+            iconSize: 30,
+            iconEnabledColor: Colors.black,
+            value: ifShowAll,
+            items: [
+              DropdownMenuItem(
+                child: Text('展示全部ddl'),
+                value: 0,
+              ),
+              DropdownMenuItem(
+                child: Text('只展示未完成ddl'),
+                value: 1,
+              )
+            ],
+            onChanged: (_value) {
+              setState(() {
+                ifShowAll = _value;
+              });
+            },
+          ),
+          //IconButton(icon: Icon(Icons.refresh), onPressed: null,),暂不支持手动刷新
+        ],
       ),
       //加入可滚动组件(ExpansionPanelList必须使用可滚动的组件)
       body: FutureBuilder<CourseCenter>(
