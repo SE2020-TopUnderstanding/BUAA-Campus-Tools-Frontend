@@ -133,11 +133,10 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     var now = DateTime.now();
     for (int i = 0; i < course.content.length; i++) {
       if ((course.content[i].status.contains('已提交') ||
-          course.content[i].status.contains('重新提交') ||
-          course.content[i].status.contains('已返还') ||
-          course.content[i].time == "")
-      && (ifShowAll == 0 ? false : true))
-        continue;
+              course.content[i].status.contains('重新提交') ||
+              course.content[i].status.contains('已返还') ||
+              course.content[i].time == "") &&
+          (GlobalUser.ddlChoice == 0 ? false : true)) continue;
       var time, duration;
       if (course.content[i].time != "") {
         time = DateTime.parse(course.content[i].time);
@@ -154,13 +153,15 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                     Icons.check_circle_outline,
                     color: Colors.green,
                   )
-                : duration.inHours < 0
-                    ? Text('已截止', style: TextStyle(color: Colors.red))
-                    : duration.inDays > 0
-                        ? Text('剩${duration.inDays.toString()}天',
-                            style: TextStyle(color: Colors.orange))
-                        : Text('剩${duration.inHours.toString()}时',
-                            style: TextStyle(color: Colors.deepOrange)),
+                : course.content[i].status.contains('未显示')
+                    ? Text('未显示', style: TextStyle(color: Colors.orange))
+                    : duration.inHours < 0
+                        ? Text('已截止', style: TextStyle(color: Colors.red))
+                        : duration.inDays > 0
+                            ? Text('剩${duration.inDays.toString()}天',
+                                style: TextStyle(color: Colors.orange))
+                            : Text('剩${duration.inHours.toString()}时',
+                                style: TextStyle(color: Colors.deepOrange)),
           ),
           DataCell(Text('${course.content[i].text}')),
           DataCell(course.content[i].time == ""
@@ -174,7 +175,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
 
   List<int> mList = []; //组成一个int类型数组，用来控制索引
   List<ExpandStateBean> courseList = [];
-  int ifShowAll = 0;  // 0->展示全部ddl，1->不展示全部ddl
+  int ifShowAll = GlobalUser.ddlChoice; // 0->展示全部ddl，1->不展示全部ddl
 
   @override
   Widget build(BuildContext context) {
@@ -189,22 +190,22 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
         actions: <Widget>[
           DropdownButton(
             icon: Icon(Icons.arrow_drop_down),
-            iconSize: 30,
-            iconEnabledColor: Colors.black,
+            iconSize: 20,
             value: ifShowAll,
             items: [
               DropdownMenuItem(
-                child: Text('展示全部ddl'),
+                child: Text('全部ddl'),
                 value: 0,
               ),
               DropdownMenuItem(
-                child: Text('只展示未完成ddl'),
+                child: Text('未完成ddl'),
                 value: 1,
               )
             ],
             onChanged: (_value) {
               setState(() {
                 ifShowAll = _value;
+                GlobalUser.setDDLChoice(ifShowAll);
               });
             },
           ),
