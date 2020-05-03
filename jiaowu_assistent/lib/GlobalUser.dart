@@ -43,6 +43,7 @@ class GlobalUser {
     _sp.setString('name', nameValue);
     _sp.setString('studentID', studentIDValue);
     _sp.setInt('pageChoice', 1); //默认课表
+    _sp.setInt('ddlChoice', 0); //默认显示已完成
   }
 
   //更改默认主页
@@ -68,6 +69,14 @@ class GlobalUser {
 
   static int get pageChoice {
     return _sp.getInt('pageChoice') ?? 1;
+  }
+
+  static setDDLChoice(int type) async {
+    _sp.setInt('ddlChoice', type);
+  }
+
+  static int get ddlChoice {
+    return _sp.getInt('ddlChoice') ?? 0;
   }
 }
 
