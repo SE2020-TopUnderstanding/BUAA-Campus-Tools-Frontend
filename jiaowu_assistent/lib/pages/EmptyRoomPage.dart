@@ -186,6 +186,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     if (date == null) return;
 
     setState(() {
+      isDisabled = false;
       _selectedDate = date;
     });
   }
