@@ -25,8 +25,9 @@ class CourseEvaluationPage extends StatefulWidget {
 
 class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   final _evaluationList = [
-    ['软件工程', 3.2],
-    ['计算机网络', 4.5]
+    ['软件工程', '2学分', 4.2],
+    ['计算机网络', '2学分', 4.5],
+    ['计算机网络实验', '1学分', 3.7]
   ];
   TextEditingController _searchController = new TextEditingController();
   FocusNode _focusNodeSearch = new FocusNode();
@@ -47,7 +48,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   }
 
   Widget _courseInformation(
-      String courseName, double courseScore, Widget page) {
+      String courseName, String courseCredit, double courseScore) {
     return new Card(
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -55,10 +56,15 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
             Expanded(
               child: ListTile(
                 title: Text(courseName),
-                subtitle: Text('2学分'),
+                subtitle: Text(courseCredit),
                 onTap: () {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => page));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CourseEvaluationDetailPage(
+                              courseName: courseName,
+                              courseCredit: courseCredit,
+                              courseScore: courseScore)));
                 },
               ),
             ),
@@ -97,7 +103,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
             ),
             SizedBox(height: 20),
             Text(courseScore.toString() + '/5.0'),
-            SizedBox(height: 20,width: 20),
+            SizedBox(height: 20, width: 20),
           ]),
     );
   }
@@ -141,7 +147,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                   ),
                   onPressed: () {},
                 ),
-                SizedBox(height: 20,width: 20),
+                SizedBox(height: 20, width: 20),
               ],
             ),
             Container(
@@ -151,9 +157,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                   itemCount: _evaluationList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return _courseInformation(
-                        _evaluationList[index][0],
-                        _evaluationList[index][1],
-                        CourseEvaluationDetailPage());
+                      _evaluationList[index][0],
+                      _evaluationList[index][1],
+                      _evaluationList[index][2],
+                    );
                   }),
             )
           ],
