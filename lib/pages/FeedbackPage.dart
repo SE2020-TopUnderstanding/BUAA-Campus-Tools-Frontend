@@ -40,7 +40,9 @@ class _FeedbackPage extends State<FeedbackPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => FeedbackDetailPage()));
+                                builder: (context) => FeedbackDetailPage(
+                                      kind: items[index],
+                                    )));
                       },
                       contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
                     ),
