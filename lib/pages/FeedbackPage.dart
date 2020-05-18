@@ -15,7 +15,7 @@ class _FeedbackPage extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('问题反馈'),
+          title: Text('使用反馈'),
           backgroundColor: Colors.lightBlue,
         ),
         body: Column(
@@ -42,11 +42,11 @@ class _FeedbackPage extends State<FeedbackPage> {
                             MaterialPageRoute(
                                 builder: (context) => FeedbackDetailPage()));
                       },
-                      contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
                     ),
                     decoration: BoxDecoration(
                         border: Border(
-                            top: BorderSide(width: 1, color: Colors.grey))),
+                            bottom: BorderSide(width: 1, color: Colors.grey))),
                   );
                 },
               ),

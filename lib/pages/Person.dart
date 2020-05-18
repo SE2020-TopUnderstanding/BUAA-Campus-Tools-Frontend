@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiaowuassistent/pages/FeedbackPage.dart';
 import 'package:jiaowuassistent/pages/HelpCenterPage.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'DIYPage.dart';
@@ -178,6 +179,9 @@ class _PersonPageState extends State<PersonPage> {
                 ),
 //            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
               ),
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 child: ListTile(
                   leading: Icon(
@@ -185,7 +189,7 @@ class _PersonPageState extends State<PersonPage> {
                     size: 20,
                   ),
                   title: Text(
-                    "问题反馈",
+                    "使用反馈",
                     style: TextStyle(fontSize: 20),
                   ),
                   trailing: Icon(
@@ -193,8 +197,10 @@ class _PersonPageState extends State<PersonPage> {
                     size: 20,
                   ),
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => DIYPage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackPage()));
                   },
                   contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
                 ),
