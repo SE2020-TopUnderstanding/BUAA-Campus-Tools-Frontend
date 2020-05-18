@@ -489,3 +489,49 @@ Future<int> getWeek() async {
   int weekNumber = int.parse(response.data[0]['week']);
   return weekNumber;
 }
+
+class EvaluationCourse{
+  final String courseName;
+  final String teacherName;
+  final String bid;
+
+  EvaluationCourse({this.courseName, this.teacherName, this.bid});
+
+  factory EvaluationCourse.fromJson(Map<String, dynamic> prasedJosn){
+    return EvaluationCourse(
+      courseName: prasedJosn['course_name'],
+      teacherName: prasedJosn['teacher_name'],
+      bid: prasedJosn['bid']
+    );
+  }
+}
+
+class EvaluationCourseList{
+  final List<EvaluationCourse> evaluationCourseList;
+
+  EvaluationCourseList(this.evaluationCourseList);
+
+  factory EvaluationCourseList.fromJson(List<dynamic> parsedJson){
+    List<EvaluationCourse> courseList = parsedJson.map((i)=>EvaluationCourse.fromJson(i));
+    return EvaluationCourseList(courseList);
+  }
+}
+
+Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String teacher, String type) async{
+  Dio dio = new Dio();
+  Response response;
+  try {
+    print('http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type');
+    response = await dio.request(
+        'http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type',
+        options: Options(method: "GET", responseType: ResponseType.json));
+  } catch (e) {
+    throw('参数名称或者数目错误');
+  }
+  try {
+    List<dynamic> jsonList = json.decode(response.data);
+    return EvaluationCourseList.fromJson(jsonList);
+  } catch(e){
+    throw('课程评价列表解析错误');
+  }
+}

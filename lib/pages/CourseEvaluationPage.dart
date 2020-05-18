@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseEvaluationDetailPage.dart';
+import 'package:jiaowuassistent/pages/User.dart';
 
 class MyRectClipper extends CustomClipper<Rect> {
   final double width;
@@ -35,6 +36,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   @override
   void initState() {
     super.initState();
+    print(loadEvaluationCourseList('计', '罗', '核心专业类'));
   }
 
   Widget getLeftStar(double radio) {
