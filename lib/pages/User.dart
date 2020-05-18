@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/encrypt.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
 
 class EmptyRoom {
   String _building;
@@ -34,12 +35,12 @@ Future<EmptyRoom> getEmptyRoom(BuildContext context, String campus, String date,
     String section, String building) async {
   try {
     Response response = await Dio().get(
-        'http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section',
+        'http://hangxu.sharinka.top:8000/classroom/?campus=$campus &date=$date &section=$section',
         options: Options(
             responseType: ResponseType
                 .plain)); // http://www.mocky.io/v2/5e9a690133000021bf7b3008
     print(
-        'Request(http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section)');
+        'Request(http://hangxu.sharinka.top:8000/classroom/?campus=$campus &date=$date &section=$section)');
     Map<String, dynamic> data = json.decode(response.data.toString());
     print(response);
     if (data == null) {
@@ -174,9 +175,10 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 //      await rootBundle.loadString('assets/data/courseCenter.json');
 //  return CourseCenter.fromJson(json.decode(response));
 
-  final response =
-      await http.get('http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
-  print('http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+  final response = await http.get(
+      'http://hangxu.sharinka.top:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'http://hangxu.sharinka.top:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
 //  throw 401;
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -235,15 +237,17 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
 //  return temp;
 
   final response = await http.get(
-      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
+      'http://hangxu.sharinka.top:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
   print(
-      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
-  final averageScore = await http
-      .get('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
-  print('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
-  final gpa = await http
-      .get('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
-  print('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+      'http://hangxu.sharinka.top:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
+  final averageScore = await http.get(
+      'http://hangxu.sharinka.top:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'http://hangxu.sharinka.top:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+  final gpa = await http.get(
+      'http://hangxu.sharinka.top:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'http://hangxu.sharinka.top:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -280,8 +284,8 @@ class UpdateInfo {
 }
 
 Future<UpdateInfo> getUpdateInfo() async {
-  final response = await http.get('http://114.115.208.32:8000/version');
-  print('http://114.115.208.32:8000/version');
+  final response = await http.get('http://hangxu.sharinka.top:8000/version');
+  print('http://hangxu.sharinka.top:8000/version');
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -291,6 +295,30 @@ Future<UpdateInfo> getUpdateInfo() async {
     // If the server did not return a 200 OK response,
     // then throw an exception.
     throw Exception('Failed to load update info');
+  }
+}
+
+Future<void> postMessage(String kind, String content) async {
+  final response =
+      await http.post('http://hangxu.sharinka.top:8000/feedback/', body: {
+    "student_id": "${Encrypt.encrypt(GlobalUser.studentID)}",
+    "kind": "$kind",
+    "content": "$content"
+  });
+  print('post -> http://hangxu.sharinka.top:8000/feedback/');
+  print('student_id: ${Encrypt.encrypt(GlobalUser.studentID)}');
+  print('kind: $kind');
+  print('content: $content');
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    print('post success');
+    return;
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    print(response.statusCode);
+    throw Exception('Failed to post message');
   }
 }
 
@@ -441,7 +469,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   Response response;
   try {
     response = await dio.request(
-      'http://114.115.208.32:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
+      'http://hangxu.sharinka.top:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
       options: Options(method: "GET", responseType: ResponseType.plain),
     );
     //cancelToken: _can);//测试错误
@@ -478,7 +506,7 @@ Future<int> getWeek() async {
   DateTime now = DateTime.now();
   try {
     response = await dio.request(
-        'http://114.115.208.32:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
+        'http://hangxu.sharinka.top:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
         options: Options(method: "GET", responseType: ResponseType.json));
   } catch (e) {
     e.toString();

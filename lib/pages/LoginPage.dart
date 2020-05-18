@@ -172,7 +172,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
       Dio dio = new Dio(options);
       try {
         showLoading(context);
-        response = await dio.request('http://114.115.208.32:8000/login/',
+        response = await dio.request('http://hangxu.sharinka.top:8000/login/',
             data: {
               "usr_name": _userNameController.text,
               "usr_password": Encrypt.encrypt2(_passwordController.text)
@@ -217,9 +217,11 @@ class _LoginPageStateBody extends State<LoginPageBody> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
+            titlePadding: EdgeInsets.fromLTRB(24.0, 14.0, 24.0, 0.0),
             title: Text(
-              '报错',
+              '错  误',
               textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             children: <Widget>[
               Text(

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiaowuassistent/pages/FeedbackPage.dart';
 import 'package:jiaowuassistent/pages/HelpCenterPage.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'DIYPage.dart';
@@ -149,6 +150,7 @@ class _PersonPageState extends State<PersonPage> {
                         MaterialPageRoute(
                             builder: (context) => HelpCenterPage()));
                   },
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
                 ),
 //            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
               ),
@@ -173,6 +175,34 @@ class _PersonPageState extends State<PersonPage> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => DIYPage()));
                   },
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+                ),
+//            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                child: ListTile(
+                  leading: Icon(
+                    Icons.chat_bubble_outline,
+                    size: 20,
+                  ),
+                  title: Text(
+                    "使用反馈",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  trailing: Icon(
+                    Icons.keyboard_arrow_right,
+                    size: 20,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FeedbackPage()));
+                  },
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
                 ),
 //            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
               ),
