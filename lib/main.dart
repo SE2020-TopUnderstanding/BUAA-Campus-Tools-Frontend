@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: '航胥',
           theme: ThemeData(
-            primaryColor: Colors.grey,
+            primaryColor: Colors.lightBlue,
           ),
           home: getHomePage(),
           routes: {
