@@ -145,7 +145,7 @@ packages:
       name: flutter_cupertino_date_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.24"
+    version: "1.0.26"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -212,6 +212,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.17.9"
+  jpush_flutter:
+    dependency: "direct main"
+    description:
+      name: jpush_flutter
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.0"
   js:
     dependency: transitive
     description:
@@ -282,6 +289,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.0"
+  platform:
+    dependency: transitive
+    description:
+      name: platform
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.2.1"
   plugin_platform_interface:
     dependency: transitive
     description:
