@@ -43,7 +43,7 @@ class _CourseEvaluationDetailPageState
     for (int i = 0; i < _reviewList.length; i++) {
       _expandStateList.add(ExpandState(i, false));
     }
-    print(_expandStateList);
+//    print(_expandStateList);
   }
 
   //用来获得不同比例的星星
@@ -122,6 +122,9 @@ class _CourseEvaluationDetailPageState
               return Container(
                   padding: EdgeInsets.all(16.0),
                   // ignore: deprecated_member_use
+                  decoration: BoxDecoration(
+                      border: Border(
+                          top: BorderSide(width: 1, color: Colors.grey))),
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -229,7 +232,6 @@ class _CourseEvaluationDetailPageState
                         fontSize: 44,
                       ),
                     ),
-
                   ],
                 )),
                 Column(
@@ -238,15 +240,9 @@ class _CourseEvaluationDetailPageState
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-//                    Row(
-//                      children: <Widget>[
-//                        Text(
-//                          widget.courseScore.toString(),
-//                          style: new TextStyle(fontSize: 16),
-//                        ),
-//                        fiveStars(widget.courseScore, 28),
-//                      ],
-//                    ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           children: <Widget>[
                             Text('5星'),
@@ -354,7 +350,6 @@ class _CourseEvaluationDetailPageState
                     ),
                   ],
                 )
-
               ],
             ),
           ),
