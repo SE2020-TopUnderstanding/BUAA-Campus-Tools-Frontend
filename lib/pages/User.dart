@@ -539,3 +539,125 @@ Future<int> getWeek() async {
   int weekNumber = int.parse(response.data[0]['week']);
   return weekNumber;
 }
+
+class EvaluationCourse{
+  final String courseName;
+  final String department;
+  final String bid;
+  final double score;
+  final String credit;
+
+  EvaluationCourse({this.courseName, this.department, this.bid, this.score, this.credit});
+
+  factory EvaluationCourse.fromJson(Map<String, dynamic> parsedJson){
+    return EvaluationCourse(
+      courseName: parsedJson['course_name'],
+      department: parsedJson['department'],
+      bid: parsedJson['bid'],
+      credit: parsedJson['credit'],
+      score: parsedJson['avg_score']
+    );
+  }
+}
+
+class EvaluationCourseList{
+  final List<EvaluationCourse> evaluationCourseList;
+
+  EvaluationCourseList(this.evaluationCourseList);
+
+  factory EvaluationCourseList.fromJson(List<dynamic> parsedJson){
+    List<EvaluationCourse> courseList = parsedJson.map((i)=>EvaluationCourse.fromJson(i)).toList();
+    return EvaluationCourseList(courseList);
+  }
+}
+
+Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String teacher, String type) async{
+  Dio dio = new Dio();
+  Response response;
+//  try {
+//    print('http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type');
+//    response = await dio.request(
+//        'http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type',
+//        options: Options(method: "GET", responseType: ResponseType.json));
+//  } catch (e) {
+//    throw('参数名称或者数目错误');
+//  }
+//  try {
+//    List<dynamic> jsonList = json.decode(response.data);
+    List<dynamic> jsonList = [
+      {
+          "bid":"111",
+          "course_name":'软件工程(Software Engineering)',
+          "credit":'2学分',
+          "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+      {
+        "bid":"111",
+        "course_name":'软件工程(Software Engineering)',
+        "credit":'2学分',
+        "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+      {
+        "bid":"111",
+        "course_name":'软件工程(Software Engineering)',
+        "credit":'2学分',
+        "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+      {
+        "bid":"111",
+        "course_name":'软件工程(Software Engineering)',
+        "credit":'2学分',
+        "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+      {
+        "bid":"111",
+        "course_name":'软件工程 (Software Engineering)',
+        "credit":'2学分',
+        "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+    ];
+    return EvaluationCourseList.fromJson(jsonList);
+//  } catch(e){
+//    throw('课程评价列表解析错误');
+//  }
+}
