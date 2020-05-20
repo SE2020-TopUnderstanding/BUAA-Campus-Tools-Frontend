@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/encrypt.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:jpush_flutter/jpush_flutter.dart';
 
 class EmptyRoom {
   String _building;
@@ -121,6 +122,7 @@ String formatError(DioError e) {
   }
 }
 
+//课程中心用
 class DDL {
   final String time;
   final String text;
@@ -136,7 +138,6 @@ class DDL {
   }
 }
 
-//课程中心用
 class Course {
   final String name;
   final List<DDL> content;
@@ -174,7 +175,6 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 //  String response =
 //      await rootBundle.loadString('assets/data/courseCenter.json');
 //  return CourseCenter.fromJson(json.decode(response));
-
   final response = await http.get(
       'http://hangxu.sharinka.top:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
   print(
@@ -184,8 +184,30 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
     // If the server did return a 200 OK response,
     // then parse the JSON.
     Utf8Decoder decode = new Utf8Decoder();
-    return CourseCenter.fromJson(
-        json.decode(decode.convert(response.bodyBytes)));
+    CourseCenter temp =
+        CourseCenter.fromJson(json.decode(decode.convert(response.bodyBytes)));
+
+    final JPush jpush = new JPush();
+    for (int i = 0; i < temp.courses.length; i++) {
+      for (int j = 0; j < temp.courses[i].content.length; j++) {
+        /*两小时前发本地推送*/
+        var fireDate = DateTime.fromMillisecondsSinceEpoch(
+            DateTime.parse(temp.courses[i].content[j].time)
+                    .millisecondsSinceEpoch -
+                7200000);
+        var localNotification = LocalNotification(
+          id: 234,
+          title: 'DDL提醒',
+          buildId: 1,
+          content:
+              '${temp.courses[i].content[j].text}，截止时间${temp.courses[i].content[j].time}',
+          fireTime: fireDate,
+        );
+        jpush.sendLocalNotification(localNotification);
+      }
+    }
+
+    return temp;
     //json.decode('[]'));//测试空list
   } else {
     throw response.statusCode;
