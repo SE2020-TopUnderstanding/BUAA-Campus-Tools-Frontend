@@ -498,3 +498,154 @@ Future<int> getWeek() async {
   int weekNumber = int.parse(response.data[0]['week']);
   return weekNumber;
 }
+
+class schoolCalendarStr {
+  String schoolYear;
+  String firstSemester;
+  String winterSemester;
+  String secondSemester;
+  String thirdSemester;
+  String endSemester;
+  List<Holiday> holiday;
+  List<Ddl> ddl;
+
+  schoolCalendarStr(
+      {this.schoolYear,
+        this.firstSemester,
+        this.winterSemester,
+        this.secondSemester,
+        this.thirdSemester,
+        this.endSemester,
+        this.holiday,
+        this.ddl});
+
+  schoolCalendarStr.fromJson(Map<String, dynamic> json) {
+    schoolYear = json['school_year'];
+    firstSemester = json['first_semester'];
+    winterSemester = json['winter_semester'];
+    secondSemester = json['second_semester'];
+    thirdSemester = json['third_semester'];
+    endSemester = json['end_semester'];
+    if (json['holiday'] != null) {
+      holiday = new List<Holiday>();
+      json['holiday'].forEach((v) {
+        holiday.add(new Holiday.fromJson(v));
+      });
+    }
+    if (json['ddl'] != null) {
+      ddl = new List<Ddl>();
+      json['ddl'].forEach((v) {
+        ddl.add(new Ddl.fromJson(v));
+      });
+    }
+  }
+}
+
+class Holiday {
+  DateTime date;
+  String holiday;
+
+  Holiday({this.date, this.holiday});
+
+  Holiday.fromJson(Map<String, dynamic> json) {
+    date = DateTime.parse(json['date'] as String);
+    holiday = json['holiday'];
+  }
+}
+
+class Ddl {
+  String course;
+  String homework;
+  DateTime ddlDay;
+  String ddlSecond;
+  Ddl({this.course, this.homework, this.ddlDay,this.ddlSecond});
+
+  Ddl.fromJson(Map<String, dynamic> json) {
+    String ddlStr = json['ddl'] as String;
+    List<String> ddlInfo = ddlStr.split(' ');
+    course = json['course'];
+    homework = json['homework'];
+    ddlDay = DateTime.parse(ddlInfo[0]);
+    ddlSecond = ddlInfo[1];
+  }
+}
+
+// ignore: camel_case_types
+class schoolCalendar {
+  Map<DateTime, String> weekNumbers;
+  List<Holiday> holidays;
+  List<Ddl> ddls;
+  schoolCalendar(){
+    weekNumbers = new Map();
+    holidays = [];
+    ddls = [];
+  }
+
+  schoolCalendar parse(schoolCalendarStr str){
+    //ddl
+    ddls = str.ddl;
+    //holiday
+    holidays = str.holiday;
+    //week number
+    DateTime first = DateTime.parse(str.firstSemester);
+    DateTime winter = DateTime.parse(str.winterSemester);
+    DateTime second = DateTime.parse(str.secondSemester);
+    DateTime third = DateTime.parse(str.thirdSemester);
+    DateTime end = DateTime.parse(str.endSemester);
+    Duration inter = Duration(days: 7);
+    for(int i = 0; first.isBefore(winter); i++){
+      weekNumbers[first] = '秋${i+1}';
+      first = first.add(inter);
+    }
+    for(int i = 0; winter.isBefore(second); i++){
+      weekNumbers[winter] = '寒假${i+1}';
+      winter = winter.add(inter);
+    }
+    for(int i = 0; second.isBefore(third); i++){
+      weekNumbers[second] = '春${i+1}';
+      second = second.add(inter);
+    }
+    for(int i = 0; third.isBefore(end); i++){
+      weekNumbers[third] = '夏${i+1}';
+      third = third.add(inter);
+    }
+  }
+}
+
+Future<schoolCalendar> getSchoolCalendar(String studentID) async {
+  String schoolYear = '2019-2020';
+  Dio dio = new Dio();
+  Response response;
+  /*
+  try {
+    response = await dio.request(
+        'http://127.0.0.1:8000/ddl/Calendar/?student_id=hxEl4pM4qFUl2/VeRz6QIA==&school_year=$schoolYear',
+      options: Options(method: "GET", responseType: ResponseType.plain),
+    );
+  } on DioError catch (e) {
+    //throw 401;//测试
+    if (e.type == DioErrorType.RESPONSE) {
+      if (e.response.statusCode == 401) {
+        throw 401;
+      } else if (e.response.statusCode == 402) {
+        throw 402;
+      } else {
+        throw "网络请求出错";
+      }
+    } else {
+      throw "网络请求出错";
+    }
+  }
+  String ss = response.data;
+   */
+  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
+  try {
+    dynamic jsonList = json.decode(ss);
+    schoolCalendarStr tempStr = new schoolCalendarStr.fromJson(jsonList);
+    schoolCalendar temp = new schoolCalendar();
+    temp.parse(tempStr);
+    return temp;
+  } catch (e) {
+    throw "文件读取错误";
+  }
+}

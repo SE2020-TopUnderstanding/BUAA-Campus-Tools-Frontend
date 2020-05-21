@@ -15,7 +15,7 @@ const List<int> _daysInMonth = <int>[
   30,
   31
 ];
-
+/*
 /// 农历的工具类
 const List<int> _lunarMonthDays = [
   1887,
@@ -744,6 +744,7 @@ const List<String> _specialFestivalStr = [
   "感恩节",
 ];
 
+ */
 class RCalendarUtils {
   /// 获取一个月有多少天
   static int getDaysInMonth(int year, int month) {
@@ -763,7 +764,7 @@ class RCalendarUtils {
     final int weekdayFromMonday = DateTime(year, month).weekday - 1;
     // 0-based day of week, with 0 representing Sunday.
     final int firstDayOfWeekFromSunday =
-        localizations?.firstDayOfWeekIndex ?? 0;
+        localizations?.firstDayOfWeekIndex ?? 0;//周一开始
     // firstDayOfWeekFromSunday recomputed to be Monday-based
     final int firstDayOfWeekFromMonday = (firstDayOfWeekFromSunday - 1) % 7;
     // Number of days between the first day of week appearing on the calendar,
@@ -804,6 +805,7 @@ class RCalendarUtils {
     return (days / 7).ceil() - 1;
   }
 
+  /*
   ///****************************农历工具类****************************///
   /// 保存每年24节气
   static final Map<int, List<String>> solarTerms = new Map();
@@ -813,49 +815,7 @@ class RCalendarUtils {
 
   /// 初始化各种农历、节日
   static void setupLunarCalendar(DateTime dateTime) {
-//    int year = dateTime.year;
-//    int month = dateTime.month;
-//    int day = dateTime.day;
 
-//    dateModel.isWeekend = DateUtil.isWeekend(new DateTime(year, month, day));
-//    dateModel.isLeapYear = DateUtil.isLeapYear(year);
-//    dateModel.isCurrentDay = DateUtil.isCurrentDay(year, month, day);
-
-//    List<int> lunar = solarToLunar(2020, 2, day);
-
-//    dateModel.lunarYear = (lunar[0]);
-//    dateModel.lunarMonth = (lunar[1]);
-//    dateModel.lunarDay = (lunar[2]);
-
-//    if (lunar[3] == 1) {
-//      //如果是闰月
-//      dateModel.leapMonth = lunar[1];
-//    }
-    //24节气
-//    String solarTerm = getSolarTerm(year, month, day);
-//    dateModel.solarTerm=solarTerm;
-//    //公历节日
-//    String gregorian = gregorianFestival(month, day);
-//    dateModel.gregorianFestival=gregorian;
-//    //传统农历节日
-//    String festival = getTraditionFestival(lunar[0], lunar[1], lunar[2]);
-//    dateModel.traditionFestival=festival;
-    //农历格式的日期
-//    String lunarText = numToChinese(lunar[1], lunar[2], lunar[3]);
-//    numToChinese(lunar[1], lunar[2], lunar[3]);
-
-//    if (gregorian.isEmpty) {
-//      gregorian = getSpecialFestival(year, month, day);
-//    }
-//    if (solarTerm.isNotEmpty) {
-//      dateModel.lunarString = solarTerm;
-//    } else if (gregorian.isNotEmpty) {
-//      dateModel.lunarString = gregorian;
-//    } else if (festival.isNotEmpty) {
-//      dateModel.lunarString = festival;
-//    } else {
-//      dateModel.lunarString = lunarText;
-//    }
   }
 
   /// 公历转农历 Solar To Lunar
@@ -1106,4 +1066,5 @@ class RCalendarUtils {
   static String _dateToString(int year, int month, int day) {
     return "$year" + getString(month, day);
   }
+   */
 }

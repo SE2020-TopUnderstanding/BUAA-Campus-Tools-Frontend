@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiaowuassistent/calendar/calendar.dart';
@@ -27,7 +28,8 @@ abstract class RCalendarCustomWidget {
   // 1 2 3 4 5 6 7
   //构建普通的日期
   Widget buildDateTime(
-      BuildContext context, DateTime time, List<RCalendarType> types);
+      BuildContext context, DateTime time, List<RCalendarType> types,
+      Map<DateTime, String> holidayMap, Map<DateTime, int> ddlCount);
 
   // <  2019年 11月 >
   //构建年份和月份,指示器
@@ -46,7 +48,8 @@ abstract class RCalendarCustomWidget {
 class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
   @override
   Widget buildDateTime(
-      BuildContext context, DateTime time, List<RCalendarType> types) {
+      BuildContext context, DateTime time, List<RCalendarType> types,
+      Map<DateTime, String> holidayMap, Map<DateTime, int> ddlCount) {
     TextStyle childStyle;
     BoxDecoration decoration;
 
@@ -59,10 +62,17 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
       decoration = BoxDecoration();
     }
     if (types.contains(RCalendarType.normal)) {
-      childStyle = TextStyle(
-        color: Colors.black,
-        fontSize: 18,
-      );
+      if(time.weekday == 7 || time.weekday == 6 || holidayMap.containsKey(time)){
+        childStyle = TextStyle(
+          color: Colors.pink,
+          fontSize: 18,
+        );
+      }else{
+        childStyle = TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+        );
+      }
       decoration = BoxDecoration();
     }
 
@@ -83,40 +93,131 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
         color: Colors.blue,
       );
     }
-    return Tooltip(
-      message: MaterialLocalizations.of(context).formatFullDate(time),
-      child: Container(
+    if(!holidayMap.containsKey(time)&& !ddlCount.containsKey(time)){
+      return Tooltip(
+        message: MaterialLocalizations.of(context).formatFullDate(time),
+        child: Container(
           decoration: decoration,
           alignment: Alignment.center,
-          child: Text(
-            time.day.toString(),
-            style: childStyle,
-          )),
-    );
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                time.day.toString(),
+                style: childStyle,
+              ),
+              Text(
+                " ",
+                style: TextStyle(color: Colors.black,fontSize: 10),
+              ),
+            ],
+          ),
+        ),
+      );
+    }else if(holidayMap.containsKey(time)&& !ddlCount.containsKey(time)){
+      return Tooltip(
+        message: MaterialLocalizations.of(context).formatFullDate(time),
+        child: Container(
+          decoration: decoration,
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                time.day.toString(),
+                style: childStyle,
+              ),
+              Text(
+                " ",
+                style: TextStyle(color: childStyle.color,fontSize: 10),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if(!holidayMap.containsKey(time)&& ddlCount.containsKey(time)){
+      return Tooltip(
+        message: MaterialLocalizations.of(context).formatFullDate(time),
+        child: Container(
+          decoration: decoration,
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                time.day.toString(),
+                style: childStyle,
+              ),
+              Text(
+                "${ddlCount[time]}个待办",
+                style: TextStyle(color: Colors.black,fontSize: 10),
+              ),
+            ],
+          ),
+        ),
+      );
+    }else{
+      return Tooltip(
+        message: MaterialLocalizations.of(context).formatFullDate(time),
+        child: Container(
+          decoration: decoration,
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                time.day.toString(),
+                style: childStyle,
+              ),
+              Text(
+                "${ddlCount[time]}个待办",
+                style: TextStyle(color: childStyle.color,fontSize: 10),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   @override
   List<Widget> buildWeekListWidget(
       BuildContext context, MaterialLocalizations localizations) {
-    return localizations.narrowWeekdays
+    List<Widget> list = [];
+    list = localizations.narrowWeekdays
         .map(
           (d) => Expanded(
-        child: ExcludeSemantics(
-          child: Container(
-            height: 60,
-            alignment: Alignment.center,
-            child: Text(
-              d,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600),
-            ),
+             child: ExcludeSemantics(
+                child: Container(
+                  height: 60,
+                  alignment: Alignment.center,
+                  child: Text(
+                    d,
+                    style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w100),
+                  ),
+                ),
+              ),
+          ),
+        ).toList();
+    list.insert(0, Expanded(//表头
+      child: ExcludeSemantics(
+        child: Container(
+          height: 60,
+          alignment: Alignment.center,
+          child: Text(
+            "周号",
+            style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
+                fontWeight: FontWeight.w100),
           ),
         ),
       ),
-    )
-        .toList();
+    ),);
+    return list;
   }
 
   @override
@@ -148,7 +249,7 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
         ),
         Text(
           DateFormat('yyyy-MM').format(controller.displayedMonthDate),
-          style: TextStyle(color: Colors.red, fontSize: 18),
+          style: TextStyle(color: Colors.black87, fontSize: 18),
         ),
         SizedBox(
           width: 16,

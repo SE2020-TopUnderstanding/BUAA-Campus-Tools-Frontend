@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     print('有新版本');
-    showInstallUpdateDialog();
+    //showInstallUpdateDialog();
   }
 
   launchURL() {
@@ -135,9 +135,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (isUpdate != 0) {
-      return new Scaffold();
-    } else {
+    //if (isUpdate != 0) {
+      //return new Scaffold();
+    //} else {
       return new Scaffold(
         body: PageView(
           onPageChanged: _pageChange,
@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
           currentIndex: _currentIndex,
         ),
       );
-    }
+    //}
   }
 
   void onTap(int index) {

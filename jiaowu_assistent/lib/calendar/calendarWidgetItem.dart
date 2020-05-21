@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:jiaowuassistent/pages/User.dart';
 import 'calendarUtils.dart';
 import 'calendarCustomWidget.dart';
 import 'calendarController.dart';
@@ -8,16 +9,23 @@ import 'calendar.dart';
 
 class RCalendarMonthItem extends StatelessWidget {
   final DateTime monthDate;
-
   const RCalendarMonthItem({Key key, this.monthDate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     RCalendarMarker data = RCalendarMarker.of(context);
     RCalendarController controller = data.notifier;
+    Map<DateTime, String> weekMap = data.weekNumberMap;
+    Map<DateTime ,String> holidayMap = new Map();
+    for(int i = 0; i < data.holidays.length; i++){
+      holidayMap[data.holidays[i].date] = data.holidays[i].holiday;
+    }
+    Map<DateTime, int> ddlMap = new Map();
+    for(int i = 0; i < data.ddls.length; i++){
+      ddlMap[data.ddls[i].ddlDay] = data.ddls.where((c)=>c.ddlDay == data.ddls[i].ddlDay).length;
+    }
     //获取星期的第一天
-    final MaterialLocalizations localizations =
-    MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final int year = monthDate.year;
     final int month = monthDate.month;
     final int dayInMonth = RCalendarUtils.getDaysInMonth(year, month);
@@ -55,11 +63,11 @@ class RCalendarMonthItem extends StatelessWidget {
               }
               data.onChanged(dayToBuild);
             },
-            child: data.customWidget.buildDateTime(context, dayToBuild, types),
+            child: data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap),
           ));
         } else {
           labels
-              .add(data.customWidget.buildDateTime(context, dayToBuild, types));
+              .add(data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap));
         }
       } else if (day > dayInMonth) {
         //大于当月的日期
@@ -85,11 +93,11 @@ class RCalendarMonthItem extends StatelessWidget {
               }
               data.onChanged(dayToBuild);
             },
-            child: data.customWidget.buildDateTime(context, dayToBuild, types),
+            child: data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap),
           ));
         } else {
           labels
-              .add(data.customWidget.buildDateTime(context, dayToBuild, types));
+              .add(data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap));
         }
       } else {
         List<RCalendarType> types = [RCalendarType.disable];
@@ -134,13 +142,43 @@ class RCalendarMonthItem extends StatelessWidget {
               }
               data.onChanged(dayToBuild);
             },
-            child: data.customWidget.buildDateTime(context, dayToBuild, types),
+            child: data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap),
           ));
         } else {
           labels
-              .add(data.customWidget.buildDateTime(context, dayToBuild, types));
+              .add(data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap));
         }
       }
+    }
+
+    DateTime mondayDate = monthDate.add(Duration(days: -monthDate.weekday +1 ));
+    ///添加周号
+    int lines = labels.length~/7;
+    List<Widget> weekNumbers = [];
+    for(int i = 0; i < lines; i++){
+      if(weekMap.containsKey(mondayDate)){
+        weekNumbers.add(
+            Container(
+              alignment: Alignment.center,
+              child: Text('${weekMap[mondayDate]}\n',
+                style: TextStyle(fontSize: 16,color: Colors.deepOrange),),
+            )
+        );
+      }else{
+        weekNumbers.add(
+            Container(
+              alignment: Alignment.center,
+              child: Text(' ',
+                style: TextStyle(fontSize: 16,color: Colors.deepOrange),),
+            )
+        );
+      }
+      mondayDate = mondayDate.add(Duration(days: 7));
+    }
+    List<Widget> labelss = [];
+    for(int i = 0; i < lines; i++){
+      labelss.add(weekNumbers[i]);
+      labelss..addAll(labels.sublist(7*i,7*(i+1)));
     }
 
     return GridView.custom(
@@ -149,7 +187,7 @@ class RCalendarMonthItem extends StatelessWidget {
       padding: EdgeInsets.zero,
       gridDelegate: _DayPickerGridDelegate(data.customWidget.childHeight ?? 42),
       childrenDelegate:
-      SliverChildListDelegate(labels, addRepaintBoundaries: true),
+      SliverChildListDelegate(labelss, addRepaintBoundaries: true),
     );
   }
 }
@@ -210,10 +248,12 @@ class RCalendarWeekItem extends StatelessWidget {
             }
             data.onChanged(dayToBuild);
           },
-          child: data.customWidget.buildDateTime(context, dayToBuild, types),
+          //child: data.customWidget.buildDateTime(context, dayToBuild, types),
+          child: Text(' '),
         ));
       } else {
-        labels.add(data.customWidget.buildDateTime(context, dayToBuild, types));
+        //labels.add(data.customWidget.buildDateTime(context, dayToBuild, types));
+        labels.add(Text(' '));
       }
     }
     return GridView.custom(
@@ -234,7 +274,7 @@ class _DayPickerGridDelegate extends SliverGridDelegate {
 
   @override
   SliverGridLayout getLayout(SliverConstraints constraints) {
-    const int columnCount = DateTime.daysPerWeek;
+    const int columnCount = DateTime.daysPerWeek + 1;
     final double tileWidth = constraints.crossAxisExtent / columnCount;
     return SliverGridRegularTileLayout(
       crossAxisCount: columnCount,

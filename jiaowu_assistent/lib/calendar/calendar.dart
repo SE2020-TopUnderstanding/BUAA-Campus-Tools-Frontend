@@ -1,10 +1,7 @@
-
-
-library r_calendar;
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:jiaowuassistent/pages/User.dart';
 import 'calendarWidgetItem.dart';
 import 'calendarController.dart';
 import 'calendarUtils.dart';
@@ -17,22 +14,29 @@ export 'calendarCustomWidget.dart';
 class RCalendarWidget extends StatefulWidget {
   // 最小日期
   final DateTime firstDate;
-
   // 最大日期
   final DateTime lastDate;
-
   // 控制器
   final RCalendarController controller;
-
   //自定义部件
   final RCalendarCustomWidget customWidget;
+
+  //ddl
+  final Map<DateTime, String> weekNumberMap;
+  //holiday
+  final List<Holiday> holidays;
+  //ddl
+  final List<Ddl> ddls;
 
   const RCalendarWidget(
       {Key key,
         this.firstDate,
         this.lastDate,
         this.controller,
-        this.customWidget})
+        this.customWidget,
+        this.weekNumberMap,
+        this.holidays,
+        this.ddls})
       : super(key: key);
 
   @override
@@ -42,10 +46,8 @@ class RCalendarWidget extends StatefulWidget {
 class _RCalendarWidgetState extends State<RCalendarWidget> {
   //今天的日期
   DateTime _toDayDate;
-
   //用于更新今天
   Timer _timer;
-
   ///选中日期更改
   void _handleDayChanged(DateTime value) {
     setState(() {
@@ -130,18 +132,19 @@ class _RCalendarWidgetState extends State<RCalendarWidget> {
     double maxHeight =
         widget.customWidget.childHeight * _getSelectRowCount() + 1;
     //获取星期的第一天
-    final MaterialLocalizations localizations =
-    MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     return RCalendarMarker(
       customWidget: widget.customWidget,
       toDayDate: _toDayDate,
       onChanged: _handleDayChanged,
       controller: widget.controller,
+      weekNumberMap: widget.weekNumberMap,
+      holidays: widget.holidays,
+      ddls: widget.ddls,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          widget.customWidget.buildTopWidget(context, widget.controller) ??
-              Container(),
+          widget.customWidget.buildTopWidget(context, widget.controller) ?? Container(),
           Row(
             children:
             widget.customWidget.buildWeekListWidget(context, localizations),
@@ -173,6 +176,7 @@ class _RCalendarWidgetState extends State<RCalendarWidget> {
               ],
             ),
           ),
+          buildEvent(widget.ddls,widget.controller.selectedDate),
         ],
       ),
     );
@@ -183,6 +187,39 @@ class _RCalendarWidgetState extends State<RCalendarWidget> {
     RCalendarUtils.addMonthsToMonthDate(widget.firstDate, index);
     return RCalendarMonthItem(
       monthDate: month,
+    );
+  }
+  Widget buildEvent(List<Ddl> ddls, DateTime selectTime){
+    Iterable<Ddl> ddlForDay = ddls.where((c)=>c.ddlDay == selectTime);
+    List<Widget> ddlList = new List();
+    for (int i = 0; i < ddlForDay.length; i++){
+      ddlList.add(ListTile(
+        title: Text("${ddlForDay.elementAt(i).ddlSecond}  "
+            "${ddlForDay.elementAt(i).course}  "
+            "${ddlForDay.elementAt(i).homework}"),
+        contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+      ));
+      ddlList.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
+    }
+    //ddlList.removeLast();
+    return  Expanded(//用于colmun嵌套
+      child: Container(
+        width: double.infinity,
+        constraints: BoxConstraints(
+            minHeight: 200
+        ),
+        margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+        padding: const EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          border: new Border.all(width: 2.0, color: Colors.lightBlue),
+          borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children:<Widget>[]..addAll(ddlList),
+          ),
+        ),
+      ),
     );
   }
 
@@ -198,17 +235,23 @@ class _RCalendarWidgetState extends State<RCalendarWidget> {
 class RCalendarMarker extends InheritedNotifier<RCalendarController> {
   //部件
   final RCalendarCustomWidget customWidget;
-
   //今天
   final DateTime toDayDate;
-
   //当前选中的日期事件
   final ValueChanged<DateTime> onChanged;
+
+  //
+  final Map<DateTime, String> weekNumberMap;
+  final List<Holiday> holidays;
+  final List<Ddl> ddls;
 
   const RCalendarMarker({
     @required this.onChanged,
     @required this.toDayDate,
     @required this.customWidget,
+    @required this.weekNumberMap,
+    @required this.holidays,
+    @required this.ddls,
     @required RCalendarController controller,
     @required Widget child,
   })  : assert(controller != null),

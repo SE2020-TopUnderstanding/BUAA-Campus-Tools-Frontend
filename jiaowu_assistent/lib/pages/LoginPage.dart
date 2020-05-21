@@ -177,7 +177,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
       Response response;
       Dio dio = new Dio(options);
       try {
-        /*
+      /*
         showLoading(context);
         response = await dio.request('http://114.115.208.32:8000/login/',
             data: {
@@ -191,7 +191,8 @@ class _LoginPageStateBody extends State<LoginPageBody> {
         //保存用户信息
         GlobalUser.setUser(_userNameController.text, _passwordController.text,
             response.data['name'], response.data['student_id']);
-         */
+
+       */
         GlobalUser.setUser(_userNameController.text, _passwordController.text, "张艺璇", "17373182");
         GlobalUser.setIsLogin(true);
         GlobalUser.setChoice(1); //默认课表
