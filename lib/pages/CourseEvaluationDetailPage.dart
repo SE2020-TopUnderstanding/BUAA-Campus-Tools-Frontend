@@ -26,7 +26,8 @@ class _CourseEvaluationDetailPageState
     extends State<CourseEvaluationDetailPage> {
   int evaluationTimes = 10;
   List<dynamic> _reviewList;
-  List<ExpandState> _expandStateList = [];
+  List<dynamic> _teacherList;
+  ExpandState _expandState = new ExpandState(0, false);
 
   _CourseEvaluationDetailPageState() {
     _reviewList = [
@@ -40,10 +41,11 @@ class _CourseEvaluationDetailPageState
       ],
       ['this is a bad course', 2.0, 32, 1, false, true]
     ];
-    for (int i = 0; i < _reviewList.length; i++) {
-      _expandStateList.add(ExpandState(i, false));
-    }
-//    print(_expandStateList);
+    _teacherList = [
+      ['罗杰', 50, 1, true, false],
+      ['罗杰', 50, 1, false, false],
+      ['罗杰', 50, 1, false, false],
+    ];
   }
 
   //用来获得不同比例的星星
@@ -109,6 +111,134 @@ class _CourseEvaluationDetailPageState
         }
       }
     });
+  }
+
+  void updateTeacherAgree(int index){
+    setState(() {
+        if (this._teacherList[index][3]) {
+          this._teacherList[index][1] -= 1;
+          this._teacherList[index][3] = false;
+        } else {
+          this._teacherList[index][1] += 1;
+          this._teacherList[index][3] = true;
+        }
+    });
+  }
+
+  void updateTeacherDisagree(int index){
+    setState(() {
+        if (this._teacherList[index][4]) {
+          this._teacherList[index][2] -= 1;
+          this._teacherList[index][4] = false;
+        } else {
+          this._teacherList[index][2] += 1;
+          this._teacherList[index][4] = true;
+        }
+    });
+  }
+
+  Widget getTeacher() {
+    return ExpansionPanelList(
+        expansionCallback: (int index, bool isExpand) {
+          setState(() {
+            this._expandState.isOpen = !isExpand;
+          });
+        },
+        children:
+            [
+          ExpansionPanel(
+              headerBuilder: (BuildContext context, bool isExpanded) {
+                return Container(
+                  padding: EdgeInsets.all(16.0),
+                  child:Text(
+                    '教师评价',
+                    style: new TextStyle(
+                        fontSize:  24
+                    ),
+                  ),
+                ) ;
+              },
+              body: Container(
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          top: BorderSide(width: 1, color: Colors.grey))),
+                  // ignore: deprecated_member_use
+                  child: Column(children: <Widget>[
+                    ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: _teacherList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: new Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      _teacherList[index][0],
+                                      style: new TextStyle(
+                                        fontSize: 20,
+                                      ),
+//                                    ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              new Column(
+                                children: <Widget>[
+                                  new IconButton(
+                                    icon: (_teacherList[index][3]
+                                        ? new Icon(
+                                            Icons.thumb_up,
+                                            color: Colors.red,
+                                            size: 15,
+                                          )
+                                        : new Icon(
+                                            Icons.thumb_up,
+                                            size: 15,
+                                          )),
+                                    onPressed: () => {updateTeacherAgree(index)},
+                                  ),
+                                  Text(_teacherList[index][1].toString(),
+                                      style: new TextStyle(
+                                        fontSize: 14,
+                                      ))
+                                ],
+                              ),
+                              new Column(
+                                children: <Widget>[
+                                  new IconButton(
+                                    icon: _teacherList[index][4]
+                                        ? new Icon(
+                                            Icons.thumb_down,
+                                            color: Colors.red,
+                                            size: 15,
+                                          )
+                                        : new Icon(
+                                            Icons.thumb_down,
+                                            size: 15,
+                                          ),
+                                    onPressed: () =>
+                                        {updateTeacherDisagree(index)},
+                                    padding: const EdgeInsets.all(0.0),
+                                  ),
+                                  Text(_teacherList[index][2].toString(),
+                                      style: new TextStyle(
+                                        fontSize: 14,
+                                      ))
+                                ],
+                              )
+                            ],
+                          );
+                        }),
+                  ])),
+              isExpanded: _expandState.isOpen // 设置面板的状态，true展开，false折叠
+              )
+        ]
+//      }).toList(),
+        );
   }
 
   Widget getReview() {
@@ -202,22 +332,25 @@ class _CourseEvaluationDetailPageState
         children: <Widget>[
           new Container(
             padding: const EdgeInsets.all(5.0),
-            child: new Row(
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                new Expanded(
-                    child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    new Container(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: new Text(
-                        widget.courseName,
-                        style: new TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                        ),
-                      ),
+                new Container(
+//                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: new Text(
+                    widget.courseName,
+                    style: new TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
                     ),
+                  ),
+                ),
+                new Row(
+                  children: <Widget>[
+                    new Expanded(
+                        child: new Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
 //                    new Text(
 //                      widget.courseCredit,
 //                      style: new TextStyle(
@@ -225,134 +358,139 @@ class _CourseEvaluationDetailPageState
 //                        fontSize: 20,
 //                      ),
 //                    ),
-                    Text(
-                      widget.courseScore.toString(),
-                      style: new TextStyle(
-                        color: Colors.grey[900],
-                        fontSize: 44,
-                      ),
-                    ),
-                  ],
-                )),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
+                            Text(
+                              widget.courseScore.toString(),
+                              style: new TextStyle(
+                                color: Colors.grey[900],
+                                fontSize: 44,
+                              ),
+
+                            ),
+                            Text(
+                              evaluationTimes.toString() + ' 人评价过这门课',
+                              style: new TextStyle(
+                                color: Colors.grey[900],
+                                fontSize: 16,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
+                        )),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text('5星'),
                             SizedBox(
-                              width: 5,
+                              height: 10,
                             ),
-                            SizedBox(
-                              height: 8,
-                              width: 150,
-                              child: LinearProgressIndicator(
-                                value: 0.5,
-                              ),
+                            Row(
+                              children: <Widget>[
+                                Text('5星'),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                  width: 150,
+                                  child: LinearProgressIndicator(
+                                    value: 0.5,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text('50.0%'),
+                              ],
                             ),
-                            SizedBox(
-                              width: 5,
+                            Row(
+                              children: <Widget>[
+                                Text('4星'),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                  width: 150,
+                                  child: LinearProgressIndicator(
+                                    value: 0.3,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text('30.0%'),
+                              ],
                             ),
-                            Text('50.0%'),
+                            Row(
+                              children: <Widget>[
+                                Text('3星'),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                  width: 150,
+                                  child: LinearProgressIndicator(
+                                    value: 0.1,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text('10.0%'),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Text('2星'),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                  width: 150,
+                                  child: LinearProgressIndicator(
+                                    value: 0.08,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text('8.0%'),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Text('1星'),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                  width: 150,
+                                  child: LinearProgressIndicator(
+                                    value: 0.02,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text('2.0%'),
+                              ],
+                            ),
                           ],
                         ),
-                        Row(
-                          children: <Widget>[
-                            Text('4星'),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            SizedBox(
-                              height: 8,
-                              width: 150,
-                              child: LinearProgressIndicator(
-                                value: 0.3,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text('30.0%'),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Text('3星'),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            SizedBox(
-                              height: 8,
-                              width: 150,
-                              child: LinearProgressIndicator(
-                                value: 0.1,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text('10.0%'),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Text('2星'),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            SizedBox(
-                              height: 8,
-                              width: 150,
-                              child: LinearProgressIndicator(
-                                value: 0.08,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text('8.0%'),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Text('1星'),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            SizedBox(
-                              height: 8,
-                              width: 150,
-                              child: LinearProgressIndicator(
-                                value: 0.02,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text('2.0%'),
-                          ],
-                        ),
+
                       ],
-                    ),
-                    Text(
-                      evaluationTimes.toString() + ' 人评价过这门课',
-                      style: new TextStyle(
-                        color: Colors.grey[900],
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
+                    )
                   ],
                 )
               ],
             ),
           ),
+          getTeacher(),
           getReview(),
         ],
       ),

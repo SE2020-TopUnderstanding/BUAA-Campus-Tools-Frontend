@@ -106,11 +106,12 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     String courseType;
     courseName = _courseNameController.text;
     teacher = _teacherController.text;
-    if ((courseName.isEmpty &&
+    if (courseName.isEmpty &&
             teacher.isEmpty &&
-            (_department == null && _courseType == null)) ||
-        (_department == null && _courseType!=null) ||
-        (_department!=null && _courseType == null)) {
+            _department == null && _courseType == null){
+//    ) ||
+//        (_department == null && _courseType != null) ||
+//        (_department != null && _courseType == null)) {
       _showAlertDialog();
     } else {
       try {
@@ -336,20 +337,29 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                     ),
                   ]),
             ),
-            RaisedButton(
-              color: Colors.lightBlue,
-              disabledColor: Colors.grey,
-              child: Text(
-                '查询课程评价',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    letterSpacing: 5,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 24,
-                    color: Colors.white),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints.expand(height: 40),
+                child: RaisedButton(
+                  color: Colors.lightBlue,
+                  disabledColor: Colors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  child: Text(
+                    '查询课程评价',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        letterSpacing: 8,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 24,
+                        color: Colors.white),
+                  ),
+                  onPressed:
+                      _isDisabled ? null : () => searchEvaluationCourseList(),
+                ),
               ),
-              onPressed:
-                  _isDisabled ? null : () => searchEvaluationCourseList(),
             ),
             Container(
               child: ListView.builder(
