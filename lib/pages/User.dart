@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/encrypt.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:jpush_flutter/jpush_flutter.dart';
 
 class EmptyRoom {
   String _building;
@@ -34,12 +36,12 @@ Future<EmptyRoom> getEmptyRoom(BuildContext context, String campus, String date,
     String section, String building) async {
   try {
     Response response = await Dio().get(
-        'http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section',
+        'http://hangxu.sharinka.top:8000/classroom/?campus=$campus &date=$date &section=$section',
         options: Options(
             responseType: ResponseType
                 .plain)); // http://www.mocky.io/v2/5e9a690133000021bf7b3008
     print(
-        'Request(http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section)');
+        'Request(http://hangxu.sharinka.top:8000/classroom/?campus=$campus &date=$date &section=$section)');
     Map<String, dynamic> data = json.decode(response.data.toString());
     print(response);
     if (data == null) {
@@ -120,6 +122,7 @@ String formatError(DioError e) {
   }
 }
 
+//课程中心用
 class DDL {
   final String time;
   final String text;
@@ -135,7 +138,6 @@ class DDL {
   }
 }
 
-//课程中心用
 class Course {
   final String name;
   final List<DDL> content;
@@ -173,17 +175,39 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 //  String response =
 //      await rootBundle.loadString('assets/data/courseCenter.json');
 //  return CourseCenter.fromJson(json.decode(response));
-
-  final response =
-      await http.get('http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
-  print('http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+  final response = await http.get(
+      'http://hangxu.sharinka.top:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'http://hangxu.sharinka.top:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
 //  throw 401;
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
     Utf8Decoder decode = new Utf8Decoder();
-    return CourseCenter.fromJson(
-        json.decode(decode.convert(response.bodyBytes)));
+    CourseCenter temp =
+        CourseCenter.fromJson(json.decode(decode.convert(response.bodyBytes)));
+
+    final JPush jpush = new JPush();
+    for (int i = 0; i < temp.courses.length; i++) {
+      for (int j = 0; j < temp.courses[i].content.length; j++) {
+        /*两小时前发本地推送*/
+        var fireDate = DateTime.fromMillisecondsSinceEpoch(
+            DateTime.parse(temp.courses[i].content[j].time)
+                    .millisecondsSinceEpoch -
+                7200000);
+        var localNotification = LocalNotification(
+          id: 234,
+          title: 'DDL提醒',
+          buildId: 1,
+          content:
+              '${temp.courses[i].content[j].text}，截止时间${temp.courses[i].content[j].time}',
+          fireTime: fireDate,
+        );
+        jpush.sendLocalNotification(localNotification);
+      }
+    }
+
+    return temp;
     //json.decode('[]'));//测试空list
   } else {
     throw response.statusCode;
@@ -235,15 +259,17 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
 //  return temp;
 
   final response = await http.get(
-      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
+      'http://hangxu.sharinka.top:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
   print(
-      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
-  final averageScore = await http
-      .get('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
-  print('http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
-  final gpa = await http
-      .get('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
-  print('http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+      'http://hangxu.sharinka.top:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
+  final averageScore = await http.get(
+      'http://hangxu.sharinka.top:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'http://hangxu.sharinka.top:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+  final gpa = await http.get(
+      'http://hangxu.sharinka.top:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'http://hangxu.sharinka.top:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -280,8 +306,8 @@ class UpdateInfo {
 }
 
 Future<UpdateInfo> getUpdateInfo() async {
-  final response = await http.get('http://114.115.208.32:8000/version');
-  print('http://114.115.208.32:8000/version');
+  final response = await http.get('http://hangxu.sharinka.top:8000/version');
+  print('http://hangxu.sharinka.top:8000/version');
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -291,6 +317,30 @@ Future<UpdateInfo> getUpdateInfo() async {
     // If the server did not return a 200 OK response,
     // then throw an exception.
     throw Exception('Failed to load update info');
+  }
+}
+
+Future<void> postMessage(String kind, String content) async {
+  final response =
+      await http.post('http://hangxu.sharinka.top:8000/feedback/', body: {
+    "student_id": "${Encrypt.encrypt(GlobalUser.studentID)}",
+    "kind": "$kind",
+    "content": "$content"
+  });
+  print('post -> http://hangxu.sharinka.top:8000/feedback/');
+  print('student_id: ${Encrypt.encrypt(GlobalUser.studentID)}');
+  print('kind: $kind');
+  print('content: $content');
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    print('post success');
+    return;
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    print(response.statusCode);
+    throw Exception('Failed to post message');
   }
 }
 
@@ -441,7 +491,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   Response response;
   try {
     response = await dio.request(
-      'http://114.115.208.32:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
+      'http://hangxu.sharinka.top:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
       options: Options(method: "GET", responseType: ResponseType.plain),
     );
     //cancelToken: _can);//测试错误
@@ -478,7 +528,7 @@ Future<int> getWeek() async {
   DateTime now = DateTime.now();
   try {
     response = await dio.request(
-        'http://114.115.208.32:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
+        'http://hangxu.sharinka.top:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
         options: Options(method: "GET", responseType: ResponseType.json));
   } catch (e) {
     e.toString();
@@ -488,4 +538,126 @@ Future<int> getWeek() async {
   print(response.data.toString());
   int weekNumber = int.parse(response.data[0]['week']);
   return weekNumber;
+}
+
+class EvaluationCourse{
+  final String courseName;
+  final String department;
+  final String bid;
+  final double score;
+  final String credit;
+
+  EvaluationCourse({this.courseName, this.department, this.bid, this.score, this.credit});
+
+  factory EvaluationCourse.fromJson(Map<String, dynamic> parsedJson){
+    return EvaluationCourse(
+      courseName: parsedJson['course_name'],
+      department: parsedJson['department'],
+      bid: parsedJson['bid'],
+      credit: parsedJson['credit'],
+      score: parsedJson['avg_score']
+    );
+  }
+}
+
+class EvaluationCourseList{
+  final List<EvaluationCourse> evaluationCourseList;
+
+  EvaluationCourseList(this.evaluationCourseList);
+
+  factory EvaluationCourseList.fromJson(List<dynamic> parsedJson){
+    List<EvaluationCourse> courseList = parsedJson.map((i)=>EvaluationCourse.fromJson(i)).toList();
+    return EvaluationCourseList(courseList);
+  }
+}
+
+Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String teacher, String type) async{
+  Dio dio = new Dio();
+  Response response;
+//  try {
+//    print('http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type');
+//    response = await dio.request(
+//        'http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type',
+//        options: Options(method: "GET", responseType: ResponseType.json));
+//  } catch (e) {
+//    throw('参数名称或者数目错误');
+//  }
+//  try {
+//    List<dynamic> jsonList = json.decode(response.data);
+    List<dynamic> jsonList = [
+      {
+          "bid":"111",
+          "course_name":'软件工程(Software Engineering)',
+          "credit":'2学分',
+          "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+      {
+        "bid":"111",
+        "course_name":'软件工程(Software Engineering)',
+        "credit":'2学分',
+        "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+      {
+        "bid":"111",
+        "course_name":'软件工程(Software Engineering)',
+        "credit":'2学分',
+        "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+      {
+        "bid":"111",
+        "course_name":'软件工程(Software Engineering)',
+        "credit":'2学分',
+        "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+      {
+        "bid":"111",
+        "course_name":'软件工程 (Software Engineering)',
+        "credit":'2学分',
+        "avg_score":4.2,
+        "department":"软件学院"
+      },
+      {
+        "bid":"112",
+        "course_name":'计算机网络',
+        "credit":'2学分',
+        "avg_score":4.5,
+        "department":"计算机学院"
+      },
+    ];
+    return EvaluationCourseList.fromJson(jsonList);
+//  } catch(e){
+//    throw('课程评价列表解析错误');
+//  }
 }
