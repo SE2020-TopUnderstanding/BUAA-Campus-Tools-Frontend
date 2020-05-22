@@ -90,7 +90,7 @@ class FunctionsPage extends StatelessWidget {
                 _block(
                     context,
                     Icon(
-                      Icons.school,
+                      Icons.date_range,
                       size: 40,
                     ),
                     Text("课表查询"),
@@ -104,7 +104,7 @@ class FunctionsPage extends StatelessWidget {
                     Text("课程评价"),
                     CourseEvaluationPage()),
 
-                _block(context, Icon(Icons.date_range, size: 40,), Text("校历"), CalendarPage()),
+                _block(context, Icon(Icons.calendar_today, size: 40,), Text("校历"), CalendarPage()),
 
               ],
             )
