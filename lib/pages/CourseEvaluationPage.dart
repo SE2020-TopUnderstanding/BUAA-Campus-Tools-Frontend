@@ -107,8 +107,9 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     courseName = _courseNameController.text;
     teacher = _teacherController.text;
     if (courseName.isEmpty &&
-            teacher.isEmpty &&
-            _department == null && _courseType == null){
+        teacher.isEmpty &&
+        _department == null &&
+        _courseType == null) {
 //    ) ||
 //        (_department == null && _courseType != null) ||
 //        (_department != null && _courseType == null)) {

@@ -9,8 +9,6 @@ import 'package:jiaowuassistent/encrypt.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
 
-
-
 class EmptyRoom {
   String _building;
   List<String> _rooms;
@@ -543,38 +541,40 @@ Future<int> getWeek() async {
   return weekNumber;
 }
 
-class EvaluationCourse{
+class EvaluationCourse {
   final String courseName;
   final String department;
   final String bid;
   final double score;
   final String credit;
 
-  EvaluationCourse({this.courseName, this.department, this.bid, this.score, this.credit});
+  EvaluationCourse(
+      {this.courseName, this.department, this.bid, this.score, this.credit});
 
-  factory EvaluationCourse.fromJson(Map<String, dynamic> parsedJson){
+  factory EvaluationCourse.fromJson(Map<String, dynamic> parsedJson) {
     return EvaluationCourse(
-      courseName: parsedJson['course_name'],
-      department: parsedJson['department'],
-      bid: parsedJson['bid'],
-      credit: parsedJson['credit'],
-      score: parsedJson['avg_score']
-    );
+        courseName: parsedJson['course_name'],
+        department: parsedJson['department'],
+        bid: parsedJson['bid'],
+        credit: parsedJson['credit'],
+        score: parsedJson['avg_score']);
   }
 }
 
-class EvaluationCourseList{
+class EvaluationCourseList {
   final List<EvaluationCourse> evaluationCourseList;
 
   EvaluationCourseList(this.evaluationCourseList);
 
-  factory EvaluationCourseList.fromJson(List<dynamic> parsedJson){
-    List<EvaluationCourse> courseList = parsedJson.map((i)=>EvaluationCourse.fromJson(i)).toList();
+  factory EvaluationCourseList.fromJson(List<dynamic> parsedJson) {
+    List<EvaluationCourse> courseList =
+        parsedJson.map((i) => EvaluationCourse.fromJson(i)).toList();
     return EvaluationCourseList(courseList);
   }
 }
 
-Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String teacher, String type) async{
+Future<EvaluationCourseList> loadEvaluationCourseList(
+    String courseName, String teacher, String type) async {
   Dio dio = new Dio();
   Response response;
 //  try {
@@ -587,79 +587,79 @@ Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String 
 //  }
 //  try {
 //    List<dynamic> jsonList = json.decode(response.data);
-    List<dynamic> jsonList = [
-      {
-          "bid":"111",
-          "course_name":'软件工程(Software Engineering)',
-          "credit":'2学分',
-          "avg_score":4.2,
-        "department":"软件学院"
-      },
-      {
-        "bid":"112",
-        "course_name":'计算机网络',
-        "credit":'2学分',
-        "avg_score":4.5,
-        "department":"计算机学院"
-      },
-      {
-        "bid":"111",
-        "course_name":'软件工程(Software Engineering)',
-        "credit":'2学分',
-        "avg_score":4.2,
-        "department":"软件学院"
-      },
-      {
-        "bid":"112",
-        "course_name":'计算机网络',
-        "credit":'2学分',
-        "avg_score":4.5,
-        "department":"计算机学院"
-      },
-      {
-        "bid":"111",
-        "course_name":'软件工程(Software Engineering)',
-        "credit":'2学分',
-        "avg_score":4.2,
-        "department":"软件学院"
-      },
-      {
-        "bid":"112",
-        "course_name":'计算机网络',
-        "credit":'2学分',
-        "avg_score":4.5,
-        "department":"计算机学院"
-      },
-      {
-        "bid":"111",
-        "course_name":'软件工程(Software Engineering)',
-        "credit":'2学分',
-        "avg_score":4.2,
-        "department":"软件学院"
-      },
-      {
-        "bid":"112",
-        "course_name":'计算机网络',
-        "credit":'2学分',
-        "avg_score":4.5,
-        "department":"计算机学院"
-      },
-      {
-        "bid":"111",
-        "course_name":'软件工程 (Software Engineering)',
-        "credit":'2学分',
-        "avg_score":4.2,
-        "department":"软件学院"
-      },
-      {
-        "bid":"112",
-        "course_name":'计算机网络',
-        "credit":'2学分',
-        "avg_score":4.5,
-        "department":"计算机学院"
-      },
-    ];
-    return EvaluationCourseList.fromJson(jsonList);
+  List<dynamic> jsonList = [
+    {
+      "bid": "111",
+      "course_name": '软件工程(Software Engineering)',
+      "credit": '2学分',
+      "avg_score": 4.2,
+      "department": "软件学院"
+    },
+    {
+      "bid": "112",
+      "course_name": '计算机网络',
+      "credit": '2学分',
+      "avg_score": 4.5,
+      "department": "计算机学院"
+    },
+    {
+      "bid": "111",
+      "course_name": '软件工程(Software Engineering)',
+      "credit": '2学分',
+      "avg_score": 4.2,
+      "department": "软件学院"
+    },
+    {
+      "bid": "112",
+      "course_name": '计算机网络',
+      "credit": '2学分',
+      "avg_score": 4.5,
+      "department": "计算机学院"
+    },
+    {
+      "bid": "111",
+      "course_name": '软件工程(Software Engineering)',
+      "credit": '2学分',
+      "avg_score": 4.2,
+      "department": "软件学院"
+    },
+    {
+      "bid": "112",
+      "course_name": '计算机网络',
+      "credit": '2学分',
+      "avg_score": 4.5,
+      "department": "计算机学院"
+    },
+    {
+      "bid": "111",
+      "course_name": '软件工程(Software Engineering)',
+      "credit": '2学分',
+      "avg_score": 4.2,
+      "department": "软件学院"
+    },
+    {
+      "bid": "112",
+      "course_name": '计算机网络',
+      "credit": '2学分',
+      "avg_score": 4.5,
+      "department": "计算机学院"
+    },
+    {
+      "bid": "111",
+      "course_name": '软件工程 (Software Engineering)',
+      "credit": '2学分',
+      "avg_score": 4.2,
+      "department": "软件学院"
+    },
+    {
+      "bid": "112",
+      "course_name": '计算机网络',
+      "credit": '2学分',
+      "avg_score": 4.5,
+      "department": "计算机学院"
+    },
+  ];
+  return EvaluationCourseList.fromJson(jsonList);
 //  } catch(e){
 //    throw('课程评价列表解析错误');
 }
@@ -676,13 +676,13 @@ class schoolCalendarStr {
 
   schoolCalendarStr(
       {this.schoolYear,
-        this.firstSemester,
-        this.winterSemester,
-        this.secondSemester,
-        this.thirdSemester,
-        this.endSemester,
-        this.holiday,
-        this.ddl});
+      this.firstSemester,
+      this.winterSemester,
+      this.secondSemester,
+      this.thirdSemester,
+      this.endSemester,
+      this.holiday,
+      this.ddl});
 
   schoolCalendarStr.fromJson(Map<String, dynamic> json) {
     schoolYear = json['school_year'];
@@ -723,7 +723,8 @@ class Ddl {
   String homework;
   DateTime ddlDay;
   String ddlSecond;
-  Ddl({this.course, this.homework, this.ddlDay,this.ddlSecond});
+
+  Ddl({this.course, this.homework, this.ddlDay, this.ddlSecond});
 
   Ddl.fromJson(Map<String, dynamic> json) {
     String ddlStr = json['ddl'] as String;
@@ -740,13 +741,14 @@ class schoolCalendar {
   Map<DateTime, String> weekNumbers;
   List<Holiday> holidays;
   List<Ddl> ddls;
-  schoolCalendar(){
+
+  schoolCalendar() {
     weekNumbers = new Map();
     holidays = [];
     ddls = [];
   }
 
-  schoolCalendar parse(schoolCalendarStr str){
+  schoolCalendar parse(schoolCalendarStr str) {
     //ddl
     ddls = str.ddl;
     //holiday
@@ -758,20 +760,20 @@ class schoolCalendar {
     DateTime third = DateTime.parse(str.thirdSemester);
     DateTime end = DateTime.parse(str.endSemester);
     Duration inter = Duration(days: 7);
-    for(int i = 0; first.isBefore(winter); i++){
-      weekNumbers[first] = '秋${i+1}';
+    for (int i = 0; first.isBefore(winter); i++) {
+      weekNumbers[first] = '秋${i + 1}';
       first = first.add(inter);
     }
-    for(int i = 0; winter.isBefore(second); i++){
-      weekNumbers[winter] = '寒假${i+1}';
+    for (int i = 0; winter.isBefore(second); i++) {
+      weekNumbers[winter] = '寒假${i + 1}';
       winter = winter.add(inter);
     }
-    for(int i = 0; second.isBefore(third); i++){
-      weekNumbers[second] = '春${i+1}';
+    for (int i = 0; second.isBefore(third); i++) {
+      weekNumbers[second] = '春${i + 1}';
       second = second.add(inter);
     }
-    for(int i = 0; third.isBefore(end); i++){
-      weekNumbers[third] = '夏${i+1}';
+    for (int i = 0; third.isBefore(end); i++) {
+      weekNumbers[third] = '夏${i + 1}';
       third = third.add(inter);
     }
   }

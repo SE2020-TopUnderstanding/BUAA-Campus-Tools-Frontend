@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseEvaluationPage.dart';
 import 'package:jiaowuassistent/pages/CourseCommentWritePage.dart';
+
 class ExpandState {
   var isOpen;
   var index;
+
   ExpandState(this.index, this.isOpen);
 }
 
@@ -113,27 +115,27 @@ class _CourseEvaluationDetailPageState
     });
   }
 
-  void updateTeacherAgree(int index){
+  void updateTeacherAgree(int index) {
     setState(() {
-        if (this._teacherList[index][3]) {
-          this._teacherList[index][1] -= 1;
-          this._teacherList[index][3] = false;
-        } else {
-          this._teacherList[index][1] += 1;
-          this._teacherList[index][3] = true;
-        }
+      if (this._teacherList[index][3]) {
+        this._teacherList[index][1] -= 1;
+        this._teacherList[index][3] = false;
+      } else {
+        this._teacherList[index][1] += 1;
+        this._teacherList[index][3] = true;
+      }
     });
   }
 
-  void updateTeacherDisagree(int index){
+  void updateTeacherDisagree(int index) {
     setState(() {
-        if (this._teacherList[index][4]) {
-          this._teacherList[index][2] -= 1;
-          this._teacherList[index][4] = false;
-        } else {
-          this._teacherList[index][2] += 1;
-          this._teacherList[index][4] = true;
-        }
+      if (this._teacherList[index][4]) {
+        this._teacherList[index][2] -= 1;
+        this._teacherList[index][4] = false;
+      } else {
+        this._teacherList[index][2] += 1;
+        this._teacherList[index][4] = true;
+      }
     });
   }
 
@@ -144,19 +146,16 @@ class _CourseEvaluationDetailPageState
             this._expandState.isOpen = !isExpand;
           });
         },
-        children:
-            [
+        children: [
           ExpansionPanel(
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return Container(
                   padding: EdgeInsets.all(16.0),
-                  child:Text(
+                  child: Text(
                     '教师评价',
-                    style: new TextStyle(
-                        fontSize:  24
-                    ),
+                    style: new TextStyle(fontSize: 18),
                   ),
-                ) ;
+                );
               },
               body: Container(
                   padding: EdgeInsets.all(16.0),
@@ -179,7 +178,7 @@ class _CourseEvaluationDetailPageState
                                     Text(
                                       _teacherList[index][0],
                                       style: new TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 16,
                                       ),
 //                                    ),
                                     ),
@@ -199,7 +198,8 @@ class _CourseEvaluationDetailPageState
                                             Icons.thumb_up,
                                             size: 15,
                                           )),
-                                    onPressed: () => {updateTeacherAgree(index)},
+                                    onPressed: () =>
+                                        {updateTeacherAgree(index)},
                                   ),
                                   Text(_teacherList[index][1].toString(),
                                       style: new TextStyle(
@@ -254,18 +254,19 @@ class _CourseEvaluationDetailPageState
                   // ignore: deprecated_member_use
                   decoration: BoxDecoration(
                       border: Border(
-                          top: BorderSide(width: 1, color: Colors.grey))),
+                          bottom: BorderSide(width: 1, color: Colors.grey))),
                   child: Row(
                     children: <Widget>[
                       Expanded(
                         child: new Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            fiveStars(0.0 + _reviewList[index][1], 15),
+                            fiveStars(0.0 + _reviewList[index][1], 16),
+                            SizedBox(height: 3,),
                             Text(
                               _reviewList[index][0],
                               style: new TextStyle(
-                                fontSize: 14,
+                                fontSize: 15,
                               ),
                             ),
                           ],
@@ -332,14 +333,17 @@ class _CourseEvaluationDetailPageState
       body: new ListView(
         children: <Widget>[
           new Container(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.only(
+                left: 10.0, top: 5.0, right: 10.0, bottom: 10.0),
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 new Container(
-//                  padding: const EdgeInsets.only(bottom: 8.0),
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(5.0),
                   child: new Text(
                     widget.courseName,
+                    textAlign: TextAlign.center,
                     style: new TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -349,44 +353,41 @@ class _CourseEvaluationDetailPageState
                 new Row(
                   children: <Widget>[
                     new Expanded(
-                        child: new Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-//                    new Text(
-//                      widget.courseCredit,
-//                      style: new TextStyle(
-//                        color: Colors.grey[500],
-//                        fontSize: 20,
-//                      ),
-//                    ),
-                            Text(
-                              widget.courseScore.toString(),
-                              style: new TextStyle(
-                                color: Colors.grey[900],
-                                fontSize: 44,
-                              ),
-
-                            ),
-                            Text(
-                              evaluationTimes.toString() + ' 人评价过这门课',
-                              style: new TextStyle(
-                                color: Colors.grey[900],
-                                fontSize: 16,
-                              ),
-                              textAlign: TextAlign.right,
-                            ),
-                          ],
-                        )),
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          widget.courseScore.toString(),
+                          style: new TextStyle(
+                            color: Colors.grey[900],
+                            fontSize: 44,
+                          ),
+                        ),
+                        Text(
+                          evaluationTimes.toString() + ' 个评价',
+                          style: new TextStyle(
+                            color: Colors.grey[900],
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                      ],
+                    )),
                     IconButton(
                       padding: EdgeInsets.all(0),
-                      icon: Icon(Icons.edit, size: 30,),
+                      icon: Icon(
+                        Icons.edit,
+                        size: 30,
+                      ),
                       onPressed: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => courseCommentWritePage(bname: widget.courseName,)));
+                                builder: (context) => courseCommentWritePage(
+                                      bname: widget.courseName,
+                                    )));
                       },
-                    ),// zyx add modify icon
+                    ), // zyx add modify icon
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
@@ -493,7 +494,6 @@ class _CourseEvaluationDetailPageState
                             ),
                           ],
                         ),
-
                       ],
                     )
                   ],
