@@ -14,9 +14,14 @@ class CourseEvaluationDetailPage extends StatefulWidget {
   final String courseName;
   final String courseCredit;
   final double courseScore;
+  final String bid;
 
   CourseEvaluationDetailPage(
-      {Key key, @required this.courseName, this.courseCredit, this.courseScore})
+      {Key key,
+      @required this.courseName,
+      this.courseCredit,
+      this.courseScore,
+      this.bid})
       : super(key: key);
 
   @override
@@ -262,7 +267,9 @@ class _CourseEvaluationDetailPageState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             fiveStars(0.0 + _reviewList[index][1], 16),
-                            SizedBox(height: 3,),
+                            SizedBox(
+                              height: 3,
+                            ),
                             Text(
                               _reviewList[index][0],
                               style: new TextStyle(
