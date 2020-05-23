@@ -12,9 +12,10 @@ class CourseEvaluationDetailPage extends StatefulWidget {
   final String courseName;
   final String courseCredit;
   final double courseScore;
+  final String bid;
 
   CourseEvaluationDetailPage(
-      {Key key, @required this.courseName, this.courseCredit, this.courseScore})
+      {Key key, @required this.courseName, this.courseCredit, this.courseScore, this.bid})
       : super(key: key);
 
   @override
