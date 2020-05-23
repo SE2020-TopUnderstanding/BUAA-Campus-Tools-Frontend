@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseEvaluationPage.dart';
-
+import 'package:jiaowuassistent/pages/CourseCommentWritePage.dart';
 class ExpandState {
   var isOpen;
   var index;
@@ -324,6 +324,7 @@ class _CourseEvaluationDetailPageState
 
   @override
   Widget build(BuildContext context) {
+    print("build");
     return new Scaffold(
       appBar: AppBar(
         title: Text('课程详情'),
@@ -377,6 +378,16 @@ class _CourseEvaluationDetailPageState
                             ),
                           ],
                         )),
+                    IconButton(
+                      padding: EdgeInsets.all(0),
+                      icon: Icon(Icons.edit, size: 30,),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => courseCommentWritePage(bname: widget.courseName,)));
+                      },
+                    ),// zyx add modify icon
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
