@@ -323,7 +323,7 @@ class _CourseEvaluationDetailPageState
 
   @override
   Widget build(BuildContext context) {
-    print("build");
+    //print("build");
     return new Scaffold(
       appBar: AppBar(
         title: Text('课程详情'),
@@ -384,7 +384,13 @@ class _CourseEvaluationDetailPageState
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => courseCommentWritePage(bname: widget.courseName,)));
+                                builder: (context) =>
+                                    courseCommentWritePage(
+                                      bname: widget.courseName,
+                                      bid: "B462648923",
+                                      score: 5.0,
+                                      commentText: "",
+                                    )));
                       },
                     ),// zyx add modify icon
                     Column(
