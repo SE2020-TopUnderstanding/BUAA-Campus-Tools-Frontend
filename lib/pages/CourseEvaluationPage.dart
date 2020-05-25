@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:jiaowuassistent/pages/CourseEvaluationDetailPage.dart';
 import 'package:jiaowuassistent/pages/User.dart';
 
@@ -37,7 +38,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   @override
   void initState() {
     super.initState();
-//    this._evaluationList = loadEvaluationCourseList('计', '罗', '核心专业类');
+    getDefaultList();
   }
 
   List<DropdownMenuItem> getDepartment() {
@@ -100,10 +101,22 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     return items;
   }
 
+  Future<void> getDefaultList() async{
+    try {
+      dynamic response =
+      await loadDefaultEvaluationCourseList(GlobalUser.studentID);
+      setState(() {
+        _evaluationList = response;
+      });
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<void> searchEvaluationCourseList() async {
     String courseName;
     String teacher;
-    String courseType;
+//    String courseType;
     courseName = _courseNameController.text;
     teacher = _teacherController.text;
     if (courseName.isEmpty &&
@@ -119,7 +132,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
           _isDisabled = true;
         });
         dynamic response =
-            await loadEvaluationCourseList(courseName, teacher, courseType);
+            await loadEvaluationCourseList(courseName, teacher, _courseType, _department);
         setState(() {
           _evaluationList = response;
           _isDisabled = false;
@@ -196,7 +209,8 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                           builder: (context) => CourseEvaluationDetailPage(
                               courseName: courseName,
                               courseCredit: courseCredit,
-                              courseScore: courseScore)));
+                              courseScore: courseScore,
+                              bid: bid,)));
                 },
               ),
             ),
