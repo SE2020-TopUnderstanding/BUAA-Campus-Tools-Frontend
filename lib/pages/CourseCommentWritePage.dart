@@ -1,73 +1,79 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
-
 import '../encrypt.dart';
+import 'dart:async';
 
-class courseCommentWritePage extends StatefulWidget{
-  String bname = "fhskhf";
-  String bid = "bdhaf";
-  String commentText = "fsf";
-  double score = 5.0;
-  courseCommentWritePage({this.bname,this.bid,this.commentText,this.score});
+class CourseCommentWritePage extends StatefulWidget {
+  final String bname;
+  final String bid;
+  final String commentText;
+  final double score;
+
+  CourseCommentWritePage({this.bname, this.bid, this.commentText, this.score});
+
   @override
-  _courseCommentWritePage createState() {
-    // TODO: implement createState
-    return _courseCommentWritePage();
+  _CourseCommentWritePage createState() {
+    return _CourseCommentWritePage();
   }
 }
 
-class _courseCommentWritePage extends State<courseCommentWritePage>{
+class _CourseCommentWritePage extends State<CourseCommentWritePage> {
   TextEditingController commentController = new TextEditingController();
   FocusNode commentNode = new FocusNode();
   List<bool> iconsState = new List(5);
   List<Icon> icons = new List(5);
   bool _enable;
   double score;
+
   @override
   void initState() {
     print('init');
-    // TODO: implement initState
     score = widget.score;
     iconsState = [false, false, false, false, false];
-    for(int i = 0; i < widget.score.round(); i++){
+    for (int i = 0; i < widget.score.round(); i++) {
       iconsState[i] = true;
     }
-    for(int i =0 ; i < 5; i++){
-      icons[i] = (iconsState[i] == true) ?
-      Icon(Icons.star,size: 50,color: Colors.deepOrange,) :
-      Icon(Icons.star,size: 50,color: Colors.grey);
+    for (int i = 0; i < 5; i++) {
+      icons[i] = (iconsState[i] == true)
+          ? Icon(
+              Icons.star,
+              size: 50,
+              color: Colors.deepOrange,
+            )
+          : Icon(Icons.star, size: 50, color: Colors.grey);
     }
-    if(widget.commentText.length == 0){
+    if (widget.commentText.length == 0) {
       _enable = true;
-    }else{
+    } else {
       _enable = false;
     }
     commentController.text = widget.commentText;
     super.initState();
   }
 
-  Widget Star(int number){
+  Widget star(int number) {
     return IconButton(
       padding: EdgeInsets.all(0),
-      icon: icons[number-1],
-      onPressed: (){
+      icon: icons[number - 1],
+      onPressed: () {
         setState(() {
-          for(int i = 0; i < 5; i++){
-            if(i < number){
+          for (int i = 0; i < 5; i++) {
+            if (i < number) {
               iconsState[i] = true;
-            }else{
+            } else {
               iconsState[i] = false;
             }
           }
-          for(int i = 0; i < 5; i++){
-            icons[i] = (iconsState[i] == true) ?
-            Icon(Icons.star,size: 50,color: Colors.deepOrange,) :
-            Icon(Icons.star,size: 50,color: Colors.grey);
+          for (int i = 0; i < 5; i++) {
+            icons[i] = (iconsState[i] == true)
+                ? Icon(
+                    Icons.star,
+                    size: 50,
+                    color: Colors.deepOrange,
+                  )
+                : Icon(Icons.star, size: 50, color: Colors.grey);
           }
           score = number.toDouble();
         });
@@ -77,16 +83,15 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     print("build_write");
     return Scaffold(
       appBar: AppBar(
         title: Text("评价课程"),
       ),
       body: GestureDetector(
-          onTap: (){
-            commentNode.unfocus();
-          },
+        onTap: () {
+          commentNode.unfocus();
+        },
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,13 +111,18 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text("评分",style: TextStyle(fontSize: 20),),
-                    SizedBox(width: 20,),
-                    Star(1),
-                    Star(2),
-                    Star(3),
-                    Star(4),
-                    Star(5),
+                    Text(
+                      "评分",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    star(1),
+                    star(2),
+                    star(3),
+                    star(4),
+                    star(5),
                   ],
                 ),
               ),
@@ -145,7 +155,7 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
                       disabledColor: Colors.grey,
                       onPressed:
                           //是要不同函数，而非一个函数不同返回值
-                        _enable ? null : ()=>setTextEnable(),
+                          _enable ? null : () => setTextEnable(),
                     ),
                     RaisedButton(
                       child: Text("发布"),
@@ -180,21 +190,17 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
                                       child: Text("发布"),
                                       onPressed: () {
                                         //此处添加向后端的put操作。
-                                        putComment(commentController.text, score);
+                                        putComment(
+                                            commentController.text, score);
                                       },
                                     ),
-                                    RaisedButton(
-                                      child: Text("我再想想"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
+
                                   ],
                                 );
                               }
                           );
                         }
-                      },
+                      }
                     ),
                   ],
                 ),
@@ -207,67 +213,70 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
   }
 
   void putComment(String comment, double star) async {
-      //Url请求
-      BaseOptions options = new BaseOptions(
-        connectTimeout: 30000,
-        sendTimeout: 30000,
-        receiveTimeout: 30000,
+    //Url请求
+    BaseOptions options = new BaseOptions(
+      connectTimeout: 30000,
+      sendTimeout: 30000,
+      receiveTimeout: 30000,
+    );
+    Response response;
+    Dio dio = new Dio(options);
+    try {
+      Navigator.of(context).pop();
+      showLoading(context);
+      response = await dio.request(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
+        data: {
+          "bid": widget.bid,
+          "text": comment,
+          "score": star,
+          "student_id": Encrypt.encrypt2(GlobalUser.studentID)
+        },
+        options: Options(method: "PUT", responseType: ResponseType.json),
       );
-      Response response;
-      Dio dio = new Dio(options);
-      try {
-        Navigator.of(context).pop();
-        showLoading(context);
-        response = await dio.request('http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
-            data: {
-              "bid":widget.bid,
-              "text": comment,
-              "score": star,
-              "student_id": Encrypt.encrypt2(GlobalUser.studentID)
-            },
-            options: Options(method: "PUT", responseType: ResponseType.json),
-            );
-        Navigator.of(context).pop();
+      Navigator.of(context).pop();
 
-        showDialog(
-          context: context,
-          builder: (context){
-            return AlertDialog(
-              title: Text("发布成功"),
-              actions: <Widget>[
-                RaisedButton(
-                  child: Text("确定"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("发布成功"),
+            actions: <Widget>[
+              RaisedButton(
+                child: Text("确定"),
+                onPressed: () {
+                  Navigator.of(context).pop();
                   },
-                ),
-              ],
-            );
-          },);
-        setTextEnable();
-      } on DioError catch (e) {
-        print("error type:${e.type},");
-        //Navigator.of(context).pop();
-        if ((e.type == DioErrorType.CONNECT_TIMEOUT) ||
-            (e.type == DioErrorType.RECEIVE_TIMEOUT) ||
-            (e.type == DioErrorType.SEND_TIMEOUT)) {
-          showError(context, "网络请求超时");
-        } else if (e.type == DioErrorType.RESPONSE) {
-          if (e.response.statusCode == 401) {
-            showError(context, "您的账户不存在于我们的数据库");
-          } else if(e.response.statusCode == 404){
-            showError(context, "课程不存在");
-          } else {
-            print(e.response.statusCode);
-            showError(context, "前端写错了");
-          }
-        } else if (e.type == DioErrorType.CANCEL) {
-          showError(context, "请求取消");
+              ),
+            ],
+          );
+          },
+      );
+      setTextEnable();
+    } on DioError catch (e) {
+      print("error type:${e.type},");
+      //Navigator.of(context).pop();
+      if ((e.type == DioErrorType.CONNECT_TIMEOUT) ||
+          (e.type == DioErrorType.RECEIVE_TIMEOUT) ||
+          (e.type == DioErrorType.SEND_TIMEOUT)) {
+        showError(context, "网络请求超时");
+      } else if (e.type == DioErrorType.RESPONSE) {
+        if (e.response.statusCode == 401) {
+          showError(context, "您的账户不存在于我们的数据库");
+        } else if (e.response.statusCode == 404) {
+          showError(context, "课程不存在");
         } else {
-          showError(context, "未知错误");
+          print(e.response.statusCode);
+          showError(context, "前端写错了");
         }
+      } else if (e.type == DioErrorType.CANCEL) {
+        showError(context, "请求取消");
+      } else {
+        print(e.response.statusCode);
+        showError(context, "前端写错了");
       }
     }
+  }
 
   void setTextEnable() {
     setState(() {
@@ -348,4 +357,5 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
         });
   }
 }
+
 //bug日志，之前星级评价的Ui在更改星级后不发生改变，后来发现，updateWidget 与 setState的更新流程不同。

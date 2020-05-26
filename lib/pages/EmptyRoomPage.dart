@@ -528,7 +528,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     disabledColor: Colors.grey,
                     color: Colors.lightBlue,
-                    onPressed: isDisabled ? null : ()=>{_search()},
+                    onPressed: isDisabled ? null : () => {_search()},
 //                    onPressed: () {
 //                      if (isDisabled)
 //                        null;
@@ -565,8 +565,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                       setState(() {
                         _selectedCampus = value;
                         _buildingList = _buildingList2[_selectedCampus - 1];
-                        if (checkNull())
-                          isDisabled = false;
+                        if (checkNull()) isDisabled = false;
 //                        if (checkNull())
 //                          _search();
                       });
@@ -582,8 +581,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     onChanged: (value) {
                       setState(() {
                         _selectedBuilding = value;
-                        if (checkNull())
-                          isDisabled = false;
+                        if (checkNull()) isDisabled = false;
 //                        if (checkNull())
 //                          _search();
                       });
@@ -607,8 +605,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                             _showAlertDialog();
                           } else {
                             _selectedBegin = value;
-                            if (checkNull())
-                              isDisabled = false;
+                            if (checkNull()) isDisabled = false;
 //                            if (checkNull())
 //                              _search();
                           }
@@ -634,8 +631,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                             _showAlertDialog();
                           } else {
                             _selectedEnd = value;
-                            if (checkNull())
-                              isDisabled = false;
+                            if (checkNull()) isDisabled = false;
 //                            if (checkNull())
 //                              _search();
                           }

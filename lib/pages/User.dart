@@ -541,38 +541,160 @@ Future<int> getWeek() async {
   return weekNumber;
 }
 
-class EvaluationCourse{
+class TeacherInfo {
+  int id;
+  String teacherName;
+  int upNum;
+  bool hasUp;
+
+  TeacherInfo({this.id, this.teacherName, this.upNum, this.hasUp});
+
+  factory TeacherInfo.fromJson(Map<String, dynamic> parsedJson) {
+    return TeacherInfo(
+        id: parsedJson['id'],
+        teacherName: parsedJson['teacher_name'],
+        upNum: parsedJson['up'],
+        hasUp: parsedJson['has_up']);
+  }
+}
+
+//class TeacherInfoList {
+//  final List<TeacherInfo> teacherInfoList;
+//
+//  TeacherInfoList(this.teacherInfoList);
+//
+//  factory TeacherInfoList.fromJson(List<dynamic> parsedJson) {
+//    return TeacherInfoList(
+//        parsedJson.map((i) => TeacherInfo.fromJson(i)).toList());
+//  }
+//}
+
+class Info {
+  int id;
+  String studentId;
+  double score;
+  String updateTime;
+  String content;
+  int upNum;
+  int downNum;
+  bool hasUp;
+  bool hasDown;
+
+  Info(
+      {this.id,
+      this.studentId,
+      this.score,
+      this.updateTime,
+      this.content,
+      this.upNum,
+      this.downNum,
+      this.hasUp,
+      this.hasDown});
+
+  factory Info.fromJson(Map<String, dynamic> parsedJson) {
+    return Info(
+        id: parsedJson['id'],
+        studentId: parsedJson['student'],
+        score: parsedJson['score'],
+        updateTime: parsedJson['updated_time'],
+        content: parsedJson['evaluation'],
+        upNum: parsedJson['up'],
+        downNum: parsedJson['down'],
+        hasUp: parsedJson['has_up'],
+        hasDown: parsedJson['has_down']);
+  }
+}
+
+//class InfoList {
+//  final List<Info> infoList;
+//
+//  InfoList(this.infoList);
+//
+//  factory InfoList.fromJson(List<dynamic> parsedJson) {
+//    return InfoList(parsedJson.map((i) => Info.fromJson(i)).toList());
+//  }
+//}
+
+class EvaluationDetail {
+  String courseName;
+  int evaluationNum;
+  double averageScore;
+  List<TeacherInfo> teacherInfo;
+  List<Info> info;
+
+  EvaluationDetail(
+      {this.courseName,
+      this.evaluationNum,
+      this.averageScore,
+      this.teacherInfo,
+      this.info});
+
+  factory EvaluationDetail.fromJson(Map<String, dynamic> parsedJson) {
+    return EvaluationDetail(
+      courseName: parsedJson['course_name'],
+      evaluationNum: parsedJson['evaluation_num'],
+      averageScore: parsedJson['avg_score'],
+      teacherInfo: parsedJson['teacher_info']
+          .map((i) => TeacherInfo.fromJson(i))
+          .toList(),
+      info: parsedJson['info'].map((i) => Info.fromJson(i)).toList(),
+    );
+  }
+}
+
+Future<EvaluationDetail> getEvaluationDetail(
+    String bid, String studentID) async {
+  final response = await http.get(
+      'http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=$studentID');
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    Utf8Decoder decode = new Utf8Decoder();
+    return EvaluationDetail.fromJson(
+        json.decode(decode.convert(response.bodyBytes)));
+  } else {
+    throw response.statusCode;
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+//    throw Exception('Failed to load course center');
+  }
+}
+
+class EvaluationCourse {
   final String courseName;
   final String department;
   final String bid;
   final double score;
   final String credit;
 
-  EvaluationCourse({this.courseName, this.department, this.bid, this.score, this.credit});
+  EvaluationCourse(
+      {this.courseName, this.department, this.bid, this.score, this.credit});
 
-  factory EvaluationCourse.fromJson(Map<String, dynamic> parsedJson){
+  factory EvaluationCourse.fromJson(Map<String, dynamic> parsedJson) {
     return EvaluationCourse(
-      courseName: parsedJson['course_name'],
-      department: parsedJson['department'],
-      bid: parsedJson['bid'],
-      credit: parsedJson['credit'],
-      score: parsedJson['avg_score']
-    );
+        courseName: parsedJson['course_name'],
+        department: parsedJson['department'],
+        bid: parsedJson['bid'],
+        credit: parsedJson['credit'],
+        score: parsedJson['avg_score']);
   }
 }
 
-class EvaluationCourseList{
+class EvaluationCourseList {
   final List<EvaluationCourse> evaluationCourseList;
 
   EvaluationCourseList(this.evaluationCourseList);
 
-  factory EvaluationCourseList.fromJson(List<dynamic> parsedJson){
-    List<EvaluationCourse> courseList = parsedJson.map((i)=>EvaluationCourse.fromJson(i)).toList();
+  factory EvaluationCourseList.fromJson(List<dynamic> parsedJson) {
+    List<EvaluationCourse> courseList =
+        parsedJson.map((i) => EvaluationCourse.fromJson(i)).toList();
     return EvaluationCourseList(courseList);
   }
 }
 
-Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String teacher, String type,String department) async{
+Future<EvaluationCourseList> loadEvaluationCourseList(
+    String courseName, String teacher, String type, String department) async {
   Dio dio = new Dio();
   Response response;
 //  try {
@@ -585,7 +707,6 @@ Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String 
 //  }
 //  try {
 //    List<dynamic> jsonList = json.decode(response.data);
-
     List<dynamic> jsonList = [
       {
           "bid":"111",
@@ -663,7 +784,8 @@ Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String 
 //    throw('课程评价列表解析错误');
 }
 
-Future<EvaluationCourseList> loadDefaultEvaluationCourseList(String studentID) async{
+Future<EvaluationCourseList> loadDefaultEvaluationCourseList(
+    String studentID) async {
   Dio dio = new Dio();
   Response response;
 //  try {
@@ -678,32 +800,32 @@ Future<EvaluationCourseList> loadDefaultEvaluationCourseList(String studentID) a
 //    List<dynamic> jsonList = json.decode(response.data);
   List<dynamic> jsonList = [
     {
-      "bid":"111",
-      "course_name":'软件工程(Software Engineering)',
-      "credit":'2学分',
-      "avg_score":4.2,
-      "department":"软件学院"
+      "bid": "111",
+      "course_name": '软件工程(Software Engineering)',
+      "credit": '2学分',
+      "avg_score": 4.2,
+      "department": "软件学院"
     },
     {
-      "bid":"112",
-      "course_name":'计算机网络',
-      "credit":'2学分',
-      "avg_score":4.5,
-      "department":"计算机学院"
+      "bid": "112",
+      "course_name": '计算机网络',
+      "credit": '2学分',
+      "avg_score": 4.5,
+      "department": "计算机学院"
     },
     {
-      "bid":"111",
-      "course_name":'软件工程(Software Engineering)',
-      "credit":'2学分',
-      "avg_score":4.2,
-      "department":"软件学院"
+      "bid": "111",
+      "course_name": '软件工程(Software Engineering)',
+      "credit": '2学分',
+      "avg_score": 4.2,
+      "department": "软件学院"
     },
     {
-      "bid":"112",
-      "course_name":'计算机网络',
-      "credit":'2学分',
-      "avg_score":4.5,
-      "department":"计算机学院"
+      "bid": "112",
+      "course_name": '计算机网络',
+      "credit": '2学分',
+      "avg_score": 4.5,
+      "department": "计算机学院"
     },
   ];
   return EvaluationCourseList.fromJson(jsonList);
@@ -711,7 +833,7 @@ Future<EvaluationCourseList> loadDefaultEvaluationCourseList(String studentID) a
 //    throw('课程评价列表解析错误');
 }
 
-class schoolCalendarStr {
+class SchoolCalendarStr {
   String schoolYear;
   String firstSemester;
   String winterSemester;
@@ -721,17 +843,17 @@ class schoolCalendarStr {
   List<Holiday> holiday;
   List<Ddl> ddl;
 
-  schoolCalendarStr(
+  SchoolCalendarStr(
       {this.schoolYear,
-        this.firstSemester,
-        this.winterSemester,
-        this.secondSemester,
-        this.thirdSemester,
-        this.endSemester,
-        this.holiday,
-        this.ddl});
+      this.firstSemester,
+      this.winterSemester,
+      this.secondSemester,
+      this.thirdSemester,
+      this.endSemester,
+      this.holiday,
+      this.ddl});
 
-  schoolCalendarStr.fromJson(Map<String, dynamic> json) {
+  SchoolCalendarStr.fromJson(Map<String, dynamic> json) {
     schoolYear = json['school_year'];
     firstSemester = json['first_semester'];
     winterSemester = json['winter_semester'];
@@ -770,7 +892,8 @@ class Ddl {
   String homework;
   DateTime ddlDay;
   String ddlSecond;
-  Ddl({this.course, this.homework, this.ddlDay,this.ddlSecond});
+
+  Ddl({this.course, this.homework, this.ddlDay, this.ddlSecond});
 
   Ddl.fromJson(Map<String, dynamic> json) {
     String ddlStr = json['ddl'] as String;
@@ -787,13 +910,14 @@ class schoolCalendar {
   Map<DateTime, String> weekNumbers;
   List<Holiday> holidays;
   List<Ddl> ddls;
-  schoolCalendar(){
+
+  schoolCalendar() {
     weekNumbers = new Map();
     holidays = [];
     ddls = [];
   }
 
-  schoolCalendar parse(schoolCalendarStr str){
+  void parse(SchoolCalendarStr str) {
     //ddl
     ddls = str.ddl;
     //holiday
@@ -805,20 +929,20 @@ class schoolCalendar {
     DateTime third = DateTime.parse(str.thirdSemester);
     DateTime end = DateTime.parse(str.endSemester);
     Duration inter = Duration(days: 7);
-    for(int i = 0; first.isBefore(winter); i++){
-      weekNumbers[first] = '秋${i+1}';
+    for (int i = 0; first.isBefore(winter); i++) {
+      weekNumbers[first] = '秋${i + 1}';
       first = first.add(inter);
     }
-    for(int i = 0; winter.isBefore(second); i++){
-      weekNumbers[winter] = '寒假${i+1}';
+    for (int i = 0; winter.isBefore(second); i++) {
+      weekNumbers[winter] = '寒假${i + 1}';
       winter = winter.add(inter);
     }
-    for(int i = 0; second.isBefore(third); i++){
-      weekNumbers[second] = '春${i+1}';
+    for (int i = 0; second.isBefore(third); i++) {
+      weekNumbers[second] = '春${i + 1}';
       second = second.add(inter);
     }
-    for(int i = 0; third.isBefore(end); i++){
-      weekNumbers[third] = '夏${i+1}';
+    for (int i = 0; third.isBefore(end); i++) {
+      weekNumbers[third] = '夏${i + 1}';
       third = third.add(inter);
     }
   }
@@ -858,7 +982,7 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
 //  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
   try {
     dynamic jsonList = json.decode(ss);
-    schoolCalendarStr tempStr = new schoolCalendarStr.fromJson(jsonList);
+    SchoolCalendarStr tempStr = new SchoolCalendarStr.fromJson(jsonList);
     schoolCalendar temp = new schoolCalendar();
     temp.parse(tempStr);
     return temp;
