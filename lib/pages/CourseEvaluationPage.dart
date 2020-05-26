@@ -141,10 +141,6 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
         value: '高等理工学院',
       ),
       DropdownMenuItem(
-        child: Text('计算机学院'),
-        value: '计算机学院',
-      ),
-      DropdownMenuItem(
         child: Text('中法工程师学院'),
         value: '中法工程师学院',
       ),
