@@ -101,10 +101,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     return items;
   }
 
-  Future<void> getDefaultList() async{
+  Future<void> getDefaultList() async {
     try {
       dynamic response =
-      await loadDefaultEvaluationCourseList(GlobalUser.studentID);
+          await loadDefaultEvaluationCourseList(GlobalUser.studentID);
       setState(() {
         _evaluationList = response;
       });
@@ -120,8 +120,9 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     courseName = _courseNameController.text;
     teacher = _teacherController.text;
     if (courseName.isEmpty &&
-            teacher.isEmpty &&
-            _department == null && _courseType == null){
+        teacher.isEmpty &&
+        _department == null &&
+        _courseType == null) {
 //    ) ||
 //        (_department == null && _courseType != null) ||
 //        (_department != null && _courseType == null)) {
@@ -131,8 +132,8 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
         setState(() {
           _isDisabled = true;
         });
-        dynamic response =
-            await loadEvaluationCourseList(courseName, teacher, _courseType, _department);
+        dynamic response = await loadEvaluationCourseList(
+            courseName, teacher, _courseType, _department);
         setState(() {
           _evaluationList = response;
           _isDisabled = false;
@@ -207,10 +208,11 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CourseEvaluationDetailPage(
-                              courseName: courseName,
-                              courseCredit: courseCredit,
-                              courseScore: courseScore,
-                              bid: bid,)));
+                                courseName: courseName,
+                                courseCredit: courseCredit,
+                                courseScore: courseScore,
+                                bid: bid,
+                              )));
                 },
               ),
             ),
