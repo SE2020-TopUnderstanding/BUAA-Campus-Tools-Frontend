@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/CourseEvaluationPage.dart';
 import 'package:jiaowuassistent/pages/CourseCommentWritePage.dart';
+import 'package:jiaowuassistent/pages/User.dart';
+import 'package:jiaowuassistent/GlobalUser.dart';
 
 class ExpandState {
   var isOpen;
@@ -32,27 +34,24 @@ class CourseEvaluationDetailPage extends StatefulWidget {
 class _CourseEvaluationDetailPageState
     extends State<CourseEvaluationDetailPage> {
   int evaluationTimes = 10;
-  List<dynamic> _reviewList;
-  List<dynamic> _teacherList;
   ExpandState _expandState = new ExpandState(0, false);
+  EvaluationDetail evaluationDetail;
+  String commentText;
+  double score;
 
-  _CourseEvaluationDetailPageState() {
-    _reviewList = [
-      [
-        'this is a good course, i like it soooooooooooooooooooooooooooooooooooooooooo much',
-        4.0,
-        32,
-        1,
-        true,
-        false
-      ],
-      ['this is a bad course', 2.0, 32, 1, false, true]
-    ];
-    _teacherList = [
-      ['罗杰', 50, 1, true, false],
-      ['罗杰', 50, 1, false, false],
-      ['罗杰', 50, 1, false, false],
-    ];
+  Future<void> searchGrade() async {
+    try {
+      getEvaluationDetail(widget.bid, GlobalUser.studentID)
+          .then((EvaluationDetail temp) {
+        setState(() {
+          evaluationDetail = temp;
+        });
+      }).catchError((e) {
+        print(e);
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   //用来获得不同比例的星星
@@ -94,55 +93,51 @@ class _CourseEvaluationDetailPageState
 
   void updateAgree(int index, int subIndex) {
     setState(() {
-      if (subIndex == -1) {
-        if (this._reviewList[index][4]) {
-          this._reviewList[index][2] -= 1;
-          this._reviewList[index][4] = false;
-        } else {
-          this._reviewList[index][2] += 1;
-          this._reviewList[index][4] = true;
-        }
+      if (evaluationDetail.info[index].hasUp) {
+        evaluationDetail.info[index].upNum -= 1;
+        evaluationDetail.info[index].hasUp = false;
+      } else {
+        evaluationDetail.info[index].upNum += 1;
+        evaluationDetail.info[index].hasUp = true;
       }
     });
   }
 
   void updateDisagree(int index, int subIndex) {
     setState(() {
-      if (subIndex == -1) {
-        if (this._reviewList[index][5]) {
-          this._reviewList[index][3] -= 1;
-          this._reviewList[index][5] = false;
-        } else {
-          this._reviewList[index][3] += 1;
-          this._reviewList[index][5] = true;
-        }
+      if (evaluationDetail.info[index].hasDown) {
+        evaluationDetail.info[index].downNum -= 1;
+        evaluationDetail.info[index].hasDown = false;
+      } else {
+        evaluationDetail.info[index].downNum += 1;
+        evaluationDetail.info[index].hasDown = true;
       }
     });
   }
 
   void updateTeacherAgree(int index) {
     setState(() {
-      if (this._teacherList[index][3]) {
-        this._teacherList[index][1] -= 1;
-        this._teacherList[index][3] = false;
+      if (evaluationDetail.teacherInfo[index].hasUp) {
+        evaluationDetail.teacherInfo[index].upNum -= 1;
+        evaluationDetail.teacherInfo[index].hasUp = false;
       } else {
-        this._teacherList[index][1] += 1;
-        this._teacherList[index][3] = true;
+        evaluationDetail.teacherInfo[index].upNum += 1;
+        evaluationDetail.teacherInfo[index].hasUp = true;
       }
     });
   }
 
-  void updateTeacherDisagree(int index) {
-    setState(() {
-      if (this._teacherList[index][4]) {
-        this._teacherList[index][2] -= 1;
-        this._teacherList[index][4] = false;
-      } else {
-        this._teacherList[index][2] += 1;
-        this._teacherList[index][4] = true;
-      }
-    });
-  }
+//  void updateTeacherDisagree(int index) {
+//    setState(() {
+//      if (this._teacherList[index][4]) {
+//        this._teacherList[index][2] -= 1;
+//        this._teacherList[index][4] = false;
+//      } else {
+//        this._teacherList[index][2] += 1;
+//        this._teacherList[index][4] = true;
+//      }
+//    });
+//  }
 
   Widget getTeacher() {
     return ExpansionPanelList(
@@ -172,7 +167,7 @@ class _CourseEvaluationDetailPageState
                     ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: _teacherList.length,
+                        itemCount: evaluationDetail.teacherInfo.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Row(
                             children: <Widget>[
@@ -181,7 +176,8 @@ class _CourseEvaluationDetailPageState
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      _teacherList[index][0],
+                                      evaluationDetail
+                                          .teacherInfo[index].teacherName,
                                       style: new TextStyle(
                                         fontSize: 16,
                                       ),
@@ -193,7 +189,8 @@ class _CourseEvaluationDetailPageState
                               new Column(
                                 children: <Widget>[
                                   new IconButton(
-                                    icon: (_teacherList[index][3]
+                                    icon: (evaluationDetail
+                                            .teacherInfo[index].hasUp
                                         ? new Icon(
                                             Icons.thumb_up,
                                             color: Colors.red,
@@ -206,35 +203,37 @@ class _CourseEvaluationDetailPageState
                                     onPressed: () =>
                                         {updateTeacherAgree(index)},
                                   ),
-                                  Text(_teacherList[index][1].toString(),
+                                  Text(
+                                      evaluationDetail.teacherInfo[index].upNum
+                                          .toString(),
                                       style: new TextStyle(
                                         fontSize: 14,
                                       ))
                                 ],
                               ),
-                              new Column(
-                                children: <Widget>[
-                                  new IconButton(
-                                    icon: _teacherList[index][4]
-                                        ? new Icon(
-                                            Icons.thumb_down,
-                                            color: Colors.red,
-                                            size: 15,
-                                          )
-                                        : new Icon(
-                                            Icons.thumb_down,
-                                            size: 15,
-                                          ),
-                                    onPressed: () =>
-                                        {updateTeacherDisagree(index)},
-                                    padding: const EdgeInsets.all(0.0),
-                                  ),
-                                  Text(_teacherList[index][2].toString(),
-                                      style: new TextStyle(
-                                        fontSize: 14,
-                                      ))
-                                ],
-                              )
+//                              new Column(
+//                                children: <Widget>[
+//                                  new IconButton(
+//                                    icon: _teacherList[index][4]
+//                                        ? new Icon(
+//                                            Icons.thumb_down,
+//                                            color: Colors.red,
+//                                            size: 15,
+//                                          )
+//                                        : new Icon(
+//                                            Icons.thumb_down,
+//                                            size: 15,
+//                                          ),
+//                                    onPressed: () =>
+//                                        {updateTeacherDisagree(index)},
+//                                    padding: const EdgeInsets.all(0.0),
+//                                  ),
+//                                  Text(_teacherList[index][2].toString(),
+//                                      style: new TextStyle(
+//                                        fontSize: 14,
+//                                      ))
+//                                ],
+//                              )
                             ],
                           );
                         }),
@@ -252,8 +251,13 @@ class _CourseEvaluationDetailPageState
         ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: _reviewList.length,
+            itemCount: evaluationDetail.info.length,
             itemBuilder: (BuildContext context, int index) {
+              if (evaluationDetail.info[index].studentId ==
+                  GlobalUser.studentID) {
+                commentText = evaluationDetail.info[index].content;
+                score = evaluationDetail.info[index].score;
+              }
               return Container(
                   padding: EdgeInsets.all(16.0),
                   // ignore: deprecated_member_use
@@ -266,12 +270,13 @@ class _CourseEvaluationDetailPageState
                         child: new Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            fiveStars(0.0 + _reviewList[index][1], 16),
+                            fiveStars(
+                                0.0 + evaluationDetail.info[index].score, 16),
                             SizedBox(
                               height: 3,
                             ),
                             Text(
-                              _reviewList[index][0],
+                              evaluationDetail.info[index].content,
                               style: new TextStyle(
                                 fontSize: 15,
                               ),
@@ -282,7 +287,7 @@ class _CourseEvaluationDetailPageState
                       new Column(
                         children: <Widget>[
                           new IconButton(
-                            icon: (_reviewList[index][4]
+                            icon: (evaluationDetail.info[index].hasUp
                                 ? new Icon(
                                     Icons.thumb_up,
                                     color: Colors.red,
@@ -294,7 +299,7 @@ class _CourseEvaluationDetailPageState
                                   )),
                             onPressed: () => {updateAgree(index, -1)},
                           ),
-                          Text(_reviewList[index][2].toString(),
+                          Text(evaluationDetail.info[index].upNum.toString(),
                               style: new TextStyle(
                                 fontSize: 14,
                               ))
@@ -303,7 +308,7 @@ class _CourseEvaluationDetailPageState
                       new Column(
                         children: <Widget>[
                           new IconButton(
-                            icon: _reviewList[index][5]
+                            icon: evaluationDetail.info[index].hasDown
                                 ? new Icon(
                                     Icons.thumb_down,
                                     color: Colors.red,
@@ -316,7 +321,7 @@ class _CourseEvaluationDetailPageState
                             onPressed: () => {updateDisagree(index, -1)},
                             padding: const EdgeInsets.all(0.0),
                           ),
-                          Text(_reviewList[index][3].toString(),
+                          Text(evaluationDetail.info[index].downNum.toString(),
                               style: new TextStyle(
                                 fontSize: 14,
                               ))
@@ -337,181 +342,188 @@ class _CourseEvaluationDetailPageState
         title: Text('课程详情'),
         backgroundColor: Colors.lightBlue,
       ),
-      body: new ListView(
-        children: <Widget>[
-          new Container(
-            padding: const EdgeInsets.only(
-                left: 10.0, top: 5.0, right: 10.0, bottom: 10.0),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: evaluationDetail == null
+          ? Container(
+              alignment: Alignment(0.0, 0.0),
+              child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+              ))
+          : ListView(
               children: <Widget>[
                 new Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(5.0),
-                  child: new Text(
-                    widget.courseName,
-                    textAlign: TextAlign.center,
-                    style: new TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
+                  padding: const EdgeInsets.only(
+                      left: 10.0, top: 5.0, right: 10.0, bottom: 10.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(5.0),
+                        child: new Text(
+                          widget.courseName,
+                          textAlign: TextAlign.center,
+                          style: new TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ),
+                      new Row(
+                        children: <Widget>[
+                          new Expanded(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                widget.courseScore.toString(),
+                                style: new TextStyle(
+                                  color: Colors.grey[900],
+                                  fontSize: 44,
+                                ),
+                              ),
+                              Text(
+                                evaluationTimes.toString() + ' 个评价',
+                                style: new TextStyle(
+                                  color: Colors.grey[900],
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          )),
+                          IconButton(
+                            padding: EdgeInsets.all(0),
+                            icon: Icon(
+                              Icons.edit,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          courseCommentWritePage(
+                                            bname: widget.courseName,
+                                          )));
+                            },
+                          ), // zyx add modify icon
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('5星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: 0.5,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('50.0%'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('4星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: 0.3,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('30.0%'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('3星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: 0.1,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('10.0%'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('2星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: 0.08,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('8.0%'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('1星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: 0.02,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('2.0%'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
-                new Row(
-                  children: <Widget>[
-                    new Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          widget.courseScore.toString(),
-                          style: new TextStyle(
-                            color: Colors.grey[900],
-                            fontSize: 44,
-                          ),
-                        ),
-                        Text(
-                          evaluationTimes.toString() + ' 个评价',
-                          style: new TextStyle(
-                            color: Colors.grey[900],
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
-                    )),
-                    IconButton(
-                      padding: EdgeInsets.all(0),
-                      icon: Icon(
-                        Icons.edit,
-                        size: 30,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => courseCommentWritePage(
-                                      bname: widget.courseName,
-                                    )));
-                      },
-                    ), // zyx add modify icon
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('5星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: 0.5,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text('50.0%'),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('4星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: 0.3,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text('30.0%'),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('3星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: 0.1,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text('10.0%'),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('2星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: 0.08,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text('8.0%'),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('1星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: 0.02,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text('2.0%'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                )
+                getTeacher(),
+                getReview(),
               ],
             ),
-          ),
-          getTeacher(),
-          getReview(),
-        ],
-      ),
     );
   }
 }
