@@ -578,6 +578,8 @@ Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String 
   Dio dio = new Dio();
   Response response;
 //  try {
+//      if(department==null||department=="全部") department="";
+//      if(type==null||type=="全部") type="";
 //    print('http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type');
 //    response = await dio.request(
 //        'http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type',
