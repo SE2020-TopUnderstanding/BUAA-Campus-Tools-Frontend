@@ -9,8 +9,6 @@ import 'package:jiaowuassistent/encrypt.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
 
-
-
 class EmptyRoom {
   String _building;
   List<String> _rooms;
@@ -483,13 +481,13 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   // ignore: unrelated_type_equality_checks
   DateTime lastModified = file.lastModifiedSync();
   */
+ // print('course: ${Encrypt.encrypt(studentID)}');
   CancelToken _can = new CancelToken();
   Timer(Duration(milliseconds: 10), () {
     _can.cancel("定时");
   }); //测试错误
   String ss;
   //暂定先直接用网络请求
-  print('get course table from http');
   Dio dio = new Dio();
   Response response;
   try {
@@ -513,7 +511,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
     }
   }
   ss = response.data;
-
+  print(ss.length);
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
@@ -587,6 +585,7 @@ Future<EvaluationCourseList> loadEvaluationCourseList(String courseName, String 
 //  }
 //  try {
 //    List<dynamic> jsonList = json.decode(response.data);
+
     List<dynamic> jsonList = [
       {
           "bid":"111",
@@ -827,12 +826,16 @@ class schoolCalendar {
 
 Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   String schoolYear = '2019-2020';
+  DateTime endDay = DateTime(2020,9,6);
+  DateTime nowDay = DateTime.now();
+  if(nowDay.isAfter(endDay)){
+    schoolYear = '2020-2021';
+  }
   Dio dio = new Dio();
   Response response;
-  /*
   try {
     response = await dio.request(
-        'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=$studentID&school_year=$schoolYear',
+        'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear',
       options: Options(method: "GET", responseType: ResponseType.plain),
     );
   } on DioError catch (e) {
@@ -851,9 +854,8 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   }
   String ss = response.data;
 
-   */
 
-  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
+//  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
   try {
     dynamic jsonList = json.decode(ss);
     schoolCalendarStr tempStr = new schoolCalendarStr.fromJson(jsonList);

@@ -93,7 +93,7 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
         color: Colors.blue,
       );
     }
-    if(!holidayMap.containsKey(time)&& !ddlCount.containsKey(time)){
+    if(!ddlCount.containsKey(time)){
       return Tooltip(
         message: MaterialLocalizations.of(context).formatFullDate(time),
         child: Container(
@@ -114,49 +114,7 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
           ),
         ),
       );
-    }else if(holidayMap.containsKey(time)&& !ddlCount.containsKey(time)){
-      return Tooltip(
-        message: MaterialLocalizations.of(context).formatFullDate(time),
-        child: Container(
-          decoration: decoration,
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                time.day.toString(),
-                style: childStyle,
-              ),
-              Text(
-                " ",
-                style: TextStyle(color: childStyle.color,fontSize: 10),
-              ),
-            ],
-          ),
-        ),
-      );
-    } else if(!holidayMap.containsKey(time)&& ddlCount.containsKey(time)){
-      return Tooltip(
-        message: MaterialLocalizations.of(context).formatFullDate(time),
-        child: Container(
-          decoration: decoration,
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                time.day.toString(),
-                style: childStyle,
-              ),
-              Text(
-                "${ddlCount[time]}个待办",
-                style: TextStyle(color: Colors.black,fontSize: 10),
-              ),
-            ],
-          ),
-        ),
-      );
-    }else{
+    } else{
       return Tooltip(
         message: MaterialLocalizations.of(context).formatFullDate(time),
         child: Container(
@@ -184,8 +142,17 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
   List<Widget> buildWeekListWidget(
       BuildContext context, MaterialLocalizations localizations) {
     List<Widget> list = [];
-    list = localizations.narrowWeekdays
-        .map(
+    List<String> weekdayText = <String>[
+      '一',
+      '二',
+      '三',
+      '四',
+      '五',
+      '六',
+      '日',
+    ];
+    //list = localizations.narrowWeekdays
+    list = weekdayText.map(
           (d) => Expanded(
              child: ExcludeSemantics(
                 child: Container(

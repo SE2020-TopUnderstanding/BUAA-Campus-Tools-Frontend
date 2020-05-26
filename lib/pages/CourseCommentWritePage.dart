@@ -181,7 +181,6 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
                                       onPressed: () {
                                         //此处添加向后端的put操作。
                                         putComment(commentController.text, score);
-                                        Navigator.of(context).pop();
                                       },
                                     ),
                                     RaisedButton(
@@ -217,23 +216,34 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
       Response response;
       Dio dio = new Dio(options);
       try {
+        Navigator.of(context).pop();
+        showLoading(context);
         response = await dio.request('http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
             data: {
               "bid":widget.bid,
               "text": comment,
               "score": star,
-              "student_id": Encrypt.encrypt(GlobalUser.studentID)
+              "student_id": Encrypt.encrypt2(GlobalUser.studentID)
             },
             options: Options(method: "PUT", responseType: ResponseType.json),
             );
+        Navigator.of(context).pop();
+
         showDialog(
           context: context,
           builder: (context){
-            return SimpleDialog(
+            return AlertDialog(
               title: Text("发布成功"),
+              actions: <Widget>[
+                RaisedButton(
+                  child: Text("确定"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             );
           },);
-        print('response end');
         setTextEnable();
       } on DioError catch (e) {
         print("error type:${e.type},");
@@ -265,9 +275,29 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
     });
   }
 
-  /*
+  void showError(context, String str) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            titlePadding: EdgeInsets.fromLTRB(24.0, 14.0, 24.0, 0.0),
+            title: Text(
+              '错  误',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            children: <Widget>[
+              Text(
+                str,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          );
+        });
+  }
+
   void showLoading(context, [String text]) {
-    text = text ?? "正在发布";
+    text = text ?? "发布中";
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -314,27 +344,6 @@ class _courseCommentWritePage extends State<courseCommentWritePage>{
             onWillPop: () {
               return new Future.value(false);
             },
-          );
-        });
-  }
-   */
-  void showError(context, String str) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            titlePadding: EdgeInsets.fromLTRB(24.0, 14.0, 24.0, 0.0),
-            title: Text(
-              '错  误',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            children: <Widget>[
-              Text(
-                str,
-                textAlign: TextAlign.center,
-              ),
-            ],
           );
         });
   }

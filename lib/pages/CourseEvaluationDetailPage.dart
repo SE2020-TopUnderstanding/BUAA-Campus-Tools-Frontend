@@ -388,7 +388,7 @@ class _CourseEvaluationDetailPageState
                                 builder: (context) =>
                                     courseCommentWritePage(
                                       bname: widget.courseName,
-                                      bid: "B462648923",
+                                      bid: "B2H513060",
                                       score: 5.0,
                                       commentText: "",
                                     )));
