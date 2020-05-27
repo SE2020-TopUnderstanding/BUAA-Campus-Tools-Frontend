@@ -36,10 +36,26 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   String _department;
   String _courseType;
 
+  //回到顶部悬浮按扭相关
+  var _scrollController = ScrollController();
+  var _showBackTop = false;
+
   @override
   void initState() {
     super.initState();
+    // 对 scrollController 进行监听
+    _scrollController.addListener(() {
+      // 当滚动距离大于 800 之后，显示回到顶部按钮
+      setState(() => _showBackTop = _scrollController.position.pixels >= 500);
+    });
+    //获得已选课程评价列表
     getDefaultList();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   List<DropdownMenuItem> getDepartment() {
@@ -459,155 +475,163 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
         title: Text('课程列表'),
         backgroundColor: Colors.lightBlue,
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                    child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 5),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: TextFormField(
-                        focusNode: _focusNodeCourse,
-                        controller: _courseNameController,
-                        validator: (v) =>
-                            v.trim().isNotEmpty ? Null : '请输入您希望查看的课程',
-                        decoration: InputDecoration(
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 5),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: TextFormField(
+                          focusNode: _focusNodeCourse,
+                          controller: _courseNameController,
+                          validator: (v) =>
+                              v.trim().isNotEmpty ? Null : '请输入您希望查看的课程',
+                          decoration: InputDecoration(
 //                            border: new OutlineInputBorder(
 //                              //添加边框
 //                              gapPadding: 10.0,
 //                              borderRadius: BorderRadius.circular(10.0),
 //                            ),
-                            hintText: '课程名称',
-                            prefixIcon: new Icon(Icons.assignment)),
+                              hintText: '课程名称',
+                              prefixIcon: new Icon(Icons.assignment)),
+                        ),
                       ),
-                    ),
 //                    SizedBox(height: 5),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: TextFormField(
-                        focusNode: _focusNodeTeacher,
-                        controller: _teacherController,
-                        validator: (v) =>
-                            v.trim().isNotEmpty ? Null : '请输入您希望查看的老师',
-                        decoration: InputDecoration(
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: TextFormField(
+                          focusNode: _focusNodeTeacher,
+                          controller: _teacherController,
+                          validator: (v) =>
+                              v.trim().isNotEmpty ? Null : '请输入您希望查看的老师',
+                          decoration: InputDecoration(
 //                            border: new OutlineInputBorder(
 //                              //添加边框
 //                              gapPadding: 10.0,
 //                              borderRadius: BorderRadius.circular(10.0),
 //                            ),
-                            hintText: '教师姓名',
-                            prefixIcon: new Icon(Icons.assignment_ind)),
-                      ),
-                    )
-                  ],
-                )),
-              ],
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              hintText: '教师姓名',
+                              prefixIcon: new Icon(Icons.assignment_ind)),
+                        ),
+                      )
+                    ],
+                  )),
+                ],
               ),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.card_travel, color: const Color(0xffbbbbbb)),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      '开课院系：',
-                      style: new TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    DropdownButton(
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 10,
                       ),
-                      value: _department,
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 20,
-                      iconEnabledColor: Colors.black,
-                      hint: Text('全部'),
-                      items: getDepartment(),
-                      onChanged: (value) {
-                        setState(() {
-                          _department = value;
-                        });
-                      },
-                    ),
-                  ]),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      Icon(Icons.card_travel, color: const Color(0xffbbbbbb)),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        '开课院系：',
+                        style: new TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton(
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        value: _department,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 20,
+                        iconEnabledColor: Colors.black,
+                        hint: Text('全部'),
+                        items: getDepartment(),
+                        onChanged: (value) {
+                          setState(() {
+                            _department = value;
+                          });
+                        },
+                      ),
+                    ]),
               ),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.book, color: const Color(0xffbbbbbb)),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      '课程类别：',
-                      style: new TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    DropdownButton(
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 10,
                       ),
-                      value: _courseType,
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 20,
-                      iconEnabledColor: Colors.black,
-                      hint: Text('全部'),
-                      items: getCourseType(),
-                      onChanged: (value) {
-                        setState(() {
-                          _courseType = value;
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      width: 80,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        size: 25,
-                        color: Colors.grey,
+                      Icon(Icons.book, color: const Color(0xffbbbbbb)),
+                      SizedBox(
+                        width: 10,
                       ),
-                      onPressed: _isDisabled
-                          ? null
-                          : () => searchEvaluationCourseList(),
-                    )
-                  ]),
-            ),
-            SizedBox(
-              height: 5,
-            ),
+                      Text(
+                        '课程类别：',
+                        style: new TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton(
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        value: _courseType,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 20,
+                        iconEnabledColor: Colors.black,
+                        hint: Text('全部'),
+                        items: getCourseType(),
+                        onChanged: (value) {
+                          setState(() {
+                            _courseType = value;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 80,
+                      ),
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.lightBlue,
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.search,
+                            size: 25,
+                            color: Colors.white,
+                          ),
+                          onPressed: _isDisabled
+                              ? null
+                              : () => searchEvaluationCourseList(),
+                        ),
+                      )
+                    ]),
+              ),
+              SizedBox(
+                height: 5,
+              ),
 //            Padding(
 //              padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
 //              child: ConstrainedBox(
@@ -632,25 +656,40 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
 //                ),
 //              ),
 //            ),
-            Container(
-              child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: _evaluationList == null
-                      ? 0
-                      : _evaluationList.evaluationCourseList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _courseInformation(
-                        _evaluationList.evaluationCourseList[index].bid,
-                        _evaluationList.evaluationCourseList[index].courseName,
-                        _evaluationList.evaluationCourseList[index].credit,
-                        _evaluationList.evaluationCourseList[index].score,
-                        _evaluationList.evaluationCourseList[index].department);
-                  }),
-            )
-          ],
+              Container(
+                child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _evaluationList == null
+                        ? 0
+                        : _evaluationList.evaluationCourseList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _courseInformation(
+                          _evaluationList.evaluationCourseList[index].bid,
+                          _evaluationList
+                              .evaluationCourseList[index].courseName,
+                          _evaluationList.evaluationCourseList[index].credit,
+                          _evaluationList.evaluationCourseList[index].score,
+                          _evaluationList
+                              .evaluationCourseList[index].department);
+                    }),
+              )
+            ],
+          ),
         ),
       ),
+      floatingActionButton: _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
+          ? FloatingActionButton(
+              onPressed: () {
+                // scrollController 通过 animateTo 方法滚动到某个具体高度
+                // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
+                _scrollController.animateTo(0.0,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.decelerate);
+              },
+              child: Icon(Icons.vertical_align_top),
+            )
+          : null,
     );
   }
 }
