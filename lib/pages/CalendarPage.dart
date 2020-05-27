@@ -88,7 +88,7 @@ class _CalendarPage extends State<CalendarPage>{
                   return Container(
                     alignment: Alignment.center,
                     child: Text(
-                      "网络请求出错\n请稍后再试\n",
+                      "${snapshot.error.toString()}",
                       style: TextStyle(
                         fontSize: 24,
                       ),
