@@ -481,13 +481,13 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   // ignore: unrelated_type_equality_checks
   DateTime lastModified = file.lastModifiedSync();
   */
+ // print('course: ${Encrypt.encrypt(studentID)}');
   CancelToken _can = new CancelToken();
   Timer(Duration(milliseconds: 10), () {
     _can.cancel("定时");
   }); //测试错误
   String ss;
   //暂定先直接用网络请求
-  print('get course table from http');
   Dio dio = new Dio();
   Response response;
   try {
@@ -511,7 +511,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
     }
   }
   ss = response.data;
-
+  print(ss.length);
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
@@ -854,12 +854,16 @@ class schoolCalendar {
 
 Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   String schoolYear = '2019-2020';
+  DateTime endDay = DateTime(2020,9,6);
+  DateTime nowDay = DateTime.now();
+  if(nowDay.isAfter(endDay)){
+    schoolYear = '2020-2021';
+  }
   Dio dio = new Dio();
   Response response;
-  /*
   try {
     response = await dio.request(
-        'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=$studentID&school_year=$schoolYear',
+        'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear',
       options: Options(method: "GET", responseType: ResponseType.plain),
     );
   } on DioError catch (e) {
@@ -878,9 +882,8 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   }
   String ss = response.data;
 
-   */
 
-  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
+//  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
   try {
     dynamic jsonList = json.decode(ss);
     SchoolCalendarStr tempStr = new SchoolCalendarStr.fromJson(jsonList);
