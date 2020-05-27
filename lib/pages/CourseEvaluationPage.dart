@@ -33,7 +33,8 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   FocusNode _focusNodeTeacher = new FocusNode();
   FocusNode blankNode = FocusNode();
   bool _isDisabled = false;
-  String _department, _courseType;
+  String _department;
+  String _courseType;
 
   @override
   void initState() {
@@ -44,28 +45,216 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   List<DropdownMenuItem> getDepartment() {
     List<DropdownMenuItem> items = [
       DropdownMenuItem(
-        child: Text('材料'),
-        value: '材料',
+        child: Text('全部'),
+        value: '全部',
       ),
       DropdownMenuItem(
-        child: Text('电子'),
-        value: '电子',
+        child: Text('材料科学与工程学院'),
+        value: '材料科学与工程学院',
       ),
       DropdownMenuItem(
-        child: Text('自动化'),
-        value: '自动化',
+        child: Text('电子信息工程学院'),
+        value: '电子信息工程学院',
       ),
       DropdownMenuItem(
-        child: Text('能源'),
-        value: '能源',
+        child: Text('自动化科学与电气工程学院'),
+        value: '自动化科学与电气工程学院',
       ),
       DropdownMenuItem(
-        child: Text('航空航天'),
-        value: '航空航天',
+        child: Text('能源与动力工程学院'),
+        value: '能源与动力工程学院',
       ),
       DropdownMenuItem(
-        child: Text('计算机'),
-        value: '计算机',
+        child: Text('航空科学与工程学院'),
+        value: '航空科学与工程学院',
+      ),
+      DropdownMenuItem(
+        child: Text('计算机学院'),
+        value: '计算机学院',
+      ),
+      DropdownMenuItem(
+        child: Text('机械工程及自动化学院'),
+        value: '机械工程及自动化学院',
+      ),
+      DropdownMenuItem(
+        child: Text('经济管理学院'),
+        value: '经济管理学院',
+      ),
+      DropdownMenuItem(
+        child: Text('数学科学学院'),
+        value: '数学科学学院',
+      ),
+      DropdownMenuItem(
+        child: Text('生物与医学工程学院'),
+        value: '生物与医学工程学院',
+      ),
+      DropdownMenuItem(
+        child: Text('人文社会科学学院'),
+        value: '人文社会科学学院',
+      ),
+      DropdownMenuItem(
+        child: Text('外国语学院'),
+        value: '外国语学院',
+      ),
+      DropdownMenuItem(
+        child: Text('交通科学与工程学院'),
+        value: '交通科学与工程学院',
+      ),
+      DropdownMenuItem(
+        child: Text('可靠性与系统工程学院'),
+        value: '可靠性与系统工程学院',
+      ),
+      DropdownMenuItem(
+        child: Text('宇航学院'),
+        value: '宇航学院',
+      ),
+      DropdownMenuItem(
+        child: Text('飞行学院'),
+        value: '飞行学院',
+      ),
+      DropdownMenuItem(
+        child: Text('仪器科学与光电工程学院'),
+        value: '仪器科学与光电工程学院',
+      ),
+      DropdownMenuItem(
+        child: Text('北京学院'),
+        value: '北京学院',
+      ),
+      DropdownMenuItem(
+        child: Text('物理学院'),
+        value: '物理学院',
+      ),
+      DropdownMenuItem(
+        child: Text('法学院'),
+        value: '法学院',
+      ),
+      DropdownMenuItem(
+        child: Text('软件学院'),
+        value: '软件学院',
+      ),
+      DropdownMenuItem(
+        child: Text('现代远程教育学院'),
+        value: '现代远程教育学院',
+      ),
+      DropdownMenuItem(
+        child: Text('高等理工学院'),
+        value: '高等理工学院',
+      ),
+      DropdownMenuItem(
+        child: Text('中法工程师学院'),
+        value: '中法工程师学院',
+      ),
+      DropdownMenuItem(
+        child: Text('国际学院'),
+        value: '国际学院',
+      ),
+      DropdownMenuItem(
+        child: Text('新媒体艺术与设计学院'),
+        value: '新媒体艺术与设计学院',
+      ),
+      DropdownMenuItem(
+        child: Text('化学学院'),
+        value: '化学学院',
+      ),
+      DropdownMenuItem(
+        child: Text('马克思主义学院'),
+        value: '马克思主义学院',
+      ),
+      DropdownMenuItem(
+        child: Text('人文与社会科学高等研究院'),
+        value: '人文与社会科学高等研究院',
+      ),
+      DropdownMenuItem(
+        child: Text('空间与环境学院'),
+        value: '空间与环境学院',
+      ),
+      DropdownMenuItem(
+        child: Text('武装部'),
+        value: '武装部',
+      ),
+      DropdownMenuItem(
+        child: Text('工程训练中心'),
+        value: '工程训练中心',
+      ),
+      DropdownMenuItem(
+        child: Text('体育部'),
+        value: '体育部',
+      ),
+      DropdownMenuItem(
+        child: Text('图书馆'),
+        value: '图书馆',
+      ),
+      DropdownMenuItem(
+        child: Text('国际通用工程学院'),
+        value: '国际通用工程学院',
+      ),
+      DropdownMenuItem(
+        child: Text('校医院'),
+        value: '校医院',
+      ),
+      DropdownMenuItem(
+        child: Text('招生就业处'),
+        value: '招生就业处',
+      ),
+      DropdownMenuItem(
+        child: Text('无人机所'),
+        value: '无人机所',
+      ),
+      DropdownMenuItem(
+        child: Text('网络空间安全学院'),
+        value: '网络空间安全学院',
+      ),
+      DropdownMenuItem(
+        child: Text('校机关'),
+        value: '校机关',
+      ),
+      DropdownMenuItem(
+        child: Text('继续教育学院'),
+        value: '继续教育学院',
+      ),
+      DropdownMenuItem(
+        child: Text('研究生院'),
+        value: '研究生院',
+      ),
+      DropdownMenuItem(
+        child: Text('北航暑期学校'),
+        value: '北航暑期学校',
+      ),
+      DropdownMenuItem(
+        child: Text('微电子学院'),
+        value: '微电子学院',
+      ),
+      DropdownMenuItem(
+        child: Text('校际'),
+        value: '校际',
+      ),
+      DropdownMenuItem(
+        child: Text('学生处武装部'),
+        value: '学生处武装部',
+      ),
+      DropdownMenuItem(
+        child: Text('团委'),
+        value: '团委',
+      ),
+      DropdownMenuItem(
+        child: Text('校内其它单位'),
+        value: '校内其它单位',
+      ),
+      DropdownMenuItem(
+        child: Text('校外单位'),
+        value: '校外单位',
+      ),
+      DropdownMenuItem(
+        child: Text('学生发展服务中心'),
+        value: '学生发展服务中心',
+      ),
+      DropdownMenuItem(
+        child: Text('北航学院'),
+        value: '北航学院',
+      ),
+      DropdownMenuItem(
+        child: Text('高等理工学院（华罗庚班）'),
+        value: '高等理工学院（华罗庚班）',
       ),
     ];
     return items;
@@ -73,6 +262,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
 
   List<DropdownMenuItem> getCourseType() {
     List<DropdownMenuItem> items = [
+      DropdownMenuItem(
+        child: Text('全部'),
+        value: '全部',
+      ),
       DropdownMenuItem(
         child: Text('核心专业类'),
         value: '核心专业类',
@@ -97,6 +290,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
         child: Text('博雅类'),
         value: '博雅类',
       ),
+      DropdownMenuItem(
+        child: Text('体育类'),
+        value: '体育类',
+      ),
     ];
     return items;
   }
@@ -116,7 +313,6 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   Future<void> searchEvaluationCourseList() async {
     String courseName;
     String teacher;
-//    String courseType;
     courseName = _courseNameController.text;
     teacher = _teacherController.text;
     if (courseName.isEmpty &&
@@ -156,7 +352,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
               ),
               titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
               // 标题文字样式
-              content: Text(r'四个字段至少要填写一个，并且开课院系和课程类别必须同时填写\(^o^)/~'),
+              content: Text(r'四个字段至少要填写一个\(^o^)/~'),
               contentTextStyle: TextStyle(color: Colors.white, fontSize: 17),
               // 内容文字样式
               backgroundColor: CupertinoColors.systemGrey,
@@ -272,37 +468,48 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                 Expanded(
                     child: Column(
                   children: <Widget>[
-                    TextFormField(
-                      focusNode: _focusNodeCourse,
-                      controller: _courseNameController,
-                      validator: (v) =>
-                          v.trim().isNotEmpty ? Null : '请输入您希望查看的课程',
-                      decoration: InputDecoration(
-                          border: new OutlineInputBorder(
-                            //添加边框
-                            gapPadding: 10.0,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          hintText: '课程名称',
-                          prefixIcon: new Icon(Icons.assignment)),
+                    SizedBox(height: 5),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      child: TextFormField(
+                        focusNode: _focusNodeCourse,
+                        controller: _courseNameController,
+                        validator: (v) =>
+                            v.trim().isNotEmpty ? Null : '请输入您希望查看的课程',
+                        decoration: InputDecoration(
+//                            border: new OutlineInputBorder(
+//                              //添加边框
+//                              gapPadding: 10.0,
+//                              borderRadius: BorderRadius.circular(10.0),
+//                            ),
+                            hintText: '课程名称',
+                            prefixIcon: new Icon(Icons.assignment)),
+                      ),
                     ),
-                    TextFormField(
-                      focusNode: _focusNodeTeacher,
-                      controller: _teacherController,
-                      validator: (v) =>
-                          v.trim().isNotEmpty ? Null : '请输入您希望查看的老师',
-                      decoration: InputDecoration(
-                          border: new OutlineInputBorder(
-                            //添加边框
-                            gapPadding: 10.0,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          hintText: '教师姓名',
-                          prefixIcon: new Icon(Icons.assignment_ind)),
+//                    SizedBox(height: 5),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      child: TextFormField(
+                        focusNode: _focusNodeTeacher,
+                        controller: _teacherController,
+                        validator: (v) =>
+                            v.trim().isNotEmpty ? Null : '请输入您希望查看的老师',
+                        decoration: InputDecoration(
+//                            border: new OutlineInputBorder(
+//                              //添加边框
+//                              gapPadding: 10.0,
+//                              borderRadius: BorderRadius.circular(10.0),
+//                            ),
+                            hintText: '教师姓名',
+                            prefixIcon: new Icon(Icons.assignment_ind)),
+                      ),
                     )
                   ],
                 )),
-                SizedBox(height: 20),
               ],
             ),
             Card(
@@ -310,8 +517,22 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Icon(Icons.card_travel, color: const Color(0xffbbbbbb)),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '开课院系：',
+                      style: new TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
                     DropdownButton(
                       underline: Container(
                         height: 2,
@@ -319,9 +540,9 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                       ),
                       value: _department,
                       icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 30,
+                      iconSize: 20,
                       iconEnabledColor: Colors.black,
-                      hint: Text('开课院系'),
+                      hint: Text('全部'),
                       items: getDepartment(),
                       onChanged: (value) {
                         setState(() {
@@ -329,10 +550,28 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         });
                       },
                     ),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 25,
-                      color: Colors.grey,
+                  ]),
+            ),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Icon(Icons.book, color: const Color(0xffbbbbbb)),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '课程类别：',
+                      style: new TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      width: 10,
                     ),
                     DropdownButton(
                       underline: Container(
@@ -341,9 +580,9 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                       ),
                       value: _courseType,
                       icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 30,
+                      iconSize: 20,
                       iconEnabledColor: Colors.black,
-                      hint: Text('课程类别'),
+                      hint: Text('全部'),
                       items: getCourseType(),
                       onChanged: (value) {
                         setState(() {
@@ -351,32 +590,48 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         });
                       },
                     ),
+                    SizedBox(
+                      width: 80,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        size: 25,
+                        color: Colors.grey,
+                      ),
+                      onPressed: _isDisabled
+                          ? null
+                          : () => searchEvaluationCourseList(),
+                    )
                   ]),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
-              child: ConstrainedBox(
-                constraints: BoxConstraints.expand(height: 40),
-                child: RaisedButton(
-                  color: Colors.lightBlue,
-                  disabledColor: Colors.grey,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                  ),
-                  child: Text(
-                    '查询课程评价',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        letterSpacing: 8,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 24,
-                        color: Colors.white),
-                  ),
-                  onPressed:
-                      _isDisabled ? null : () => searchEvaluationCourseList(),
-                ),
-              ),
+            SizedBox(
+              height: 5,
             ),
+//            Padding(
+//              padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
+//              child: ConstrainedBox(
+//                constraints: BoxConstraints.expand(height: 40),
+//                child: RaisedButton(
+//                  color: Colors.lightBlue,
+//                  disabledColor: Colors.grey,
+//                  shape: RoundedRectangleBorder(
+//                    borderRadius: BorderRadius.all(Radius.circular(30)),
+//                  ),
+//                  child: Text(
+//                    '查询课程评价',
+//                    textAlign: TextAlign.center,
+//                    style: TextStyle(
+//                        letterSpacing: 8,
+//                        fontWeight: FontWeight.normal,
+//                        fontSize: 24,
+//                        color: Colors.white),
+//                  ),
+//                  onPressed:
+//                      _isDisabled ? null : () => searchEvaluationCourseList(),
+//                ),
+//              ),
+//            ),
             Container(
               child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),

@@ -22,6 +22,7 @@ class _CalendarPage extends State<CalendarPage>{
   @override
   void initState() {
     super.initState();
+    print(DateTime.now());
     controller = RCalendarController.single(mode: RCalendarMode.month,selectedDate: DateTime.now(),);
 //  controller = RCalendarController.single(selectedDate: DateTime.now(),isAutoSelect: true);
   }
