@@ -31,8 +31,11 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
   void initState() {
     print('init');
     score = widget.score;
+    if(score == null){
+      score = 0.0;
+    }
     iconsState = [false, false, false, false, false];
-    for (int i = 0; i < widget.score.round(); i++) {
+    for (int i = 0; i < score.round(); i++) {
       iconsState[i] = true;
     }
     for (int i = 0; i < 5; i++) {
@@ -44,7 +47,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
             )
           : Icon(Icons.star, size: 50, color: Colors.grey);
     }
-    if (widget.commentText.length == 0) {
+    if (widget.commentText== null) {
       _enable = true;
     } else {
       _enable = false;
