@@ -993,7 +993,7 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
         throw 401;
       } else if (e.response.statusCode == 402) {
         throw 402;
-      } else if(e.response.statusCode == 403){
+      } else if(e.response.statusCode == 463){
         throw "无该学年数据";
       }else{
         throw "网络请求出错";
