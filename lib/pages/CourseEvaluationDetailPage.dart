@@ -33,13 +33,18 @@ class CourseEvaluationDetailPage extends StatefulWidget {
 
 class _CourseEvaluationDetailPageState
     extends State<CourseEvaluationDetailPage> {
-  int evaluationTimes = 10;
   ExpandState _expandState = new ExpandState(0, false);
   EvaluationDetail evaluationDetail;
   String commentText;
   double score;
 
-  Future<void> searchGrade() async {
+  @override
+  initState() {
+    super.initState();
+    searchEvaluationDetail();
+  }
+
+  Future<void> searchEvaluationDetail() async {
     try {
       getEvaluationDetail(widget.bid, GlobalUser.studentID)
           .then((EvaluationDetail temp) {
@@ -91,53 +96,41 @@ class _CourseEvaluationDetailPageState
     );
   }
 
-  void updateAgree(int index, int subIndex) {
+  void updateAgree(int index) {
     setState(() {
-      if (evaluationDetail.info[index].hasUp) {
-        evaluationDetail.info[index].upNum -= 1;
-        evaluationDetail.info[index].hasUp = false;
+      if (evaluationDetail.info.infoList[index].hasUp) {
+        evaluationDetail.info.infoList[index].upNum -= 1;
+        evaluationDetail.info.infoList[index].hasUp = false;
       } else {
-        evaluationDetail.info[index].upNum += 1;
-        evaluationDetail.info[index].hasUp = true;
+        evaluationDetail.info.infoList[index].upNum += 1;
+        evaluationDetail.info.infoList[index].hasUp = true;
       }
     });
   }
 
-  void updateDisagree(int index, int subIndex) {
+  void updateDisagree(int index) {
     setState(() {
-      if (evaluationDetail.info[index].hasDown) {
-        evaluationDetail.info[index].downNum -= 1;
-        evaluationDetail.info[index].hasDown = false;
+      if (evaluationDetail.info.infoList[index].hasDown) {
+        evaluationDetail.info.infoList[index].downNum -= 1;
+        evaluationDetail.info.infoList[index].hasDown = false;
       } else {
-        evaluationDetail.info[index].downNum += 1;
-        evaluationDetail.info[index].hasDown = true;
+        evaluationDetail.info.infoList[index].downNum += 1;
+        evaluationDetail.info.infoList[index].hasDown = true;
       }
     });
   }
 
   void updateTeacherAgree(int index) {
     setState(() {
-      if (evaluationDetail.teacherInfo[index].hasUp) {
-        evaluationDetail.teacherInfo[index].upNum -= 1;
-        evaluationDetail.teacherInfo[index].hasUp = false;
+      if (evaluationDetail.teacherInfo.teacherInfoList[index].hasUp) {
+        evaluationDetail.teacherInfo.teacherInfoList[index].upNum -= 1;
+        evaluationDetail.teacherInfo.teacherInfoList[index].hasUp = false;
       } else {
-        evaluationDetail.teacherInfo[index].upNum += 1;
-        evaluationDetail.teacherInfo[index].hasUp = true;
+        evaluationDetail.teacherInfo.teacherInfoList[index].upNum += 1;
+        evaluationDetail.teacherInfo.teacherInfoList[index].hasUp = true;
       }
     });
   }
-
-//  void updateTeacherDisagree(int index) {
-//    setState(() {
-//      if (this._teacherList[index][4]) {
-//        this._teacherList[index][2] -= 1;
-//        this._teacherList[index][4] = false;
-//      } else {
-//        this._teacherList[index][2] += 1;
-//        this._teacherList[index][4] = true;
-//      }
-//    });
-//  }
 
   Widget getTeacher() {
     return ExpansionPanelList(
@@ -167,7 +160,8 @@ class _CourseEvaluationDetailPageState
                     ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: evaluationDetail.teacherInfo.length,
+                        itemCount:
+                            evaluationDetail.teacherInfo.teacherInfoList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Row(
                             children: <Widget>[
@@ -176,8 +170,8 @@ class _CourseEvaluationDetailPageState
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      evaluationDetail
-                                          .teacherInfo[index].teacherName,
+                                      evaluationDetail.teacherInfo
+                                          .teacherInfoList[index].teacherName,
                                       style: new TextStyle(
                                         fontSize: 16,
                                       ),
@@ -189,8 +183,8 @@ class _CourseEvaluationDetailPageState
                               new Column(
                                 children: <Widget>[
                                   new IconButton(
-                                    icon: (evaluationDetail
-                                            .teacherInfo[index].hasUp
+                                    icon: (evaluationDetail.teacherInfo
+                                            .teacherInfoList[index].hasUp
                                         ? new Icon(
                                             Icons.thumb_up,
                                             color: Colors.red,
@@ -204,36 +198,14 @@ class _CourseEvaluationDetailPageState
                                         {updateTeacherAgree(index)},
                                   ),
                                   Text(
-                                      evaluationDetail.teacherInfo[index].upNum
+                                      evaluationDetail.teacherInfo
+                                          .teacherInfoList[index].upNum
                                           .toString(),
                                       style: new TextStyle(
                                         fontSize: 14,
                                       ))
                                 ],
                               ),
-//                              new Column(
-//                                children: <Widget>[
-//                                  new IconButton(
-//                                    icon: _teacherList[index][4]
-//                                        ? new Icon(
-//                                            Icons.thumb_down,
-//                                            color: Colors.red,
-//                                            size: 15,
-//                                          )
-//                                        : new Icon(
-//                                            Icons.thumb_down,
-//                                            size: 15,
-//                                          ),
-//                                    onPressed: () =>
-//                                        {updateTeacherDisagree(index)},
-//                                    padding: const EdgeInsets.all(0.0),
-//                                  ),
-//                                  Text(_teacherList[index][2].toString(),
-//                                      style: new TextStyle(
-//                                        fontSize: 14,
-//                                      ))
-//                                ],
-//                              )
                             ],
                           );
                         }),
@@ -251,12 +223,12 @@ class _CourseEvaluationDetailPageState
         ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: evaluationDetail.info.length,
+            itemCount: evaluationDetail.info.infoList.length,
             itemBuilder: (BuildContext context, int index) {
-              if (evaluationDetail.info[index].studentId ==
+              if (evaluationDetail.info.infoList[index].studentId ==
                   GlobalUser.studentID) {
-                commentText = evaluationDetail.info[index].content;
-                score = evaluationDetail.info[index].score;
+                commentText = evaluationDetail.info.infoList[index].content;
+                score = evaluationDetail.info.infoList[index].score;
               }
               return Container(
                   padding: EdgeInsets.all(16.0),
@@ -271,12 +243,14 @@ class _CourseEvaluationDetailPageState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             fiveStars(
-                                0.0 + evaluationDetail.info[index].score, 16),
+                                0.0 +
+                                    evaluationDetail.info.infoList[index].score,
+                                16),
                             SizedBox(
                               height: 3,
                             ),
                             Text(
-                              evaluationDetail.info[index].content,
+                              evaluationDetail.info.infoList[index].content,
                               style: new TextStyle(
                                 fontSize: 15,
                               ),
@@ -287,7 +261,7 @@ class _CourseEvaluationDetailPageState
                       new Column(
                         children: <Widget>[
                           new IconButton(
-                            icon: (evaluationDetail.info[index].hasUp
+                            icon: (evaluationDetail.info.infoList[index].hasUp
                                 ? new Icon(
                                     Icons.thumb_up,
                                     color: Colors.red,
@@ -297,9 +271,11 @@ class _CourseEvaluationDetailPageState
                                     Icons.thumb_up,
                                     size: 15,
                                   )),
-                            onPressed: () => {updateAgree(index, -1)},
+                            onPressed: () => {updateAgree(index)},
                           ),
-                          Text(evaluationDetail.info[index].upNum.toString(),
+                          Text(
+                              evaluationDetail.info.infoList[index].upNum
+                                  .toString(),
                               style: new TextStyle(
                                 fontSize: 14,
                               ))
@@ -308,7 +284,7 @@ class _CourseEvaluationDetailPageState
                       new Column(
                         children: <Widget>[
                           new IconButton(
-                            icon: evaluationDetail.info[index].hasDown
+                            icon: evaluationDetail.info.infoList[index].hasDown
                                 ? new Icon(
                                     Icons.thumb_down,
                                     color: Colors.red,
@@ -318,10 +294,12 @@ class _CourseEvaluationDetailPageState
                                     Icons.thumb_down,
                                     size: 15,
                                   ),
-                            onPressed: () => {updateDisagree(index, -1)},
+                            onPressed: () => {updateDisagree(index)},
                             padding: const EdgeInsets.all(0.0),
                           ),
-                          Text(evaluationDetail.info[index].downNum.toString(),
+                          Text(
+                              evaluationDetail.info.infoList[index].downNum
+                                  .toString(),
                               style: new TextStyle(
                                 fontSize: 14,
                               ))
@@ -381,7 +359,9 @@ class _CourseEvaluationDetailPageState
                                 ),
                               ),
                               Text(
-                                evaluationTimes.toString() + ' 个评价',
+                                evaluationDetail.info.infoList.length
+                                        .toString() +
+                                    ' 个评价',
                                 style: new TextStyle(
                                   color: Colors.grey[900],
                                   fontSize: 16,
@@ -395,7 +375,6 @@ class _CourseEvaluationDetailPageState
                             icon: Icon(
                               Icons.edit,
                               size: 30,
-//    >>>>>>> 4eaab91a363c3d9f0ae150ddeeacd3e2f9bb2a19
                             ),
                             onPressed: () {
                               Navigator.push(
