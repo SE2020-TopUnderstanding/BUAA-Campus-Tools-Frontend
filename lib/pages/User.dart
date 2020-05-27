@@ -672,6 +672,7 @@ class EvaluationCourse {
       {this.courseName, this.department, this.bid, this.score, this.credit});
 
   factory EvaluationCourse.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson['avg_score'] == null) parsedJson['avg_score'] = 0.0;
     return EvaluationCourse(
         courseName: parsedJson['course_name'],
         department: parsedJson['department'],
@@ -697,140 +698,43 @@ Future<EvaluationCourseList> loadEvaluationCourseList(
     String courseName, String teacher, String type, String department) async {
   Dio dio = new Dio();
   Response response;
-//  try {
-//    print('http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type');
-//    response = await dio.request(
-//        'http://127.0.0.1:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type',
-//        options: Options(method: "GET", responseType: ResponseType.json));
-//  } catch (e) {
-//    throw('参数名称或者数目错误');
-//  }
-//  try {
-//    List<dynamic> jsonList = json.decode(response.data);
-  List<dynamic> jsonList = [
-    {
-      "bid": "111",
-      "course_name": '软件工程(Software Engineering)',
-      "credit": '2学分',
-      "avg_score": 4.2,
-      "department": "软件学院"
-    },
-    {
-      "bid": "112",
-      "course_name": '计算机网络',
-      "credit": '2学分',
-      "avg_score": 4.5,
-      "department": "计算机学院"
-    },
-    {
-      "bid": "111",
-      "course_name": '软件工程(Software Engineering)',
-      "credit": '2学分',
-      "avg_score": 4.2,
-      "department": "软件学院"
-    },
-    {
-      "bid": "112",
-      "course_name": '计算机网络',
-      "credit": '2学分',
-      "avg_score": 4.5,
-      "department": "计算机学院"
-    },
-    {
-      "bid": "111",
-      "course_name": '软件工程(Software Engineering)',
-      "credit": '2学分',
-      "avg_score": 4.2,
-      "department": "软件学院"
-    },
-    {
-      "bid": "112",
-      "course_name": '计算机网络',
-      "credit": '2学分',
-      "avg_score": 4.5,
-      "department": "计算机学院"
-    },
-    {
-      "bid": "111",
-      "course_name": '软件工程(Software Engineering)',
-      "credit": '2学分',
-      "avg_score": 4.2,
-      "department": "软件学院"
-    },
-    {
-      "bid": "112",
-      "course_name": '计算机网络',
-      "credit": '2学分',
-      "avg_score": 4.5,
-      "department": "计算机学院"
-    },
-    {
-      "bid": "111",
-      "course_name": '软件工程 (Software Engineering)',
-      "credit": '2学分',
-      "avg_score": 4.2,
-      "department": "软件学院"
-    },
-    {
-      "bid": "112",
-      "course_name": '计算机网络',
-      "credit": '2学分',
-      "avg_score": 4.5,
-      "department": "计算机学院"
-    },
-  ];
-  return EvaluationCourseList.fromJson(jsonList);
-//  } catch(e){
-//    throw('课程评价列表解析错误');
+  try {
+    if (department == null || department == "全部") department = "";
+    if (type == null || type == "全部") type = "";
+    print(
+        'http://hangxu.sharinka.top:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department');
+    response = await dio.request(
+        'http://hangxu.sharinka.top:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department',
+        options: Options(method: "GET", responseType: ResponseType.json));
+  } catch (e) {
+    print(e);
+    throw ('参数名称或者数目错误');
+  }
+  try {
+    return EvaluationCourseList.fromJson(response.data);
+  } catch (e) {
+    throw ('课程评价列表解析错误');
+  }
 }
 
 Future<EvaluationCourseList> loadDefaultEvaluationCourseList(
     String studentID) async {
   Dio dio = new Dio();
   Response response;
-//  try {
-//    print('http://127.0.0.1:8000/timetable/search/default/?student_id=$studentID');
-//    response = await dio.request(
-//        'http://127.0.0.1:8000/timetable/search/default/?student_id=$studentID',
-//        options: Options(method: "GET", responseType: ResponseType.json));
-//  } catch (e) {
-//    throw('参数名称或者数目错误');
-//  }
-//  try {
-//    List<dynamic> jsonList = json.decode(response.data);
-  List<dynamic> jsonList = [
-    {
-      "bid": "111",
-      "course_name": '软件工程(Software Engineering)',
-      "credit": '2学分',
-      "avg_score": 4.2,
-      "department": "软件学院"
-    },
-    {
-      "bid": "112",
-      "course_name": '计算机网络',
-      "credit": '2学分',
-      "avg_score": 4.5,
-      "department": "计算机学院"
-    },
-    {
-      "bid": "111",
-      "course_name": '软件工程(Software Engineering)',
-      "credit": '2学分',
-      "avg_score": 4.2,
-      "department": "软件学院"
-    },
-    {
-      "bid": "112",
-      "course_name": '计算机网络',
-      "credit": '2学分',
-      "avg_score": 4.5,
-      "department": "计算机学院"
-    },
-  ];
-  return EvaluationCourseList.fromJson(jsonList);
-//  } catch(e){
-//    throw('课程评价列表解析错误');
+  try {
+    print(
+        'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=$studentID');
+    response = await dio.request(
+        'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}',
+        options: Options(method: "GET", responseType: ResponseType.json));
+  } catch (e) {
+    throw ('参数名称或者数目错误');
+  }
+  try {
+    return EvaluationCourseList.fromJson(response.data);
+  } catch (e) {
+    throw ('课程评价列表解析错误');
+  }
 }
 
 class SchoolCalendarStr {
