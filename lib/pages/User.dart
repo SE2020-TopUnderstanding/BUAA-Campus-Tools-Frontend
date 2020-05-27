@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/encrypt.dart';
@@ -595,7 +594,7 @@ class Info {
     return Info(
         id: parsedJson['id'],
         studentId: parsedJson['student'],
-        score: parsedJson['score'],
+        score: parsedJson['score'].toDouble(),
         updateTime: parsedJson['updated_time'],
         content: parsedJson['evaluation'],
         upNum: parsedJson['up'],
@@ -645,7 +644,7 @@ class EvaluationDetail {
     return EvaluationDetail(
       courseName: parsedJson['course_name'],
       evaluationNum: parsedJson['evaluation_num'],
-      averageScore: parsedJson['avg_score'],
+      averageScore: parsedJson['avg_score'].toDouble(),
       teacherInfo: TeacherInfoList.fromJson(parsedJson['teacher_info']),
       info: InfoList.fromJson(parsedJson['info']),
       scoreInfo: ScoreInfoList.fromJson(parsedJson['score_info']),

@@ -4,6 +4,7 @@ import 'package:jiaowuassistent/pages/CourseEvaluationPage.dart';
 import 'package:jiaowuassistent/pages/CourseCommentWritePage.dart';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
+import 'package:jiaowuassistent/encrypt.dart';
 
 import 'User.dart';
 
@@ -244,7 +245,7 @@ class _CourseEvaluationDetailPageState
             itemCount: evaluationDetail.info.infoList.length,
             itemBuilder: (BuildContext context, int index) {
               if (evaluationDetail.info.infoList[index].studentId ==
-                  GlobalUser.studentID) {
+                  Encrypt.encrypt2(GlobalUser.studentID)) {
                 commentText = evaluationDetail.info.infoList[index].content;
                 score = evaluationDetail.info.infoList[index].score;
               }
