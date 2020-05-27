@@ -39,7 +39,13 @@ class _CourseEvaluationDetailPageState
   String commentText;
   double score;
 
-  Future<void> searchGrade() async {
+  @override
+  initState() {
+    super.initState();
+    searchEvaluationDetail();
+  }
+
+  Future<void> searchEvaluationDetail() async {
     try {
       getEvaluationDetail(widget.bid, GlobalUser.studentID)
           .then((EvaluationDetail temp) {

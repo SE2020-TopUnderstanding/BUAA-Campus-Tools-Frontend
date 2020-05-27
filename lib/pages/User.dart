@@ -646,7 +646,8 @@ Future<EvaluationDetail> getEvaluationDetail(
     String bid, String studentID) async {
   final response = await http.get(
       'http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=$studentID');
-
+  print(
+      'GET http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=$studentID');
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
