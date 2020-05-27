@@ -324,12 +324,12 @@ Future<UpdateInfo> getUpdateInfo() async {
 Future<void> postMessage(String kind, String content) async {
   final response =
       await http.post('http://hangxu.sharinka.top:8000/feedback/', body: {
-    "student_id": "${Encrypt.encrypt(GlobalUser.studentID)}",
+    "student_id": "${Encrypt.encrypt2(GlobalUser.studentID)}",
     "kind": "$kind",
     "content": "$content"
   });
   print('post -> http://hangxu.sharinka.top:8000/feedback/');
-  print('student_id: ${Encrypt.encrypt(GlobalUser.studentID)}');
+  print('student_id: ${Encrypt.encrypt2(GlobalUser.studentID)}');
   print('kind: $kind');
   print('content: $content');
   if (response.statusCode == 200) {
@@ -481,13 +481,13 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   // ignore: unrelated_type_equality_checks
   DateTime lastModified = file.lastModifiedSync();
   */
+  // print('course: ${Encrypt.encrypt(studentID)}');
   CancelToken _can = new CancelToken();
   Timer(Duration(milliseconds: 10), () {
     _can.cancel("定时");
   }); //测试错误
   String ss;
   //暂定先直接用网络请求
-  print('get course table from http');
   Dio dio = new Dio();
   Response response;
   try {
@@ -511,7 +511,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
     }
   }
   ss = response.data;
-
+  print(ss.length);
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
@@ -558,16 +558,16 @@ class TeacherInfo {
   }
 }
 
-//class TeacherInfoList {
-//  final List<TeacherInfo> teacherInfoList;
-//
-//  TeacherInfoList(this.teacherInfoList);
-//
-//  factory TeacherInfoList.fromJson(List<dynamic> parsedJson) {
-//    return TeacherInfoList(
-//        parsedJson.map((i) => TeacherInfo.fromJson(i)).toList());
-//  }
-//}
+class TeacherInfoList {
+  final List<TeacherInfo> teacherInfoList;
+
+  TeacherInfoList(this.teacherInfoList);
+
+  factory TeacherInfoList.fromJson(List<dynamic> parsedJson) {
+    return TeacherInfoList(
+        parsedJson.map((i) => TeacherInfo.fromJson(i)).toList());
+  }
+}
 
 class Info {
   int id;
@@ -605,22 +605,22 @@ class Info {
   }
 }
 
-//class InfoList {
-//  final List<Info> infoList;
-//
-//  InfoList(this.infoList);
-//
-//  factory InfoList.fromJson(List<dynamic> parsedJson) {
-//    return InfoList(parsedJson.map((i) => Info.fromJson(i)).toList());
-//  }
-//}
+class InfoList {
+  final List<Info> infoList;
+
+  InfoList(this.infoList);
+
+  factory InfoList.fromJson(List<dynamic> parsedJson) {
+    return InfoList(parsedJson.map((i) => Info.fromJson(i)).toList());
+  }
+}
 
 class EvaluationDetail {
   String courseName;
   int evaluationNum;
   double averageScore;
-  List<TeacherInfo> teacherInfo;
-  List<Info> info;
+  TeacherInfoList teacherInfo;
+  InfoList info;
 
   EvaluationDetail(
       {this.courseName,
@@ -634,10 +634,8 @@ class EvaluationDetail {
       courseName: parsedJson['course_name'],
       evaluationNum: parsedJson['evaluation_num'],
       averageScore: parsedJson['avg_score'],
-      teacherInfo: parsedJson['teacher_info']
-          .map((i) => TeacherInfo.fromJson(i))
-          .toList(),
-      info: parsedJson['info'].map((i) => Info.fromJson(i)).toList(),
+      teacherInfo: TeacherInfoList.fromJson(parsedJson['teacher_info']),
+      info: InfoList.fromJson(parsedJson['info']),
     );
   }
 }
@@ -645,8 +643,10 @@ class EvaluationDetail {
 Future<EvaluationDetail> getEvaluationDetail(
     String bid, String studentID) async {
   final response = await http.get(
-      'http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=$studentID');
-
+      'http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'GET http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=${Encrypt.encrypt(studentID)}');
+  print(response.statusCode);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -723,7 +723,7 @@ Future<EvaluationCourseList> loadDefaultEvaluationCourseList(
   Response response;
   try {
     print(
-        'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=$studentID');
+        'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}');
     response = await dio.request(
         'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}',
         options: Options(method: "GET", responseType: ResponseType.json));
@@ -854,12 +854,16 @@ class schoolCalendar {
 
 Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   String schoolYear = '2019-2020';
+  DateTime endDay = DateTime(2020, 9, 6);
+  DateTime nowDay = DateTime.now();
+  if (nowDay.isAfter(endDay)) {
+    schoolYear = '2020-2021';
+  }
   Dio dio = new Dio();
   Response response;
-  /*
   try {
     response = await dio.request(
-        'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=$studentID&school_year=$schoolYear',
+      'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear',
       options: Options(method: "GET", responseType: ResponseType.plain),
     );
   } on DioError catch (e) {
@@ -878,9 +882,7 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   }
   String ss = response.data;
 
-   */
-
-  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
+//  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
   try {
     dynamic jsonList = json.decode(ss);
     SchoolCalendarStr tempStr = new SchoolCalendarStr.fromJson(jsonList);

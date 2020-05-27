@@ -462,7 +462,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
               ),
             ),
             SizedBox(height: 20),
-            Text(courseScore.toString() + '/5.0'),
+            Text(courseScore.toString()),
             SizedBox(height: 20, width: 20),
           ]),
     );
