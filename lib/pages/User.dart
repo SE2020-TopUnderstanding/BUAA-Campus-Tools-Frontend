@@ -324,12 +324,12 @@ Future<UpdateInfo> getUpdateInfo() async {
 Future<void> postMessage(String kind, String content) async {
   final response =
       await http.post('http://hangxu.sharinka.top:8000/feedback/', body: {
-    "student_id": "${Encrypt.encrypt(GlobalUser.studentID)}",
+    "student_id": "${Encrypt.encrypt2(GlobalUser.studentID)}",
     "kind": "$kind",
     "content": "$content"
   });
   print('post -> http://hangxu.sharinka.top:8000/feedback/');
-  print('student_id: ${Encrypt.encrypt(GlobalUser.studentID)}');
+  print('student_id: ${Encrypt.encrypt2(GlobalUser.studentID)}');
   print('kind: $kind');
   print('content: $content');
   if (response.statusCode == 200) {
@@ -481,7 +481,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   // ignore: unrelated_type_equality_checks
   DateTime lastModified = file.lastModifiedSync();
   */
- // print('course: ${Encrypt.encrypt(studentID)}');
+  // print('course: ${Encrypt.encrypt(studentID)}');
   CancelToken _can = new CancelToken();
   Timer(Duration(milliseconds: 10), () {
     _can.cancel("定时");
@@ -558,16 +558,16 @@ class TeacherInfo {
   }
 }
 
-//class TeacherInfoList {
-//  final List<TeacherInfo> teacherInfoList;
-//
-//  TeacherInfoList(this.teacherInfoList);
-//
-//  factory TeacherInfoList.fromJson(List<dynamic> parsedJson) {
-//    return TeacherInfoList(
-//        parsedJson.map((i) => TeacherInfo.fromJson(i)).toList());
-//  }
-//}
+class TeacherInfoList {
+  final List<TeacherInfo> teacherInfoList;
+
+  TeacherInfoList(this.teacherInfoList);
+
+  factory TeacherInfoList.fromJson(List<dynamic> parsedJson) {
+    return TeacherInfoList(
+        parsedJson.map((i) => TeacherInfo.fromJson(i)).toList());
+  }
+}
 
 class Info {
   int id;
@@ -605,39 +605,50 @@ class Info {
   }
 }
 
-//class InfoList {
-//  final List<Info> infoList;
-//
-//  InfoList(this.infoList);
-//
-//  factory InfoList.fromJson(List<dynamic> parsedJson) {
-//    return InfoList(parsedJson.map((i) => Info.fromJson(i)).toList());
-//  }
-//}
+class InfoList {
+  final List<Info> infoList;
+
+  InfoList(this.infoList);
+
+  factory InfoList.fromJson(List<dynamic> parsedJson) {
+    return InfoList(parsedJson.map((i) => Info.fromJson(i)).toList());
+  }
+}
+
+class ScoreInfoList {
+  final List<int> scoreInfoList;
+
+  ScoreInfoList(this.scoreInfoList);
+
+  factory ScoreInfoList.fromJson(List<dynamic> parsedJson) {
+    return ScoreInfoList(parsedJson.cast<int>());
+  }
+}
 
 class EvaluationDetail {
   String courseName;
   int evaluationNum;
   double averageScore;
-  List<TeacherInfo> teacherInfo;
-  List<Info> info;
+  TeacherInfoList teacherInfo;
+  InfoList info;
+  ScoreInfoList scoreInfo;
 
   EvaluationDetail(
       {this.courseName,
       this.evaluationNum,
       this.averageScore,
       this.teacherInfo,
-      this.info});
+      this.info,
+      this.scoreInfo});
 
   factory EvaluationDetail.fromJson(Map<String, dynamic> parsedJson) {
     return EvaluationDetail(
       courseName: parsedJson['course_name'],
       evaluationNum: parsedJson['evaluation_num'],
       averageScore: parsedJson['avg_score'],
-      teacherInfo: parsedJson['teacher_info']
-          .map((i) => TeacherInfo.fromJson(i))
-          .toList(),
-      info: parsedJson['info'].map((i) => Info.fromJson(i)).toList(),
+      teacherInfo: TeacherInfoList.fromJson(parsedJson['teacher_info']),
+      info: InfoList.fromJson(parsedJson['info']),
+      scoreInfo: ScoreInfoList.fromJson(parsedJson['score_info']),
     );
   }
 }
@@ -645,8 +656,10 @@ class EvaluationDetail {
 Future<EvaluationDetail> getEvaluationDetail(
     String bid, String studentID) async {
   final response = await http.get(
-      'http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=$studentID');
-
+      'http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=${Encrypt.encrypt(studentID)}');
+  print(
+      'GET http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=${Encrypt.encrypt(studentID)}');
+  print(response.statusCode);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -658,6 +671,114 @@ Future<EvaluationDetail> getEvaluationDetail(
     // If the server did not return a 200 OK response,
     // then throw an exception.
 //    throw Exception('Failed to load course center');
+  }
+}
+
+Future<void> postAgree(String student, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/up',
+        body: {
+          "student_id": "${Encrypt.encrypt2(student)}",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/up');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up',
+        body: {
+          "student_id": "${Encrypt.encrypt2(student)}",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up');
+  }
+  print('student_id: ${Encrypt.encrypt2(student)}');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  if (response.statusCode == 200) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
+  }
+}
+
+Future<void> postDisagree(String student, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/down',
+        body: {
+          "student_id": "${Encrypt.encrypt2(student)}",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/down');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_down',
+        body: {
+          "student_id": "${Encrypt.encrypt2(student)}",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_down');
+  }
+  print('student_id: ${Encrypt.encrypt2(student)}');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  if (response.statusCode == 200) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
+  }
+}
+
+Future<void> postTeacherAgree(String teacher, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/up',
+        body: {
+          "teacher": "$teacher",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid",
+          "action": "up"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/up');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up',
+        body: {
+          "teacher": "$teacher",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid",
+          "action": "cancel_up"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up');
+  }
+  print('teacher: $teacher');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  print('action: ${type == 0 ? 'up' : 'cancel_up'}');
+  if (response.statusCode == 200) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
   }
 }
 
@@ -723,7 +844,7 @@ Future<EvaluationCourseList> loadDefaultEvaluationCourseList(
   Response response;
   try {
     print(
-        'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=$studentID');
+        'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}');
     response = await dio.request(
         'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}',
         options: Options(method: "GET", responseType: ResponseType.json));
@@ -854,16 +975,16 @@ class schoolCalendar {
 
 Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   String schoolYear = '2019-2020';
-  DateTime endDay = DateTime(2020,9,6);
+  DateTime endDay = DateTime(2020, 9, 6);
   DateTime nowDay = DateTime.now();
-  if(nowDay.isAfter(endDay)){
+  if (nowDay.isAfter(endDay)) {
     schoolYear = '2020-2021';
   }
   Dio dio = new Dio();
   Response response;
   try {
     response = await dio.request(
-        'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear',
+      'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear',
       options: Options(method: "GET", responseType: ResponseType.plain),
     );
   } on DioError catch (e) {
@@ -881,7 +1002,6 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
     }
   }
   String ss = response.data;
-
 
 //  String ss = await rootBundle.loadString('assets/data/courseTable1.json');
   try {
