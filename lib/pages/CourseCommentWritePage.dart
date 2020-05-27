@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import '../encrypt.dart';
+import 'dart:async';
 
 class CourseCommentWritePage extends StatefulWidget {
   final String bname;
@@ -160,52 +161,46 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                       child: Text("发布"),
                       color: Colors.lightBlue,
                       disabledColor: Colors.grey,
-                      onPressed: (!_enable)
-                          ? null
-                          : () {
-                              if (commentController.text.length == 0) {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        content: Text("您还未填写评价内容，请填写后发布"),
-                                        actions: <Widget>[
-                                          RaisedButton(
-                                            child: Text("确定"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              } else {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text('确定发布?'),
-                                        actions: <Widget>[
-                                          RaisedButton(
-                                            child: Text("发布"),
-                                            onPressed: () {
-                                              //此处添加向后端的put操作。
-                                              putComment(commentController.text,
-                                                  score);
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          RaisedButton(
-                                            child: Text("我再想想"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
+                      onPressed: (!_enable)? null :() {
+                        if (commentController.text.length == 0) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text("您还未填写评价内容，请填写后发布"),
+                                  actions: <Widget>[
+                                    RaisedButton(
+                                      child: Text("确定"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
                               }
-                            },
+                          );
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('确定发布?'),
+                                  actions: <Widget>[
+                                    RaisedButton(
+                                      child: Text("发布"),
+                                      onPressed: () {
+                                        //此处添加向后端的put操作。
+                                        putComment(
+                                            commentController.text, score);
+                                      },
+                                    ),
+
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                      }
                     ),
                   ],
                 ),
@@ -227,25 +222,36 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
     Response response;
     Dio dio = new Dio(options);
     try {
+      Navigator.of(context).pop();
+      showLoading(context);
       response = await dio.request(
         'http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
         data: {
           "bid": widget.bid,
           "text": comment,
           "score": star,
-          "student_id": Encrypt.encrypt(GlobalUser.studentID)
+          "student_id": Encrypt.encrypt2(GlobalUser.studentID)
         },
         options: Options(method: "PUT", responseType: ResponseType.json),
       );
+      Navigator.of(context).pop();
+
       showDialog(
         context: context,
         builder: (context) {
-          return SimpleDialog(
+          return AlertDialog(
             title: Text("发布成功"),
+            actions: <Widget>[
+              RaisedButton(
+                child: Text("确定"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  },
+              ),
+            ],
           );
-        },
+          },
       );
-      print('response end');
       setTextEnable();
     } on DioError catch (e) {
       print("error type:${e.type},");
@@ -266,7 +272,8 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
       } else if (e.type == DioErrorType.CANCEL) {
         showError(context, "请求取消");
       } else {
-        showError(context, "未知错误");
+        print(e.response.statusCode);
+        showError(context, "前端写错了");
       }
     }
   }
@@ -277,9 +284,29 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
     });
   }
 
-  /*
+  void showError(context, String str) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            titlePadding: EdgeInsets.fromLTRB(24.0, 14.0, 24.0, 0.0),
+            title: Text(
+              '错  误',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            children: <Widget>[
+              Text(
+                str,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          );
+        });
+  }
+
   void showLoading(context, [String text]) {
-    text = text ?? "正在发布";
+    text = text ?? "发布中";
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -329,26 +356,6 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
           );
         });
   }
-   */
-  void showError(context, String str) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            titlePadding: EdgeInsets.fromLTRB(24.0, 14.0, 24.0, 0.0),
-            title: Text(
-              '错  误',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            children: <Widget>[
-              Text(
-                str,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          );
-        });
-  }
 }
+
 //bug日志，之前星级评价的Ui在更改星级后不发生改变，后来发现，updateWidget 与 setState的更新流程不同。

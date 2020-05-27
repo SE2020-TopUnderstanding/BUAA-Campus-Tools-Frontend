@@ -401,6 +401,7 @@ class _CourseEvaluationDetailPageState
                             icon: Icon(
                               Icons.edit,
                               size: 30,
+//    >>>>>>> 4eaab91a363c3d9f0ae150ddeeacd3e2f9bb2a19
                             ),
                             onPressed: () {
                               Navigator.push(
