@@ -615,19 +615,31 @@ class InfoList {
   }
 }
 
+class ScoreInfoList {
+  final List<int> scoreInfoList;
+
+  ScoreInfoList(this.scoreInfoList);
+
+  factory ScoreInfoList.fromJson(List<dynamic> parsedJson) {
+    return ScoreInfoList(parsedJson.cast<int>());
+  }
+}
+
 class EvaluationDetail {
   String courseName;
   int evaluationNum;
   double averageScore;
   TeacherInfoList teacherInfo;
   InfoList info;
+  ScoreInfoList scoreInfo;
 
   EvaluationDetail(
       {this.courseName,
       this.evaluationNum,
       this.averageScore,
       this.teacherInfo,
-      this.info});
+      this.info,
+      this.scoreInfo});
 
   factory EvaluationDetail.fromJson(Map<String, dynamic> parsedJson) {
     return EvaluationDetail(
@@ -636,6 +648,7 @@ class EvaluationDetail {
       averageScore: parsedJson['avg_score'],
       teacherInfo: TeacherInfoList.fromJson(parsedJson['teacher_info']),
       info: InfoList.fromJson(parsedJson['info']),
+      scoreInfo: ScoreInfoList.fromJson(parsedJson['score_info']),
     );
   }
 }
@@ -658,6 +671,114 @@ Future<EvaluationDetail> getEvaluationDetail(
     // If the server did not return a 200 OK response,
     // then throw an exception.
 //    throw Exception('Failed to load course center');
+  }
+}
+
+Future<void> postAgree(String student, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/up',
+        body: {
+          "student_id": "${Encrypt.encrypt2(student)}",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/up');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up',
+        body: {
+          "student_id": "${Encrypt.encrypt2(student)}",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up');
+  }
+  print('student_id: ${Encrypt.encrypt2(student)}');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  if (response.statusCode == 200) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
+  }
+}
+
+Future<void> postDisagree(String student, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/down',
+        body: {
+          "student_id": "${Encrypt.encrypt2(student)}",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/down');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_down',
+        body: {
+          "student_id": "${Encrypt.encrypt2(student)}",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_down');
+  }
+  print('student_id: ${Encrypt.encrypt2(student)}');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  if (response.statusCode == 200) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
+  }
+}
+
+Future<void> postTeacherAgree(String teacher, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/up',
+        body: {
+          "teacher": "$teacher",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid",
+          "action": "up"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/up');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up',
+        body: {
+          "teacher": "$teacher",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid",
+          "action": "cancel_up"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up');
+  }
+  print('teacher: $teacher');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  print('action: ${type == 0 ? 'up' : 'cancel_up'}');
+  if (response.statusCode == 200) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
   }
 }
 

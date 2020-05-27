@@ -5,6 +5,8 @@ import 'package:jiaowuassistent/pages/CourseCommentWritePage.dart';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 
+import 'User.dart';
+
 class ExpandState {
   var isOpen;
   var index;
@@ -101,9 +103,13 @@ class _CourseEvaluationDetailPageState
       if (evaluationDetail.info.infoList[index].hasUp) {
         evaluationDetail.info.infoList[index].upNum -= 1;
         evaluationDetail.info.infoList[index].hasUp = false;
+        postAgree(
+            evaluationDetail.info.infoList[index].studentId, widget.bid, 1);
       } else {
         evaluationDetail.info.infoList[index].upNum += 1;
         evaluationDetail.info.infoList[index].hasUp = true;
+        postAgree(
+            evaluationDetail.info.infoList[index].studentId, widget.bid, 0);
       }
     });
   }
@@ -113,9 +119,13 @@ class _CourseEvaluationDetailPageState
       if (evaluationDetail.info.infoList[index].hasDown) {
         evaluationDetail.info.infoList[index].downNum -= 1;
         evaluationDetail.info.infoList[index].hasDown = false;
+        postDisagree(
+            evaluationDetail.info.infoList[index].studentId, widget.bid, 1);
       } else {
         evaluationDetail.info.infoList[index].downNum += 1;
         evaluationDetail.info.infoList[index].hasDown = true;
+        postDisagree(
+            evaluationDetail.info.infoList[index].studentId, widget.bid, 0);
       }
     });
   }
@@ -125,9 +135,17 @@ class _CourseEvaluationDetailPageState
       if (evaluationDetail.teacherInfo.teacherInfoList[index].hasUp) {
         evaluationDetail.teacherInfo.teacherInfoList[index].upNum -= 1;
         evaluationDetail.teacherInfo.teacherInfoList[index].hasUp = false;
+        postTeacherAgree(
+            evaluationDetail.teacherInfo.teacherInfoList[index].teacherName,
+            widget.bid,
+            1);
       } else {
         evaluationDetail.teacherInfo.teacherInfoList[index].upNum += 1;
         evaluationDetail.teacherInfo.teacherInfoList[index].hasUp = true;
+        postTeacherAgree(
+            evaluationDetail.teacherInfo.teacherInfoList[index].teacherName,
+            widget.bid,
+            0);
       }
     });
   }
@@ -314,6 +332,26 @@ class _CourseEvaluationDetailPageState
 
   @override
   Widget build(BuildContext context) {
+    double one = evaluationDetail==null||evaluationDetail.evaluationNum == 0
+        ? 0
+        : evaluationDetail.scoreInfo.scoreInfoList[0] /
+            evaluationDetail.evaluationNum;
+    double two = evaluationDetail==null||evaluationDetail.evaluationNum == 0
+        ? 0
+        : evaluationDetail.scoreInfo.scoreInfoList[1] /
+            evaluationDetail.evaluationNum;
+    double three = evaluationDetail==null||evaluationDetail.evaluationNum == 0
+        ? 0
+        : evaluationDetail.scoreInfo.scoreInfoList[2] /
+            evaluationDetail.evaluationNum;
+    double four = evaluationDetail==null||evaluationDetail.evaluationNum == 0
+        ? 0
+        : evaluationDetail.scoreInfo.scoreInfoList[3] /
+            evaluationDetail.evaluationNum;
+    double five = evaluationDetail==null||evaluationDetail.evaluationNum == 0
+        ? 0
+        : evaluationDetail.scoreInfo.scoreInfoList[4] /
+            evaluationDetail.evaluationNum;
     return new Scaffold(
       appBar: AppBar(
         title: Text('课程详情'),
@@ -408,13 +446,14 @@ class _CourseEvaluationDetailPageState
                                         height: 8,
                                         width: 150,
                                         child: LinearProgressIndicator(
-                                          value: 0.5,
+                                          value: five,
                                         ),
                                       ),
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      Text('50.0%'),
+                                      Text(
+                                          '${(five * 100).toStringAsFixed(1)}%'),
                                     ],
                                   ),
                                   Row(
@@ -427,13 +466,14 @@ class _CourseEvaluationDetailPageState
                                         height: 8,
                                         width: 150,
                                         child: LinearProgressIndicator(
-                                          value: 0.3,
+                                          value: four,
                                         ),
                                       ),
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      Text('30.0%'),
+                                      Text(
+                                          '${(four * 100).toStringAsFixed(1)}%'),
                                     ],
                                   ),
                                   Row(
@@ -446,13 +486,14 @@ class _CourseEvaluationDetailPageState
                                         height: 8,
                                         width: 150,
                                         child: LinearProgressIndicator(
-                                          value: 0.1,
+                                          value: three,
                                         ),
                                       ),
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      Text('10.0%'),
+                                      Text(
+                                          '${(three * 100).toStringAsFixed(1)}%'),
                                     ],
                                   ),
                                   Row(
@@ -465,13 +506,14 @@ class _CourseEvaluationDetailPageState
                                         height: 8,
                                         width: 150,
                                         child: LinearProgressIndicator(
-                                          value: 0.08,
+                                          value: two,
                                         ),
                                       ),
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      Text('8.0%'),
+                                      Text(
+                                          '${(two * 100).toStringAsFixed(1)}%'),
                                     ],
                                   ),
                                   Row(
@@ -484,13 +526,14 @@ class _CourseEvaluationDetailPageState
                                         height: 8,
                                         width: 150,
                                         child: LinearProgressIndicator(
-                                          value: 0.02,
+                                          value: one,
                                         ),
                                       ),
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      Text('2.0%'),
+                                      Text(
+                                          '${(one * 100).toStringAsFixed(1)}%'),
                                     ],
                                   ),
                                 ],
