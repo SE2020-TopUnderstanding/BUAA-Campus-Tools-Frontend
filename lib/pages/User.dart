@@ -748,7 +748,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
   var response;
   if (type == 0) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/up/',
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/up/',
         body: {
           "teacher": "$teacher",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -756,10 +756,10 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "action": "up"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/up/');
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/up/');
   } else if (type == 1) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up/',
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/cancel_up/',
         body: {
           "teacher": "$teacher",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -767,7 +767,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "action": "cancel_up"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up/');
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/cancel_up/');
   }
   print('teacher: $teacher');
   print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');

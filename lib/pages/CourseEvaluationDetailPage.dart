@@ -407,7 +407,7 @@ class _CourseEvaluationDetailPageState
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              widget.courseScore.toString(),
+                              evaluationDetail.averageScore.toString(),
                               style: new TextStyle(
                                 color: Colors.grey[900],
                                 fontSize: 44,
