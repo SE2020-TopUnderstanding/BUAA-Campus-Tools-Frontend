@@ -35,6 +35,8 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   bool _isDisabled = false;
   String _department;
   String _courseType;
+  String courseName;
+  String teacher;
 
   //回到顶部悬浮按扭相关
   var _scrollController = ScrollController();
@@ -327,8 +329,8 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   }
 
   Future<void> searchEvaluationCourseList() async {
-    String courseName;
-    String teacher;
+//    String courseName;
+//    String teacher;
     courseName = _courseNameController.text;
     teacher = _teacherController.text;
     if (courseName.isEmpty &&
@@ -408,68 +410,74 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   Widget _courseInformation(String bid, String courseName, String courseCredit,
       double courseScore, String department) {
     return new Card(
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CourseEvaluationDetailPage(
-                    courseName: courseName,
-                    courseCredit: courseCredit,
-                    courseScore: courseScore,
-                    bid: bid,
-                  ))).then((value){
-                    getDefaultList();
-                  });
-        },
-        child:Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Expanded(
-                child: ListTile(
-                  title: Text(courseName),
-                  subtitle: Text(department + ' ' + courseCredit),
-                ),
+        child: InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CourseEvaluationDetailPage(
+                      courseName: courseName,
+                      courseCredit: courseCredit,
+                      courseScore: courseScore,
+                      bid: bid,
+                    ))).then((value) {
+          if (!(courseName.isEmpty &&
+              teacher.isEmpty &&
+              _department == null &&
+              _courseType == null)) {
+            searchEvaluationCourseList();
+          } else {
+            getDefaultList();
+          }
+        });
+      },
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+              child: ListTile(
+                title: Text(courseName),
+                subtitle: Text(department + ' ' + courseCredit),
               ),
-              SizedBox(height: 20),
-              Container(
-                child: Stack(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        getLeftStar(0),
-                        getLeftStar(0),
-                        getLeftStar(0),
-                        getLeftStar(0),
-                        getLeftStar(0),
-                      ],
-                    ),
-                    Row(children: <Widget>[
-                      courseScore >= 1
-                          ? getLeftStar(1)
-                          : getLeftStar(courseScore),
-                      courseScore >= 2
-                          ? getLeftStar(1)
-                          : getLeftStar(courseScore - 1),
-                      courseScore >= 3
-                          ? getLeftStar(1)
-                          : getLeftStar(courseScore - 2),
-                      courseScore >= 4
-                          ? getLeftStar(1)
-                          : getLeftStar(courseScore - 3),
-                      courseScore >= 5
-                          ? getLeftStar(1)
-                          : getLeftStar(courseScore - 4),
-                    ]),
-                  ],
-                ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              child: Stack(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      getLeftStar(0),
+                      getLeftStar(0),
+                      getLeftStar(0),
+                      getLeftStar(0),
+                      getLeftStar(0),
+                    ],
+                  ),
+                  Row(children: <Widget>[
+                    courseScore >= 1
+                        ? getLeftStar(1)
+                        : getLeftStar(courseScore),
+                    courseScore >= 2
+                        ? getLeftStar(1)
+                        : getLeftStar(courseScore - 1),
+                    courseScore >= 3
+                        ? getLeftStar(1)
+                        : getLeftStar(courseScore - 2),
+                    courseScore >= 4
+                        ? getLeftStar(1)
+                        : getLeftStar(courseScore - 3),
+                    courseScore >= 5
+                        ? getLeftStar(1)
+                        : getLeftStar(courseScore - 4),
+                  ]),
+                ],
               ),
-              SizedBox(height: 20),
-              Text(courseScore.toString()),
-              SizedBox(height: 20, width: 20),
-            ]),
-      )
-    );
+            ),
+            SizedBox(height: 20),
+            Text(courseScore.toString()),
+            SizedBox(height: 20, width: 20),
+          ]),
+    ));
   }
 
   @override
