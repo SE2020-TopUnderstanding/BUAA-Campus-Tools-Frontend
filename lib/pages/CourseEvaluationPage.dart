@@ -35,8 +35,8 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   bool _isDisabled = false;
   String _department;
   String _courseType;
-  String courseName;
-  String teacher;
+  String _courseName;
+  String _teacher;
 
   //回到顶部悬浮按扭相关
   var _scrollController = ScrollController();
@@ -331,10 +331,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   Future<void> searchEvaluationCourseList() async {
 //    String courseName;
 //    String teacher;
-    courseName = _courseNameController.text;
-    teacher = _teacherController.text;
-    if (courseName.isEmpty &&
-        teacher.isEmpty &&
+    _courseName = _courseNameController.text;
+    _teacher = _teacherController.text;
+    if (_courseName.isEmpty &&
+        _teacher.isEmpty &&
         _department == null &&
         _courseType == null) {
 //    ) ||
@@ -347,7 +347,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
           _isDisabled = true;
         });
         dynamic response = await loadEvaluationCourseList(
-            courseName, teacher, _courseType, _department);
+            _courseName, _teacher, _courseType, _department);
         setState(() {
           _evaluationList = response;
           _isDisabled = false;
@@ -421,8 +421,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                       courseScore: courseScore,
                       bid: bid,
                     ))).then((value) {
-          if (!(courseName.isEmpty &&
-              teacher.isEmpty &&
+          _courseName = _courseNameController.text;
+          _teacher = _teacherController.text;
+          if (!(_courseName.isEmpty &&
+              _teacher.isEmpty &&
               _department == null &&
               _courseType == null)) {
             searchEvaluationCourseList();
