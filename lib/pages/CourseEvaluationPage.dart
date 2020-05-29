@@ -574,7 +574,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
                         iconEnabledColor: Colors.black,
-                        hint: Text('--请选择--'),
+                        hint: Text('请选择'),
                         items: getDepartment(),
                         onChanged: (value) {
                           setState(() {
@@ -614,7 +614,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
                         iconEnabledColor: Colors.black,
-                        hint: Text('--请选择--'),
+                        hint: Text('请选择'),
                         items: getCourseType(),
                         onChanged: (value) {
                           setState(() {
@@ -622,9 +622,6 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                           });
                         },
                       ),
-//                      SizedBox(
-////                        width: 80,
-////                      ),
                       Expanded(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

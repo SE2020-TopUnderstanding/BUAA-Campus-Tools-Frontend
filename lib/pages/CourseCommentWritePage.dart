@@ -42,10 +42,10 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
       icons[i] = (iconsState[i] == true)
           ? Icon(
               Icons.star,
-              size: 50,
+              size: 40,
               color: Colors.deepOrange,
             )
-          : Icon(Icons.star, size: 50, color: Colors.grey);
+          : Icon(Icons.star, size: 40, color: Colors.grey);
     }
     /*
     if (widget.commentText== null) {
@@ -76,10 +76,10 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
             icons[i] = (iconsState[i] == true)
                 ? Icon(
                     Icons.star,
-                    size: 50,
+                    size: 40,
                     color: Colors.deepOrange,
                   )
-                : Icon(Icons.star, size: 50, color: Colors.grey);
+                : Icon(Icons.star, size: 40, color: Colors.grey);
           }
           score = number.toDouble();
         });
@@ -103,11 +103,12 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.fromLTRB(10, 30, 10, 10),
+                padding: EdgeInsets.fromLTRB(20, 30, 20, 10),
                 child: Text(
                   "${widget.bname}",
                   textAlign: TextAlign.left,
                   style: TextStyle(
+                    fontWeight: FontWeight.bold,
                     fontSize: 25,
                   ),
                 ),
@@ -135,80 +136,84 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
               Container(
                 margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                decoration: BoxDecoration(
-                  border: new Border.all(width: 2.0, color: Colors.black12),
-                  borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
-                ),
+//                decoration: BoxDecoration(
+//                  border: new Border.all(width: 2.0, color: Colors.black12),
+//                  borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
+//                ),
                 child: TextField(
                   enabled: true,
                   maxLines: 12,
                   focusNode: commentNode,
                   controller: commentController,
                   decoration: InputDecoration(
+                    hoverColor: Colors.lightBlue,
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          new BorderRadius.all(new Radius.circular(10.0)),
+                    ),
+
                     hintText: '请输入你对课程的评价',
-                    border: InputBorder.none,
+//                    border: InputBorder.none,
                   ),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    /*
-                    RaisedButton(
-                      child: Text("修改"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints.expand(height: 50),
+                  child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: Text(
+                        '发布',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            letterSpacing: 20,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            color: Colors.white),
+                      ),
                       color: Colors.lightBlue,
                       disabledColor: Colors.grey,
-                      onPressed:
-                          //是要不同函数，而非一个函数不同返回值
-                          _enable ? null : () => setTextEnable(),
-                    ),
-
-                     */
-                    RaisedButton(
-                        child: Text("发布"),
-                        color: Colors.lightBlue,
-                        disabledColor: Colors.grey,
-                        onPressed: () {
-                          if (commentController.text.length == 0) {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    content: Text("您还未填写评价内容，请填写后发布"),
-                                    actions: <Widget>[
-                                      RaisedButton(
-                                        child: Text("确定"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                });
-                          } else {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text('确定发布?'),
-                                    actions: <Widget>[
-                                      RaisedButton(
-                                        child: Text("发布"),
-                                        onPressed: () {
-                                          //此处添加向后端的put操作。
-                                          Navigator.of(context).pop();
-                                          putComment(
-                                              commentController.text, score);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                });
-                          }
-                        }),
-                  ],
+                      onPressed: () {
+                        if (commentController.text.length == 0) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text("您还未填写评价内容，请填写后发布"),
+                                  actions: <Widget>[
+                                    RaisedButton(
+                                      child: Text("确定"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('确定发布?'),
+                                  actions: <Widget>[
+                                    RaisedButton(
+                                      child: Text("发布"),
+                                      onPressed: () {
+                                        //此处添加向后端的put操作。
+                                        Navigator.of(context).pop();
+                                        putComment(
+                                            commentController.text, score);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        }
+                      }),
                 ),
               ),
             ],
