@@ -465,7 +465,7 @@ class _CourseEvaluationDetailPageState
                                       bid: widget.bid,
                                       score: score,
                                       commentText: commentText,
-                                    )));
+                                    ))).then((value) => searchEvaluationDetail());
                       },
                     ), // zyx add modify icon
                     Column(

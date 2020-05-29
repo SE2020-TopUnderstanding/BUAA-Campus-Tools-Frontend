@@ -418,7 +418,9 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                     courseCredit: courseCredit,
                     courseScore: courseScore,
                     bid: bid,
-                  )));
+                  ))).then((value){
+                    getDefaultList();
+                  });
         },
         child:Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
