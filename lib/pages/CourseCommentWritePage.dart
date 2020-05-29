@@ -198,10 +198,9 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                                         child: Text("发布"),
                                         onPressed: () {
                                           //此处添加向后端的put操作。
-
+                                          Navigator.of(context).pop();
                                           putComment(
                                               commentController.text, score);
-                                          Navigator.of(context).pop();
                                         },
                                       ),
                                     ],
