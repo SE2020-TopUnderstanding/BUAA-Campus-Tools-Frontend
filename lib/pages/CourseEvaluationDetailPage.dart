@@ -108,7 +108,7 @@ class _CourseEvaluationDetailPageState
       } else {
         evaluationDetail.info.infoList[index].upNum += 1;
         evaluationDetail.info.infoList[index].hasUp = true;
-        if(evaluationDetail.info.infoList[index].hasDown){
+        if (evaluationDetail.info.infoList[index].hasDown) {
           evaluationDetail.info.infoList[index].hasDown = false;
           evaluationDetail.info.infoList[index].downNum -= 1;
         }
@@ -128,7 +128,7 @@ class _CourseEvaluationDetailPageState
       } else {
         evaluationDetail.info.infoList[index].downNum += 1;
         evaluationDetail.info.infoList[index].hasDown = true;
-        if(evaluationDetail.info.infoList[index].hasUp){
+        if (evaluationDetail.info.infoList[index].hasUp) {
           evaluationDetail.info.infoList[index].hasUp = false;
           evaluationDetail.info.infoList[index].upNum -= 1;
         }
@@ -269,36 +269,40 @@ class _CourseEvaluationDetailPageState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children:<Widget>[
-                              fiveStars(
-                                  0.0 +
-                                      evaluationDetail.info.infoList[index].score,
-                                  16),
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      evaluationDetail.info.infoList[index].studentId ==
-                                          Encrypt.encrypt2(GlobalUser.studentID)
-                                          ? Container(
-                                        margin: const EdgeInsets.only(right: 20.0),
-                                        child: GestureDetector(
-                                          child: Text(
-                                            '删除',
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  fiveStars(
+                                      0.0 +
+                                          evaluationDetail.info.infoList[index]
+                                              .score,
+                                      16),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        evaluationDetail.info.infoList[index]
+                                            .studentId ==
+                                            Encrypt.encrypt2(
+                                                GlobalUser.studentID)
+                                            ? Container(
+                                          margin: const EdgeInsets.only(
+                                              right: 20.0),
+                                          child: GestureDetector(
+                                            child: Text(
+                                              '删除',
+                                            ),
+                                            onTap: () {
+                                              deleteComment(widget.bid);
+                                            },
                                           ),
-                                          onTap: () {
-                                            deleteComment(widget.bid);
-                                          },
-                                        ),
-                                      )
-                                          : Container(),
-                                    ],
-                                  )
+                                        )
+                                            : Container(),
+                                      ],
+                                    )
 
-                                  ,
-                                )
-                        ]
+                                    ,
+                                  )
+                                ]
                             ),
 
                             SizedBox(
@@ -465,7 +469,8 @@ class _CourseEvaluationDetailPageState
                                       bid: widget.bid,
                                       score: score,
                                       commentText: commentText,
-                                    ))).then((value) => searchEvaluationDetail());
+                                    ))).then((value) =>
+                            searchEvaluationDetail());
                       },
                     ), // zyx add modify icon
                     Column(

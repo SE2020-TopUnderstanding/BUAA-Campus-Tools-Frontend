@@ -24,14 +24,14 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
   FocusNode commentNode = new FocusNode();
   List<bool> iconsState = new List(5);
   List<Icon> icons = new List(5);
-  bool _enable=false;
+  bool _enable = false;
   double score;
 
   @override
   void initState() {
     print('init');
     score = widget.score;
-    if(score == null){
+    if (score == null) {
       score = 0.0;
     }
     iconsState = [false, false, false, false, false];
@@ -167,52 +167,48 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
 
                      */
                     RaisedButton(
-                      child: Text("发布"),
-                      color: Colors.lightBlue,
-                      disabledColor: Colors.grey,
-                      onPressed: () {
-                        if (commentController.text.length == 0) {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  content: Text("您还未填写评价内容，请填写后发布"),
-                                  actions: <Widget>[
-                                    RaisedButton(
-                                      child: Text("确定"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              }
-                          );
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('确定发布?'),
-                                  actions: <Widget>[
-                                    RaisedButton(
-                                      child: Text("发布"),
-                                      onPressed: () {
-                                        //此处添加向后端的put操作。
+                        child: Text("发布"),
+                        color: Colors.lightBlue,
+                        disabledColor: Colors.grey,
+                        onPressed: () {
+                          if (commentController.text.length == 0) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: Text("您还未填写评价内容，请填写后发布"),
+                                    actions: <Widget>[
+                                      RaisedButton(
+                                        child: Text("确定"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('确定发布?'),
+                                    actions: <Widget>[
+                                      RaisedButton(
+                                        child: Text("发布"),
+                                        onPressed: () {
+                                          //此处添加向后端的put操作。
 
-                                        putComment(
-                                            commentController.text, score);
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-
-                                  ],
-                                );
-                              }
-                          );
-                        }
-                      }
-                    ),
+                                          putComment(
+                                              commentController.text, score);
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                          }
+                        }),
                   ],
                 ),
               ),
@@ -257,13 +253,13 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                 child: Text("确定"),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  },
+                },
               ),
             ],
           );
-          },
+        },
       );
-    //  setTextEnable();
+      //  setTextEnable();
     } on DioError catch (e) {
       print("error type:${e.type},");
       //Navigator.of(context).pop();
