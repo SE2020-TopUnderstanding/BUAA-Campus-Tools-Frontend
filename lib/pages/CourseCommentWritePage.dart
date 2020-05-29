@@ -24,15 +24,18 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
   FocusNode commentNode = new FocusNode();
   List<bool> iconsState = new List(5);
   List<Icon> icons = new List(5);
-  bool _enable;
+  bool _enable=false;
   double score;
 
   @override
   void initState() {
     print('init');
     score = widget.score;
+    if(score == null){
+      score = 0.0;
+    }
     iconsState = [false, false, false, false, false];
-    for (int i = 0; i < widget.score.round(); i++) {
+    for (int i = 0; i < score.round(); i++) {
       iconsState[i] = true;
     }
     for (int i = 0; i < 5; i++) {
@@ -44,11 +47,14 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
             )
           : Icon(Icons.star, size: 50, color: Colors.grey);
     }
-    if (widget.commentText.length == 0) {
+    /*
+    if (widget.commentText== null) {
       _enable = true;
     } else {
       _enable = false;
     }
+
+     */
     commentController.text = widget.commentText;
     super.initState();
   }
@@ -134,7 +140,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                   borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
                 ),
                 child: TextField(
-                  enabled: _enable,
+                  enabled: true,
                   maxLines: 12,
                   focusNode: commentNode,
                   controller: commentController,
@@ -149,6 +155,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
+                    /*
                     RaisedButton(
                       child: Text("修改"),
                       color: Colors.lightBlue,
@@ -157,11 +164,13 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                           //是要不同函数，而非一个函数不同返回值
                           _enable ? null : () => setTextEnable(),
                     ),
+
+                     */
                     RaisedButton(
                       child: Text("发布"),
                       color: Colors.lightBlue,
                       disabledColor: Colors.grey,
-                      onPressed: (!_enable)? null :() {
+                      onPressed: () {
                         if (commentController.text.length == 0) {
                           showDialog(
                               context: context,
@@ -252,7 +261,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
           );
           },
       );
-      setTextEnable();
+    //  setTextEnable();
     } on DioError catch (e) {
       print("error type:${e.type},");
       //Navigator.of(context).pop();

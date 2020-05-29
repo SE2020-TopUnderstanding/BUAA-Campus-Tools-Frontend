@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
+import 'dart:io';
 import 'package:jiaowuassistent/encrypt.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
@@ -188,25 +188,25 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
     CourseCenter temp =
         CourseCenter.fromJson(json.decode(decode.convert(response.bodyBytes)));
 
-    final JPush jpush = new JPush();
-    for (int i = 0; i < temp.courses.length; i++) {
-      for (int j = 0; j < temp.courses[i].content.length; j++) {
-        /*两小时前发本地推送*/
-        var fireDate = DateTime.fromMillisecondsSinceEpoch(
-            DateTime.parse(temp.courses[i].content[j].time)
-                    .millisecondsSinceEpoch -
-                7200000);
-        var localNotification = LocalNotification(
-          id: 234,
-          title: 'DDL提醒',
-          buildId: 1,
-          content:
-              '${temp.courses[i].content[j].text}，截止时间${temp.courses[i].content[j].time}',
-          fireTime: fireDate,
-        );
-        jpush.sendLocalNotification(localNotification);
-      }
-    }
+//    final JPush jpush = new JPush();
+//    for (int i = 0; i < temp.courses.length; i++) {
+//      for (int j = 0; j < temp.courses[i].content.length; j++) {
+//        /*两小时前发本地推送*/
+//        var fireDate = DateTime.fromMillisecondsSinceEpoch(
+//            DateTime.parse(temp.courses[i].content[j].time)
+//                    .millisecondsSinceEpoch -
+//                7200000);
+//        var localNotification = LocalNotification(
+//          id: 234,
+//          title: 'DDL提醒',
+//          buildId: 1,
+//          content:
+//              '${temp.courses[i].content[j].text}，截止时间${temp.courses[i].content[j].time}',
+//          fireTime: fireDate,
+//        );
+//        jpush.sendLocalNotification(localNotification);
+//      }
+//    }
 
     return temp;
     //json.decode('[]'));//测试空list
@@ -572,7 +572,7 @@ class TeacherInfoList {
 class Info {
   int id;
   String studentId;
-  double score;
+  var score;
   String updateTime;
   String content;
   int upNum;
@@ -615,19 +615,31 @@ class InfoList {
   }
 }
 
+class ScoreInfoList {
+  final List<int> scoreInfoList;
+
+  ScoreInfoList(this.scoreInfoList);
+
+  factory ScoreInfoList.fromJson(List<dynamic> parsedJson) {
+    return ScoreInfoList(parsedJson.cast<int>());
+  }
+}
+
 class EvaluationDetail {
   String courseName;
   int evaluationNum;
-  double averageScore;
+  var averageScore;
   TeacherInfoList teacherInfo;
   InfoList info;
+  ScoreInfoList scoreInfo;
 
   EvaluationDetail(
       {this.courseName,
       this.evaluationNum,
       this.averageScore,
       this.teacherInfo,
-      this.info});
+      this.info,
+      this.scoreInfo});
 
   factory EvaluationDetail.fromJson(Map<String, dynamic> parsedJson) {
     return EvaluationDetail(
@@ -636,6 +648,7 @@ class EvaluationDetail {
       averageScore: parsedJson['avg_score'],
       teacherInfo: TeacherInfoList.fromJson(parsedJson['teacher_info']),
       info: InfoList.fromJson(parsedJson['info']),
+      scoreInfo: ScoreInfoList.fromJson(parsedJson['score_info']),
     );
   }
 }
@@ -658,6 +671,137 @@ Future<EvaluationDetail> getEvaluationDetail(
     // If the server did not return a 200 OK response,
     // then throw an exception.
 //    throw Exception('Failed to load course center');
+  }
+}
+
+Future<void> postAgree(String student, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/up/',
+        body: {
+          "student_id": "$student",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/up/');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up/',
+        body: {
+          "student_id": "$student",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up/');
+  }
+  print('student_id: $student');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  if (response.statusCode == 201) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
+  }
+}
+
+Future<void> postDisagree(String student, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/down/',
+        body: {
+          "student_id": "$student",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/down/');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_down/',
+        body: {
+          "student_id": "$student",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_down/');
+  }
+  print('student_id: $student');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  if (response.statusCode == 201) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
+  }
+}
+
+Future<void> postTeacherAgree(String teacher, String bid, int type) async {
+  var response;
+  if (type == 0) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/up/',
+        body: {
+          "teacher": "$teacher",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid",
+          "action": "up"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/up/');
+  } else if (type == 1) {
+    response = await http.post(
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/cancel_up/',
+        body: {
+          "teacher": "$teacher",
+          "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+          "bid": "$bid",
+          "action": "cancel_up"
+        });
+    print(
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/cancel_up/');
+  }
+  print('teacher: $teacher');
+  print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  print('bid: $bid');
+  print('action: ${type == 0 ? 'up' : 'cancel_up'}');
+  if (response.statusCode == 201) {
+    print('post success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to post message');
+  }
+}
+
+Future<void> deleteComment(String bid) async {
+  Dio dio = new Dio();
+  var response = await dio.request(
+    'http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
+    data: {
+      "bid": "$bid",
+      "student_id": "${Encrypt.encrypt2(GlobalUser.studentID)}",
+    },
+    options: Options(method: "DELETE", responseType: ResponseType.json),
+  );
+  print(
+      'delete -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/');
+  print('bid: $bid');
+  print('student_id: ${Encrypt.encrypt2(GlobalUser.studentID)}');
+  if (response.statusCode == 204) {
+    print('delete success');
+    return;
+  } else {
+    print(response.statusCode);
+    throw Exception('Failed to delete message');
   }
 }
 
@@ -873,11 +1017,13 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
         throw 401;
       } else if (e.response.statusCode == 402) {
         throw 402;
+      } else if (e.response.statusCode == 463) {
+        throw "无该学年数据";
       } else {
         throw "网络请求出错";
       }
     } else {
-      throw "网络请求出错";
+      throw "其他错误";
     }
   }
   String ss = response.data;
