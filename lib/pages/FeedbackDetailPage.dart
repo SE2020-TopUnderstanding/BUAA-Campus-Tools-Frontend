@@ -64,7 +64,6 @@ class _FeedbackDetailPage extends State<FeedbackDetailPage> {
               ),
             ),
           ),
-
         ],
       ),
     );

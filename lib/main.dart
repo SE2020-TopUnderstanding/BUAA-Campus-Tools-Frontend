@@ -30,7 +30,7 @@ void main() async {
     try {
       jPush.addEventHandler(
           onReceiveNotification: (Map<String, dynamic> message) async {
-        print('---->接收到推送:${message}');
+        print('---->接收到推送:$message');
       });
     } on Exception {
       print("---->获取平台版本失败");

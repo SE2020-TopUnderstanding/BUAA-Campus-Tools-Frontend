@@ -21,11 +21,12 @@ class CourseEvaluationDetailPage extends StatefulWidget {
   final double courseScore;
   final String bid;
 
-  CourseEvaluationDetailPage({Key key,
-    @required this.courseName,
-    this.courseCredit,
-    this.courseScore,
-    this.bid})
+  CourseEvaluationDetailPage(
+      {Key key,
+      @required this.courseName,
+      this.courseCredit,
+      this.courseScore,
+      this.bid})
       : super(key: key);
 
   @override
@@ -108,7 +109,7 @@ class _CourseEvaluationDetailPageState
       } else {
         evaluationDetail.info.infoList[index].upNum += 1;
         evaluationDetail.info.infoList[index].hasUp = true;
-        if(evaluationDetail.info.infoList[index].hasDown){
+        if (evaluationDetail.info.infoList[index].hasDown) {
           evaluationDetail.info.infoList[index].hasDown = false;
           evaluationDetail.info.infoList[index].downNum -= 1;
         }
@@ -128,7 +129,7 @@ class _CourseEvaluationDetailPageState
       } else {
         evaluationDetail.info.infoList[index].downNum += 1;
         evaluationDetail.info.infoList[index].hasDown = true;
-        if(evaluationDetail.info.infoList[index].hasUp){
+        if (evaluationDetail.info.infoList[index].hasUp) {
           evaluationDetail.info.infoList[index].hasUp = false;
           evaluationDetail.info.infoList[index].upNum -= 1;
         }
@@ -187,7 +188,7 @@ class _CourseEvaluationDetailPageState
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount:
-                        evaluationDetail.teacherInfo.teacherInfoList.length,
+                            evaluationDetail.teacherInfo.teacherInfoList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Row(
                             children: <Widget>[
@@ -210,18 +211,18 @@ class _CourseEvaluationDetailPageState
                                 children: <Widget>[
                                   new IconButton(
                                     icon: (evaluationDetail.teacherInfo
-                                        .teacherInfoList[index].hasUp
+                                            .teacherInfoList[index].hasUp
                                         ? new Icon(
-                                      Icons.thumb_up,
-                                      color: Colors.red,
-                                      size: 15,
-                                    )
+                                            Icons.thumb_up,
+                                            color: Colors.red,
+                                            size: 15,
+                                          )
                                         : new Icon(
-                                      Icons.thumb_up,
-                                      size: 15,
-                                    )),
+                                            Icons.thumb_up,
+                                            size: 15,
+                                          )),
                                     onPressed: () =>
-                                    {updateTeacherAgree(index)},
+                                        {updateTeacherAgree(index)},
                                   ),
                                   Text(
                                       evaluationDetail.teacherInfo
@@ -237,10 +238,33 @@ class _CourseEvaluationDetailPageState
                         }),
                   ])),
               isExpanded: _expandState.isOpen // 设置面板的状态，true展开，false折叠
-          )
+              )
         ]
 //      }).toList(),
-    );
+        );
+  }
+
+  void deleteConfirm() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('确定删除评论?'),
+            actions: <Widget>[
+              RaisedButton(
+                child: Text("确定"),
+                onPressed: () {
+                  //此处添加向后端的put操作。
+                  Navigator.of(context).pop();
+                  deleteComment(widget.bid);
+                  commentText = null;
+                  score = 0;
+                  searchEvaluationDetail();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   Widget getReview() {
@@ -269,38 +293,38 @@ class _CourseEvaluationDetailPageState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children:<Widget>[
-                              fiveStars(
-                                  0.0 +
-                                      evaluationDetail.info.infoList[index].score,
-                                  16),
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      evaluationDetail.info.infoList[index].studentId ==
-                                          Encrypt.encrypt2(GlobalUser.studentID)
-                                          ? Container(
-                                        margin: const EdgeInsets.only(right: 20.0),
-                                        child: GestureDetector(
-                                          child: Text(
-                                            '删除',
-                                          ),
-                                          onTap: () {
-                                            deleteComment(widget.bid);
-                                          },
-                                        ),
-                                      )
-                                          : Container(),
-                                    ],
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  fiveStars(
+                                      0.0 +
+                                          evaluationDetail
+                                              .info.infoList[index].score,
+                                      16),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        evaluationDetail.info.infoList[index]
+                                                    .studentId ==
+                                                Encrypt.encrypt2(
+                                                    GlobalUser.studentID)
+                                            ? Container(
+                                                margin: const EdgeInsets.only(
+                                                    right: 20.0),
+                                                child: GestureDetector(
+                                                  child: Text(
+                                                    '删除',
+                                                  ),
+                                                  onTap: () {
+                                                    deleteConfirm();
+                                                  },
+                                                ),
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
                                   )
-
-                                  ,
-                                )
-                        ]
-                            ),
-
+                                ]),
                             SizedBox(
                               height: 3,
                             ),
@@ -313,20 +337,19 @@ class _CourseEvaluationDetailPageState
                           ],
                         ),
                       ),
-
                       new Column(
                         children: <Widget>[
                           new IconButton(
                             icon: (evaluationDetail.info.infoList[index].hasUp
                                 ? new Icon(
-                              Icons.thumb_up,
-                              color: Colors.red,
-                              size: 15,
-                            )
+                                    Icons.thumb_up,
+                                    color: Colors.red,
+                                    size: 15,
+                                  )
                                 : new Icon(
-                              Icons.thumb_up,
-                              size: 15,
-                            )),
+                                    Icons.thumb_up,
+                                    size: 15,
+                                  )),
                             onPressed: () => {updateAgree(index)},
                           ),
                           Text(
@@ -342,14 +365,14 @@ class _CourseEvaluationDetailPageState
                           new IconButton(
                             icon: evaluationDetail.info.infoList[index].hasDown
                                 ? new Icon(
-                              Icons.thumb_down,
-                              color: Colors.red,
-                              size: 15,
-                            )
+                                    Icons.thumb_down,
+                                    color: Colors.red,
+                                    size: 15,
+                                  )
                                 : new Icon(
-                              Icons.thumb_down,
-                              size: 15,
-                            ),
+                                    Icons.thumb_down,
+                                    size: 15,
+                                  ),
                             onPressed: () => {updateDisagree(index)},
                             padding: const EdgeInsets.all(0.0),
                           ),
@@ -373,26 +396,26 @@ class _CourseEvaluationDetailPageState
     double one = evaluationDetail == null || evaluationDetail.evaluationNum == 0
         ? 0
         : evaluationDetail.scoreInfo.scoreInfoList[0] /
-        evaluationDetail.evaluationNum;
+            evaluationDetail.evaluationNum;
     double two = evaluationDetail == null || evaluationDetail.evaluationNum == 0
         ? 0
         : evaluationDetail.scoreInfo.scoreInfoList[1] /
-        evaluationDetail.evaluationNum;
+            evaluationDetail.evaluationNum;
     double three =
-    evaluationDetail == null || evaluationDetail.evaluationNum == 0
-        ? 0
-        : evaluationDetail.scoreInfo.scoreInfoList[2] /
-        evaluationDetail.evaluationNum;
+        evaluationDetail == null || evaluationDetail.evaluationNum == 0
+            ? 0
+            : evaluationDetail.scoreInfo.scoreInfoList[2] /
+                evaluationDetail.evaluationNum;
     double four =
-    evaluationDetail == null || evaluationDetail.evaluationNum == 0
-        ? 0
-        : evaluationDetail.scoreInfo.scoreInfoList[3] /
-        evaluationDetail.evaluationNum;
+        evaluationDetail == null || evaluationDetail.evaluationNum == 0
+            ? 0
+            : evaluationDetail.scoreInfo.scoreInfoList[3] /
+                evaluationDetail.evaluationNum;
     double five =
-    evaluationDetail == null || evaluationDetail.evaluationNum == 0
-        ? 0
-        : evaluationDetail.scoreInfo.scoreInfoList[4] /
-        evaluationDetail.evaluationNum;
+        evaluationDetail == null || evaluationDetail.evaluationNum == 0
+            ? 0
+            : evaluationDetail.scoreInfo.scoreInfoList[4] /
+                evaluationDetail.evaluationNum;
     return new Scaffold(
       appBar: AppBar(
         title: Text('课程详情'),
@@ -400,196 +423,197 @@ class _CourseEvaluationDetailPageState
       ),
       body: evaluationDetail == null
           ? Container(
-          alignment: Alignment(0.0, 0.0),
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-          ))
+              alignment: Alignment(0.0, 0.0),
+              child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+              ))
           : ListView(
-        children: <Widget>[
-          new Container(
-            padding: const EdgeInsets.only(
-                left: 10.0, top: 5.0, right: 10.0, bottom: 10.0),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 new Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(5.0),
-                  child: new Text(
-                    widget.courseName,
-                    textAlign: TextAlign.center,
-                    style: new TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
+                  padding: const EdgeInsets.only(
+                      left: 10.0, top: 5.0, right: 10.0, bottom: 10.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(5.0),
+                        child: new Text(
+                          widget.courseName,
+                          textAlign: TextAlign.center,
+                          style: new TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ),
+                      new Row(
+                        children: <Widget>[
+                          new Expanded(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                evaluationDetail.averageScore.toString(),
+                                style: new TextStyle(
+                                  color: Colors.grey[900],
+                                  fontSize: 44,
+                                ),
+                              ),
+                              Text(
+                                evaluationDetail.info.infoList.length
+                                        .toString() +
+                                    ' 个评价',
+                                style: new TextStyle(
+                                  color: Colors.grey[900],
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          )),
+                          IconButton(
+                            padding: EdgeInsets.all(0),
+                            icon: Icon(
+                              Icons.edit,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CourseCommentWritePage(
+                                                bname: widget.courseName,
+                                                bid: widget.bid,
+                                                score: score,
+                                                commentText: commentText,
+                                              )))
+                                  .then((value) => searchEvaluationDetail());
+                            },
+                          ), // zyx add modify icon
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('5星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: five,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                          '${(five * 100).toStringAsFixed(1)}%'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('4星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: four,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                          '${(four * 100).toStringAsFixed(1)}%'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('3星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: three,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                          '${(three * 100).toStringAsFixed(1)}%'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('2星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: two,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                          '${(two * 100).toStringAsFixed(1)}%'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text('1星'),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                        width: 150,
+                                        child: LinearProgressIndicator(
+                                          value: one,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                          '${(one * 100).toStringAsFixed(1)}%'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
-                new Row(
-                  children: <Widget>[
-                    new Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              evaluationDetail.averageScore.toString(),
-                              style: new TextStyle(
-                                color: Colors.grey[900],
-                                fontSize: 44,
-                              ),
-                            ),
-                            Text(
-                              evaluationDetail.info.infoList.length
-                                  .toString() +
-                                  ' 个评价',
-                              style: new TextStyle(
-                                color: Colors.grey[900],
-                                fontSize: 16,
-                              ),
-                              textAlign: TextAlign.right,
-                            ),
-                          ],
-                        )),
-                    IconButton(
-                      padding: EdgeInsets.all(0),
-                      icon: Icon(
-                        Icons.edit,
-                        size: 30,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    CourseCommentWritePage(
-                                      bname: widget.courseName,
-                                      bid: widget.bid,
-                                      score: score,
-                                      commentText: commentText,
-                                    ))).then((value) => searchEvaluationDetail());
-                      },
-                    ), // zyx add modify icon
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('5星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: five,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    '${(five * 100).toStringAsFixed(1)}%'),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('4星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: four,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    '${(four * 100).toStringAsFixed(1)}%'),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('3星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: three,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    '${(three * 100).toStringAsFixed(1)}%'),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('2星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: two,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    '${(two * 100).toStringAsFixed(1)}%'),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text('1星'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                  width: 150,
-                                  child: LinearProgressIndicator(
-                                    value: one,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    '${(one * 100).toStringAsFixed(1)}%'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                )
+                getTeacher(),
+                getReview(),
               ],
             ),
-          ),
-          getTeacher(),
-          getReview(),
-        ],
-      ),
     );
   }
 }
