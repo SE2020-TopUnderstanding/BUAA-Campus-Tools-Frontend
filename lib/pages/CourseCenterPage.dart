@@ -185,7 +185,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text("课程中心DDL"),
+        title: Text("课程中心DDL", style: TextStyle(color: Colors.grey[100])),
 //        backgroundColor: Colors.lightBlue,
         actions: <Widget>[
           DropdownButton(
@@ -212,6 +212,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
           //IconButton(icon: Icon(Icons.refresh), onPressed: null,),暂不支持手动刷新
         ],
       ),
+      backgroundColor: Colors.grey[100],
       //加入可滚动组件(ExpansionPanelList必须使用可滚动的组件)
       body: FutureBuilder<CourseCenter>(
           future: courseCenter,

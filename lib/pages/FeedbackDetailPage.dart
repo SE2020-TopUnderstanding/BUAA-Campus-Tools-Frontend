@@ -20,9 +20,10 @@ class _FeedbackDetailPage extends State<FeedbackDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.kind}问题描述'),
+        title: Text('${widget.kind}问题描述', style: TextStyle(color: Colors.grey[100])),
 //        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: GestureDetector(
         onTap: () {
           commentNode.unfocus();

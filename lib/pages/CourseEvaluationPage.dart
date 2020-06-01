@@ -486,9 +486,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('课程列表'),
+        title: Text('课程列表', style: TextStyle(color: Colors.grey[100])),
 //        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: Scrollbar(
         child: SingleChildScrollView(
           controller: _scrollController,

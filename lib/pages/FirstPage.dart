@@ -11,7 +11,6 @@ class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PageSelect page = Provider.of<PageSelect>(context);
-    // TODO: implement build
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

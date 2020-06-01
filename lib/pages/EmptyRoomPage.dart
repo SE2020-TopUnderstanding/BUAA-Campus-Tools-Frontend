@@ -478,10 +478,11 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     }
     return Scaffold(
         appBar: AppBar(
-          title: Text('空教室查询'),
+          title: Text('空教室查询', style: TextStyle(color: Colors.grey[100])),
 //          backgroundColor: Colors.lightBlue,
           elevation: 0.0,
         ),
+        backgroundColor: Colors.grey[100],
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,

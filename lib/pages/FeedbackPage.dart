@@ -15,9 +15,10 @@ class _FeedbackPage extends State<FeedbackPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('使用反馈'),
+          title: Text('使用反馈', style: TextStyle(color: Colors.grey[100])),
 //          backgroundColor: Colors.lightBlue,
         ),
+        backgroundColor: Colors.grey[100],
         body: Column(
           children: <Widget>[
             Container(
@@ -30,7 +31,6 @@ class _FeedbackPage extends State<FeedbackPage> {
                     child: ListTile(
                       title: Text(
                         items[index],
-                        style: TextStyle(fontSize: 20),
                       ),
                       trailing: Icon(
                         Icons.keyboard_arrow_right,

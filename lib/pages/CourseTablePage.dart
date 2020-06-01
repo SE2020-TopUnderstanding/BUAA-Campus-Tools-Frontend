@@ -239,7 +239,7 @@ class _CourseTablePage extends State<CourseTablePage> {
       child: Scaffold(
         appBar: AppBar(
 //          backgroundColor: Colors.lightBlue,
-          title: Text('课程表'),
+          title: Text('课程表', style: TextStyle(color: Colors.grey[100])),
           actions: <Widget>[
             DropdownButton(
               value: weekValue,

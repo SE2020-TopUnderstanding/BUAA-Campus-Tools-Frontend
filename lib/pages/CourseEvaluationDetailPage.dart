@@ -419,9 +419,10 @@ class _CourseEvaluationDetailPageState
                 evaluationDetail.evaluationNum;
     return new Scaffold(
       appBar: AppBar(
-        title: Text('课程详情'),
+        title: Text('课程详情', style: TextStyle(color: Colors.grey[100])),
 //        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: evaluationDetail == null
           ? Container(
               alignment: Alignment(0.0, 0.0),
