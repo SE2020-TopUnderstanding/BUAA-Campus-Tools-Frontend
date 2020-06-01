@@ -5,6 +5,8 @@ import 'package:jiaowuassistent/GlobalUser.dart';
 import '../encrypt.dart';
 import 'dart:async';
 
+import 'CourseEvaluationDetailPage.dart';
+
 class CourseCommentWritePage extends StatefulWidget {
   final String bname;
   final String bid;
@@ -24,14 +26,14 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
   FocusNode commentNode = new FocusNode();
   List<bool> iconsState = new List(5);
   List<Icon> icons = new List(5);
-  bool _enable=false;
+  bool _enable = false;
   double score;
 
   @override
   void initState() {
     print('init');
     score = widget.score;
-    if(score == null){
+    if (score == null) {
       score = 0.0;
     }
     iconsState = [false, false, false, false, false];
@@ -42,10 +44,10 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
       icons[i] = (iconsState[i] == true)
           ? Icon(
               Icons.star,
-              size: 50,
+              size: 40,
               color: Colors.deepOrange,
             )
-          : Icon(Icons.star, size: 50, color: Colors.grey);
+          : Icon(Icons.star, size: 40, color: Colors.grey);
     }
     /*
     if (widget.commentText== null) {
@@ -76,10 +78,10 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
             icons[i] = (iconsState[i] == true)
                 ? Icon(
                     Icons.star,
-                    size: 50,
+                    size: 40,
                     color: Colors.deepOrange,
                   )
-                : Icon(Icons.star, size: 50, color: Colors.grey);
+                : Icon(Icons.star, size: 40, color: Colors.grey);
           }
           score = number.toDouble();
         });
@@ -103,11 +105,12 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.fromLTRB(10, 30, 10, 10),
+                padding: EdgeInsets.fromLTRB(20, 30, 20, 10),
                 child: Text(
                   "${widget.bname}",
                   textAlign: TextAlign.left,
                   style: TextStyle(
+                    fontWeight: FontWeight.bold,
                     fontSize: 25,
                   ),
                 ),
@@ -135,43 +138,64 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
               Container(
                 margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                decoration: BoxDecoration(
-                  border: new Border.all(width: 2.0, color: Colors.black12),
-                  borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
-                ),
+//                decoration: BoxDecoration(
+//                  border: new Border.all(width: 2.0, color: Colors.black12),
+//                  borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
+//                ),
                 child: TextField(
                   enabled: true,
                   maxLines: 12,
                   focusNode: commentNode,
                   controller: commentController,
                   decoration: InputDecoration(
+                    hoverColor: Colors.lightBlue,
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          new BorderRadius.all(new Radius.circular(10.0)),
+                    ),
+
                     hintText: '请输入你对课程的评价',
-                    border: InputBorder.none,
+//                    border: InputBorder.none,
                   ),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    /*
-                    RaisedButton(
-                      child: Text("修改"),
-                      color: Colors.lightBlue,
-                      disabledColor: Colors.grey,
-                      onPressed:
-                          //是要不同函数，而非一个函数不同返回值
-                          _enable ? null : () => setTextEnable(),
-                    ),
-
-                     */
-                    RaisedButton(
-                      child: Text("发布"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints.expand(height: 50),
+                  child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: Text(
+                        '发布',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            letterSpacing: 20,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            color: Colors.white),
+                      ),
                       color: Colors.lightBlue,
                       disabledColor: Colors.grey,
                       onPressed: () {
-                        if (commentController.text.length == 0) {
+                        if(score == 0.0) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text("您还未评分(最低一星)，请填写后发布"),
+                                  actions: <Widget>[
+                                    RaisedButton(
+                                      child: Text("确定"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        }else if (commentController.text.length == 0) {
                           showDialog(
                               context: context,
                               builder: (context) {
@@ -186,8 +210,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                                     ),
                                   ],
                                 );
-                              }
-                          );
+                              });
                         } else {
                           showDialog(
                               context: context,
@@ -199,21 +222,24 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                                       child: Text("发布"),
                                       onPressed: () {
                                         //此处添加向后端的put操作。
-
+                                        Navigator.of(context).pop();
                                         putComment(
                                             commentController.text, score);
+
+                                      },
+                                    ),
+                                    RaisedButton(
+                                      child: Text("取消"),
+                                      onPressed: () {
+                                        //此处添加向后端的put操作。
                                         Navigator.of(context).pop();
                                       },
                                     ),
-
                                   ],
                                 );
-                              }
-                          );
+                              });
                         }
-                      }
-                    ),
-                  ],
+                      }),
                 ),
               ),
             ],
@@ -232,8 +258,8 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
     );
     Response response;
     Dio dio = new Dio(options);
+
     try {
-      Navigator.of(context).pop();
       showLoading(context);
       response = await dio.request(
         'http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
@@ -257,16 +283,18 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                 child: Text("确定"),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  },
+                  Navigator.of(context).pop();
+                },
               ),
             ],
           );
-          },
+        },
       );
-    //  setTextEnable();
+
+      //  setTextEnable();
     } on DioError catch (e) {
       print("error type:${e.type},");
-      //Navigator.of(context).pop();
+      Navigator.of(context).pop();
       if ((e.type == DioErrorType.CONNECT_TIMEOUT) ||
           (e.type == DioErrorType.RECEIVE_TIMEOUT) ||
           (e.type == DioErrorType.SEND_TIMEOUT)) {
@@ -276,16 +304,19 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
           showError(context, "您的账户不存在于我们的数据库");
         } else if (e.response.statusCode == 404) {
           showError(context, "课程不存在");
+        } else if(e.response.statusCode == 500){
+          showError(context, "评论存在不合法字符\n请不要出现表情包等特殊字符");
         } else {
           print(e.response.statusCode);
-          showError(context, "前端写错了");
+          showError(context, "前端写错了，请联系我们团队，谢谢！");
         }
       } else if (e.type == DioErrorType.CANCEL) {
         showError(context, "请求取消");
       } else {
-        print(e.response.statusCode);
-        showError(context, "前端写错了");
+        showError(context, "http ${e.response.statusCode}");
       }
+    } catch(e){
+      print("未知错误");
     }
   }
 

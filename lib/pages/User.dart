@@ -4,10 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
-import 'dart:io';
 import 'package:jiaowuassistent/encrypt.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
-import 'package:jpush_flutter/jpush_flutter.dart';
 
 class EmptyRoom {
   String _building;
@@ -376,6 +374,7 @@ class CourseT {
   int sectionStart;
   int sectionEnd;
   int color = 1;
+  String bid;
 
   CourseT({
     this.name,
@@ -385,6 +384,7 @@ class CourseT {
     this.weekDay,
     this.sectionStart,
     this.sectionEnd,
+    this.bid,
   });
 
   CourseT.fromJson(Map<String, dynamic> json) {
@@ -412,6 +412,7 @@ class CourseT {
       weekDay = int.parse(timess[0]);
       sectionStart = int.parse(timess[1]);
       sectionEnd = int.parse(timess[2]);
+      bid = json['bid'];
     } catch (e) {
       throw "解析课程出错";
     }
@@ -511,7 +512,6 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
     }
   }
   ss = response.data;
-  print(ss.length);
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
@@ -748,7 +748,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
   var response;
   if (type == 0) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/up/',
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/',
         body: {
           "teacher": "$teacher",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -756,10 +756,10 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "action": "up"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/up/');
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/');
   } else if (type == 1) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/cancel_up/',
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/',
         body: {
           "teacher": "$teacher",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -767,7 +767,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "action": "cancel_up"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/cancel_up/');
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/');
   }
   print('teacher: $teacher');
   print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');

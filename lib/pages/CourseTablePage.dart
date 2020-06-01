@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'CourseEvaluationDetailPage.dart';
+
 class ShareWeekWidget extends InheritedWidget {
   //跨组件共享指定week和当前week
   ShareWeekWidget({
@@ -546,6 +548,17 @@ class _CourseGridTable extends State {
         title: Text("教师：  ${buildString(temp.teacherCourse)}"),
         contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
       ));
+      l.add(Container(
+          alignment: Alignment.center,
+          child:RaisedButton(child: Text("查看课程评价"),onPressed: ()=>Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CourseEvaluationDetailPage(
+                  courseName: temp.name,
+                  courseCredit: 'good',
+                  courseScore: 3.0,
+                  bid: temp.bid,
+                ))),)));
       l.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
     }
     l.removeLast();
