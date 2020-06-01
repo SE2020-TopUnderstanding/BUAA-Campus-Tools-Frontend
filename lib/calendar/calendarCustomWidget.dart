@@ -93,6 +93,7 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
         color: Colors.blue,
       );
     }
+
     if(!ddlCount.containsKey(time)){
       return Tooltip(
         message: MaterialLocalizations.of(context).formatFullDate(time),
@@ -105,10 +106,6 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
               Text(
                 time.day.toString(),
                 style: childStyle,
-              ),
-              Text(
-                " ",
-                style: TextStyle(color: Colors.black,fontSize: 10),
               ),
             ],
           ),

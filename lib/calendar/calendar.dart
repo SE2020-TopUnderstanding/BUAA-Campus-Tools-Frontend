@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/User.dart';
 import 'calendarWidgetItem.dart';
@@ -190,37 +191,58 @@ class _RCalendarWidgetState extends State<RCalendarWidget> {
     );
   }
   Widget buildEvent(List<Ddl> ddls, DateTime selectTime){
-    Iterable<Ddl> ddlForDay = ddls.where((c)=>c.ddlDay == selectTime);
+    Iterable<Ddl> ddlForDay = ddls.where((c)=>((
+        c.ddlDay.day==selectTime.day))&&
+        (c.ddlDay.month==selectTime.month)&&
+        (c.ddlDay.day == selectTime.day));
     List<Widget> ddlList = new List();
     for (int i = 0; i < ddlForDay.length; i++){
-      ddlList.add(ListTile(
-        title: Text("${ddlForDay.elementAt(i).ddlSecond}  "
-            "${ddlForDay.elementAt(i).course}  "
-            "${ddlForDay.elementAt(i).homework}"),
-        contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+      ddlList.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text("${ddlForDay.elementAt(i).course}",
+            style: TextStyle(letterSpacing: 2,fontSize: 20),),
+          Text(
+            "${ddlForDay.elementAt(i).ddlSecond} ",
+            style: TextStyle(color: Colors.red,fontSize: 20),
+            textAlign: TextAlign.start,
+          )
+        ],
+      ));
+
+      ddlList.add(Text(
+        "${ddlForDay.elementAt(i).homework} ",
+        style: TextStyle(color: Colors.black,fontSize: 18),
+        textAlign: TextAlign.start,
       ));
       ddlList.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
     }
     //ddlList.removeLast();
-    return  Expanded(//用于colmun嵌套
-      child: Container(
-        width: double.infinity,
-        constraints: BoxConstraints(
-            minHeight: 200
-        ),
-        margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-        padding: const EdgeInsets.all(5.0),
-        decoration: BoxDecoration(
-          border: new Border.all(width: 2.0, color: Colors.lightBlue),
-          borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children:<Widget>[]..addAll(ddlList),
+    if(ddlList.length == 0){
+      return SizedBox(height: 10,);
+    }else{
+      return  Expanded(//用于colmun嵌套
+        child: Container(
+          width: double.infinity,
+          constraints: BoxConstraints(
+              minHeight: 200
+          ),
+          margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+          padding: const EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+            border: new Border.all(width: 2.0, color: Colors.lightBlue),
+            borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:<Widget>[]..addAll(ddlList),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
+
   }
 
   Widget _builderWeekItems(BuildContext context, int index) {
