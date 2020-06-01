@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:jiaowuassistent/pages/User.dart';
 import 'calendarUtils.dart';
 import 'calendarCustomWidget.dart';
 import 'calendarController.dart';

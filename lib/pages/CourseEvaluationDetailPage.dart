@@ -419,14 +419,15 @@ class _CourseEvaluationDetailPageState
                 evaluationDetail.evaluationNum;
     return new Scaffold(
       appBar: AppBar(
-        title: Text('课程详情'),
-        backgroundColor: Colors.lightBlue,
+        title: Text('课程详情', style: TextStyle(color: Colors.grey[100])),
+//        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: evaluationDetail == null
           ? Container(
               alignment: Alignment(0.0, 0.0),
               child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
               ))
           : ListView(
               children: <Widget>[

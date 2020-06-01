@@ -94,8 +94,9 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
     print("build_write");
     return Scaffold(
       appBar: AppBar(
-        title: Text("评价课程"),
+        title: Text("评价课程", style: TextStyle(color: Colors.grey[100])),
       ),
+      backgroundColor: Colors.grey[100],
       body: GestureDetector(
         onTap: () {
           commentNode.unfocus();
@@ -148,7 +149,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                   focusNode: commentNode,
                   controller: commentController,
                   decoration: InputDecoration(
-                    hoverColor: Colors.lightBlue,
+                    hoverColor: Color(0xFF1565C0),
                     border: OutlineInputBorder(
                       borderRadius:
                           new BorderRadius.all(new Radius.circular(10.0)),
@@ -176,7 +177,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                             fontSize: 24,
                             color: Colors.white),
                       ),
-                      color: Colors.lightBlue,
+                      color: Color(0xFF1565C0),
                       disabledColor: Colors.grey,
                       onPressed: () {
                         if(score == 0.0) {

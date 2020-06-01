@@ -489,9 +489,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('课程列表'),
-        backgroundColor: Colors.lightBlue,
+        title: Text('课程列表', style: TextStyle(color: Colors.grey[100])),
+//        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: Scrollbar(
         child: SingleChildScrollView(
           controller: _scrollController,
@@ -569,10 +570,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
 //                        width: 10,
 //                      ),
                       DropdownButton(
-                        underline: Container(
-                          height: 2,
-                          color: Colors.deepPurpleAccent,
-                        ),
+//                        underline: Container(
+//                          height: 2,
+//                          color: Colors.deepPurpleAccent,
+//                        ),
                         value: _department,
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
@@ -609,10 +610,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
 //                        width: 10,
 //                      ),
                       DropdownButton(
-                        underline: Container(
-                          height: 2,
-                          color: Colors.deepPurpleAccent,
-                        ),
+//                        underline: Container(
+//                          height: 2,
+//                          color: Colors.deepPurpleAccent,
+//                        ),
                         value: _courseType,
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
@@ -631,7 +632,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                             children: <Widget>[
                               Ink(
                                 decoration: const ShapeDecoration(
-                                  color: Colors.lightBlue,
+                                  color: Color(0xFF1565C0),
                                   shape: CircleBorder(),
                                 ),
                                 child: IconButton(

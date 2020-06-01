@@ -31,7 +31,7 @@ class WelcomePage extends StatelessWidget {
               width: 200.0,
               height: 50.0,
               child: RaisedButton(
-                color: Colors.lightBlue,
+                color: Color(0xFF1565C0),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30))),
                 child: Text('立即使用',
@@ -39,7 +39,7 @@ class WelcomePage extends StatelessWidget {
                       letterSpacing: 5,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Colors.grey[100],
                     )),
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, '/loginPage');
@@ -52,7 +52,7 @@ class WelcomePage extends StatelessWidget {
         ),
       ),
       decoration: new BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[100],
       ),
     );
   }

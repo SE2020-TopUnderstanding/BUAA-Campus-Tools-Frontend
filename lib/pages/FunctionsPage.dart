@@ -38,10 +38,11 @@ class FunctionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('功能选择'),
-        backgroundColor: Colors.lightBlue,
+        title: new Text('功能选择', style: TextStyle(color: Colors.grey[100])),
+//        backgroundColor: Colors.lightBlue,
         automaticallyImplyLeading: false,
       ),
+      backgroundColor: Colors.grey[100],
       body: new Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
