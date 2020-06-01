@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 ///一个月有多少天
 const List<int> _daysInMonth = <int>[
@@ -34,8 +33,7 @@ class RCalendarUtils {
     // 0-based day of week, with 0 representing Monday.
     final int weekdayFromMonday = DateTime(year, month).weekday - 1;
     // 0-based day of week, with 0 representing Sunday.
-    final int firstDayOfWeekFromSunday = 1;
-        ///localizations?.firstDayOfWeekIndex ?? 0;//周一开始
+    ///localizations?.firstDayOfWeekIndex ?? 0;//周一开始
     // firstDayOfWeekFromSunday recomputed to be Monday-based
     ///final int firstDayOfWeekFromMonday = (firstDayOfWeekFromSunday - 1) % 7;
     final int firstDayOfWeekFromMonday = 0;

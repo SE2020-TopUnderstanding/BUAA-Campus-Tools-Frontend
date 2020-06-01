@@ -11,9 +11,10 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: new AppBar(
         automaticallyImplyLeading: false,
-        title: new Text("登录"),
+        title: new Text("登录", style: TextStyle(color: Colors.grey[100])),
 //        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: new LoginPageBody(),
     );
   }

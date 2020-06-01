@@ -39,7 +39,7 @@ class WelcomePage extends StatelessWidget {
                       letterSpacing: 5,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Colors.grey[100],
                     )),
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, '/loginPage');
@@ -52,7 +52,7 @@ class WelcomePage extends StatelessWidget {
         ),
       ),
       decoration: new BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[100],
       ),
     );
   }

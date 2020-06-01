@@ -206,9 +206,10 @@ class _ScorePageState extends State<ScorePage> {
     }
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('成绩查询'),
+        title: new Text('成绩查询', style: TextStyle(color: Colors.grey[100])),
 //        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: quit == 1
           ? Container(
               alignment: Alignment.center,

@@ -94,8 +94,9 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
     print("build_write");
     return Scaffold(
       appBar: AppBar(
-        title: Text("评价课程"),
+        title: Text("评价课程", style: TextStyle(color: Colors.grey[100])),
       ),
+      backgroundColor: Colors.grey[100],
       body: GestureDetector(
         onTap: () {
           commentNode.unfocus();

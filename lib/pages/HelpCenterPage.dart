@@ -10,10 +10,11 @@ class HelpCenterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("帮助中心"),
+          title: Text("帮助中心", style: TextStyle(color: Colors.grey[100])),
 //          backgroundColor: Colors.lightBlue,
           elevation: 0,
         ),
+        backgroundColor: Colors.grey[100],
         body: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
