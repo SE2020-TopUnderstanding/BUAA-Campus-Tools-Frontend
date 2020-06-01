@@ -5,6 +5,8 @@ import 'package:jiaowuassistent/GlobalUser.dart';
 import '../encrypt.dart';
 import 'dart:async';
 
+import 'CourseEvaluationDetailPage.dart';
+
 class CourseCommentWritePage extends StatefulWidget {
   final String bname;
   final String bid;
@@ -177,7 +179,23 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                       color: Colors.lightBlue,
                       disabledColor: Colors.grey,
                       onPressed: () {
-                        if (commentController.text.length == 0) {
+                        if(score == 0.0) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text("您还未评分(最低一星)，请填写后发布"),
+                                  actions: <Widget>[
+                                    RaisedButton(
+                                      child: Text("确定"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        }else if (commentController.text.length == 0) {
                           showDialog(
                               context: context,
                               builder: (context) {
@@ -207,6 +225,14 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                                         Navigator.of(context).pop();
                                         putComment(
                                             commentController.text, score);
+
+                                      },
+                                    ),
+                                    RaisedButton(
+                                      child: Text("取消"),
+                                      onPressed: () {
+                                        //此处添加向后端的put操作。
+                                        Navigator.of(context).pop();
                                       },
                                     ),
                                   ],
@@ -232,8 +258,8 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
     );
     Response response;
     Dio dio = new Dio(options);
+
     try {
-      Navigator.of(context).pop();
       showLoading(context);
       response = await dio.request(
         'http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
@@ -257,16 +283,18 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                 child: Text("确定"),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
               ),
             ],
           );
         },
       );
+
       //  setTextEnable();
     } on DioError catch (e) {
       print("error type:${e.type},");
-      //Navigator.of(context).pop();
+      Navigator.of(context).pop();
       if ((e.type == DioErrorType.CONNECT_TIMEOUT) ||
           (e.type == DioErrorType.RECEIVE_TIMEOUT) ||
           (e.type == DioErrorType.SEND_TIMEOUT)) {
@@ -276,16 +304,19 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
           showError(context, "您的账户不存在于我们的数据库");
         } else if (e.response.statusCode == 404) {
           showError(context, "课程不存在");
+        } else if(e.response.statusCode == 500){
+          showError(context, "评论存在不合法字符\n请不要出现表情包等特殊字符");
         } else {
           print(e.response.statusCode);
-          showError(context, "前端写错了");
+          showError(context, "前端写错了，请联系我们团队，谢谢！");
         }
       } else if (e.type == DioErrorType.CANCEL) {
         showError(context, "请求取消");
       } else {
-        print(e.response.statusCode);
-        showError(context, "前端写错了");
+        showError(context, "http ${e.response.statusCode}");
       }
+    } catch(e){
+      print("未知错误");
     }
   }
 

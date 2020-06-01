@@ -29,6 +29,7 @@ class CourseEvaluationDetailPage extends StatefulWidget {
       this.bid})
       : super(key: key);
 
+
   @override
   _CourseEvaluationDetailPageState createState() =>
       _CourseEvaluationDetailPageState();

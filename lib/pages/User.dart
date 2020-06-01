@@ -374,6 +374,7 @@ class CourseT {
   int sectionStart;
   int sectionEnd;
   int color = 1;
+  String bid;
 
   CourseT({
     this.name,
@@ -383,6 +384,7 @@ class CourseT {
     this.weekDay,
     this.sectionStart,
     this.sectionEnd,
+    this.bid,
   });
 
   CourseT.fromJson(Map<String, dynamic> json) {
@@ -410,6 +412,7 @@ class CourseT {
       weekDay = int.parse(timess[0]);
       sectionStart = int.parse(timess[1]);
       sectionEnd = int.parse(timess[2]);
+      bid = json['bid'];
     } catch (e) {
       throw "解析课程出错";
     }
@@ -509,7 +512,6 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
     }
   }
   ss = response.data;
-  print(ss.length);
   try {
     //String ss = file.readAsStringSync();
     List<dynamic> jsonList = json.decode(ss);
