@@ -39,7 +39,6 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   String _teacher;
   bool _firstIn = true;
 
-
   //回到顶部悬浮按扭相关
   var _scrollController = ScrollController();
   var _showBackTop = false;
@@ -650,23 +649,25 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                       )
                     ]),
               ),
-              _firstIn ? Text(
-                '默认展示本学期选课课程评价信息',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 14,
-                  color: Colors.black87,
-                ),
-              ): Text(
-                '共检索到 ${_evaluationList.evaluationCourseList.length} 门课程',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 14,
-                  color: Colors.black87,
-                ),
-              ),
+              _firstIn
+                  ? Text(
+                      '默认展示本学期选课课程评价信息',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
+                    )
+                  : Text(
+                      '共检索到 ${_evaluationList.evaluationCourseList.length} 门课程',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
+                    ),
 
 //              SizedBox(
 //              height: 5,
@@ -719,17 +720,16 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
       ),
       floatingActionButton: _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
           ? FloatingActionButton(
-              onPressed: () {
-                // scrollController 通过 animateTo 方法滚动到某个具体高度
-                // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
-                _scrollController.animateTo(0.0,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.decelerate);
-              },
-              child: Icon(Icons.vertical_align_top),
-            )
+                onPressed: () {
+                  // scrollController 通过 animateTo 方法滚动到某个具体高度
+                  // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
+                  _scrollController.animateTo(0.0,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.decelerate);
+                },
+                child: Icon(Icons.vertical_align_top),
+              )
           : null,
-      backgroundColor: Colors.grey[100],
     );
   }
 }
