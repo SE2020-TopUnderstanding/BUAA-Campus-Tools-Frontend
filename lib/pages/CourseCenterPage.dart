@@ -154,12 +154,12 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                     color: Colors.green,
                   )
                 : course.content[i].status.contains('未显示')
-                    ? Text('未显示', style: TextStyle(color: Colors.orange))
+                    ? Text('未显示', style: TextStyle(color: Color(0xFFF57C00)))
                     : duration.inHours < 0
                         ? Text('已截止', style: TextStyle(color: Colors.red))
                         : duration.inDays > 0
                             ? Text('剩${duration.inDays.toString()}天',
-                                style: TextStyle(color: Colors.orange))
+                                style: TextStyle(color: Color(0xFFF57C00)))
                             : Text('剩${duration.inHours.toString()}时',
                                 style: TextStyle(color: Colors.deepOrange)),
           ),
@@ -186,7 +186,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("课程中心DDL"),
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
         actions: <Widget>[
           DropdownButton(
             icon: Icon(Icons.arrow_drop_down),
@@ -302,19 +302,21 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.blue)),
+                                          color: Color(0xFF1565C0))),
                                 ),
                                 DataColumn(
                                   label: Text('作业内容',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF1565C0))),
                                 ),
                                 DataColumn(
                                   label: Text('DeadLine',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF1565C0))),
                                 ),
                               ],
                               rows: _getDataRows(snapshot.data.courses[index]),
@@ -351,7 +353,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
               return Container(
                   alignment: Alignment(0.0, 0.0),
                   child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
                   ));
             }
           }),

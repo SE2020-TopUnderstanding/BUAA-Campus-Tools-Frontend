@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: '航胥',
           theme: ThemeData(
-            primaryColor: Colors.lightBlue,
+            primaryColor: Color(0xFF1565C0),
           ),
           home: getHomePage(),
           routes: {

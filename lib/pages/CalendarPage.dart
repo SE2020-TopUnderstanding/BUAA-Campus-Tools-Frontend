@@ -39,7 +39,7 @@ class _CalendarPage extends State<CalendarPage>{
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
         title: Text("校历"),
       ),
       body:FutureBuilder(
@@ -100,7 +100,7 @@ class _CalendarPage extends State<CalendarPage>{
               return Container(
                   alignment: Alignment.center,
                   child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
                   ));
             }
           }),

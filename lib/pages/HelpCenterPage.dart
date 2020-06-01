@@ -11,7 +11,7 @@ class HelpCenterPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text("帮助中心"),
-          backgroundColor: Colors.lightBlue,
+//          backgroundColor: Colors.lightBlue,
           elevation: 0,
         ),
         body: Container(

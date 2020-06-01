@@ -12,7 +12,7 @@ class LoginPage extends StatelessWidget {
       appBar: new AppBar(
         automaticallyImplyLeading: false,
         title: new Text("登录"),
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
       ),
       body: new LoginPageBody(),
     );
@@ -114,7 +114,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                       child: ConstrainedBox(
                         constraints: BoxConstraints.expand(height: 50),
                         child: RaisedButton(
-                          color: Colors.lightBlue,
+                          color: Color(0xFF1565C0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                           ),

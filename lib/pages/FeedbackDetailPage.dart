@@ -21,7 +21,7 @@ class _FeedbackDetailPage extends State<FeedbackDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.kind}问题描述'),
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
       ),
       body: GestureDetector(
         onTap: () {
@@ -37,7 +37,7 @@ class _FeedbackDetailPage extends State<FeedbackDetailPage> {
                   maxLines: 12,
                   focusNode: commentNode,
                   decoration: InputDecoration(
-                    hoverColor: Colors.lightBlue,
+                    hoverColor: Color(0xFF1565C0),
                     hintText: '请描述详情',
                     border: OutlineInputBorder(),
                   ),
@@ -51,7 +51,7 @@ class _FeedbackDetailPage extends State<FeedbackDetailPage> {
                 child: ConstrainedBox(
                   constraints: BoxConstraints.expand(height: 50),
                   child: RaisedButton(
-                    color: Colors.lightBlue,
+                    color: Color(0xFF1565C0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                     ),
