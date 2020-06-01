@@ -78,10 +78,10 @@ class _PersonPageState extends State<PersonPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        //backgroundColor: Colors.white,
-        title: Text('个人中心'),
+//        backgroundColor: Colors.white,
+        title: Text(' '),
         elevation: 0,
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
         automaticallyImplyLeading: false,
       ),
       body: Column(
@@ -138,7 +138,7 @@ class _PersonPageState extends State<PersonPage> {
                   ),
                   title: Text(
                     "帮助中心",
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 16),
                   ),
                   trailing: Icon(
                     Icons.keyboard_arrow_right,
@@ -165,7 +165,7 @@ class _PersonPageState extends State<PersonPage> {
                   ),
                   title: Text(
                     "主页选择",
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 16),
                   ),
                   trailing: Icon(
                     Icons.keyboard_arrow_right,
@@ -190,7 +190,7 @@ class _PersonPageState extends State<PersonPage> {
                   ),
                   title: Text(
                     "使用反馈",
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 16),
                   ),
                   trailing: Icon(
                     Icons.keyboard_arrow_right,
@@ -217,7 +217,7 @@ class _PersonPageState extends State<PersonPage> {
                   height: 50,
                   child: Text(
                     "退出登录",
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 16),
                     textAlign: TextAlign.center,
                   ),
                   onPressed: () {

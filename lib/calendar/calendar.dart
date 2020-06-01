@@ -230,7 +230,7 @@ class _RCalendarWidgetState extends State<RCalendarWidget> {
           margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
           padding: const EdgeInsets.all(5.0),
           decoration: BoxDecoration(
-            border: new Border.all(width: 2.0, color: Colors.lightBlue),
+            border: new Border.all(width: 2.0, color: Color(0xFF1565C0)),
             borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
           ),
           child: SingleChildScrollView(

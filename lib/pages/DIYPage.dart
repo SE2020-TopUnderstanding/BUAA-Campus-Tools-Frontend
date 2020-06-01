@@ -18,7 +18,7 @@ class _DIYPage extends State<DIYPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('自定义主页'),
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
       ),
       body: Column(
         children: <Widget>[

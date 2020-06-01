@@ -420,13 +420,13 @@ class _CourseEvaluationDetailPageState
     return new Scaffold(
       appBar: AppBar(
         title: Text('课程详情'),
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
       ),
       body: evaluationDetail == null
           ? Container(
               alignment: Alignment(0.0, 0.0),
               child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
               ))
           : ListView(
               children: <Widget>[

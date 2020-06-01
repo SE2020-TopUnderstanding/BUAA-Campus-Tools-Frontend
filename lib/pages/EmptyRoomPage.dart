@@ -317,7 +317,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
         subtitle: Text(currBuilding),
         trailing: Icon(
           Icons.directions_run,
-          color: Colors.blue,
+          color: Color(0xFF1565C0),
         ),
       ),
       decoration: BoxDecoration(
@@ -479,7 +479,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('空教室查询'),
-          backgroundColor: Colors.lightBlue,
+//          backgroundColor: Colors.lightBlue,
           elevation: 0.0,
         ),
         body: SingleChildScrollView(
@@ -527,7 +527,7 @@ class _DateTimeDemoState extends State<EmptyRoomPage> {
                     child: Text("查询"),
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     disabledColor: Colors.grey,
-                    color: Colors.lightBlue,
+                    color: Color(0xFF1565C0),
                     onPressed: isDisabled ? null : () => {_search()},
 //                    onPressed: () {
 //                      if (isDisabled)

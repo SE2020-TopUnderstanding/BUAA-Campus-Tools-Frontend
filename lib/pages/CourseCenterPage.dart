@@ -154,12 +154,12 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                     color: Colors.green,
                   )
                 : course.content[i].status.contains('未显示')
-                    ? Text('未显示', style: TextStyle(color: Colors.orange))
+                    ? Text('未显示', style: TextStyle(color: Color(0xFFF57C00)))
                     : duration.inHours < 0
                         ? Text('已截止', style: TextStyle(color: Colors.red))
                         : duration.inDays > 0
                             ? Text('剩${duration.inDays.toString()}天',
-                                style: TextStyle(color: Colors.orange))
+                                style: TextStyle(color: Color(0xFFF57C00)))
                             : Text('剩${duration.inHours.toString()}时',
                                 style: TextStyle(color: Colors.deepOrange)),
           ),
@@ -186,7 +186,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("课程中心DDL"),
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
         actions: <Widget>[
           DropdownButton(
             icon: Icon(Icons.arrow_drop_down),
@@ -234,9 +234,33 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                         height: 30,
                       ),
                       Text(
-                        "1. 爬虫努力爬取中，请稍后再试。\n\n"
-                        "2. 如果您本学期课程中心没有课程，请忽略上述提示，此时我们不再提供该功能。\n\n"
-                        "3. 您的课程中心没有“活跃站点”，请在学校“课程中心-我的工作空间-用户偏好”页面进行偏好设置，"
+                        "1. 努力获取数据中，请稍后再试。\n\n"
+                        "2. 如果您本学期课程中心没有课程，请忽略上述提示，此时我们不再提供该功能。\n\n",
+                        style: TextStyle(fontSize: 14),
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                );
+              }
+              if (snapshot.data.courses[0].name == "错误") {
+                return Container(
+                  padding: EdgeInsets.all(40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "抱歉，我们暂时无法获取您的课程信息,以下是可能的原因及解决办法：",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text(
+                        "您的课程中心没有“活跃站点”，请在学校“课程中心-我的工作空间-用户偏好”页面进行偏好设置，"
                         "保证希望获取ddl的课程都属于收藏站点或活跃站点，并且活跃站点不能为空。",
                         style: TextStyle(fontSize: 14),
                         textAlign: TextAlign.start,
@@ -278,19 +302,21 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.blue)),
+                                          color: Color(0xFF1565C0))),
                                 ),
                                 DataColumn(
                                   label: Text('作业内容',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF1565C0))),
                                 ),
                                 DataColumn(
                                   label: Text('DeadLine',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF1565C0))),
                                 ),
                               ],
                               rows: _getDataRows(snapshot.data.courses[index]),
@@ -327,7 +353,7 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
               return Container(
                   alignment: Alignment(0.0, 0.0),
                   child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
                   ));
             }
           }),

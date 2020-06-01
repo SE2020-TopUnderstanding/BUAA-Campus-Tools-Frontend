@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/FeedbackDetailPage.dart';
-import 'package:jpush_flutter/jpush_flutter.dart';
 
 class FeedbackPage extends StatefulWidget {
   @override
@@ -10,14 +9,14 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPage extends State<FeedbackPage> {
-  List<String> items = ["课表", "DDL查询", "成绩查询", "空教室", "校历", "课程评价"];
+  List<String> items = ["课表", "DDL查询", "成绩查询", "空教室", "校历", "课程评价", "其他"];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('使用反馈'),
-          backgroundColor: Colors.lightBlue,
+//          backgroundColor: Colors.lightBlue,
         ),
         body: Column(
           children: <Widget>[

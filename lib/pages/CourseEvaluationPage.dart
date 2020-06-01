@@ -487,7 +487,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('课程列表'),
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
       ),
       body: Scrollbar(
         child: SingleChildScrollView(
@@ -566,10 +566,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
 //                        width: 10,
 //                      ),
                       DropdownButton(
-                        underline: Container(
-                          height: 2,
-                          color: Colors.deepPurpleAccent,
-                        ),
+//                        underline: Container(
+//                          height: 2,
+//                          color: Colors.deepPurpleAccent,
+//                        ),
                         value: _department,
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
@@ -606,10 +606,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
 //                        width: 10,
 //                      ),
                       DropdownButton(
-                        underline: Container(
-                          height: 2,
-                          color: Colors.deepPurpleAccent,
-                        ),
+//                        underline: Container(
+//                          height: 2,
+//                          color: Colors.deepPurpleAccent,
+//                        ),
                         value: _courseType,
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
@@ -628,7 +628,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                             children: <Widget>[
                               Ink(
                                 decoration: const ShapeDecoration(
-                                  color: Colors.lightBlue,
+                                  color: Color(0xFF1565C0),
                                   shape: CircleBorder(),
                                 ),
                                 child: IconButton(
