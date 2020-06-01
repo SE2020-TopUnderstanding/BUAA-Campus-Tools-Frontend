@@ -35,6 +35,8 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   bool _isDisabled = false;
   String _department;
   String _courseType;
+  String _courseName;
+  String _teacher;
 
   //回到顶部悬浮按扭相关
   var _scrollController = ScrollController();
@@ -327,12 +329,12 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   }
 
   Future<void> searchEvaluationCourseList() async {
-    String courseName;
-    String teacher;
-    courseName = _courseNameController.text;
-    teacher = _teacherController.text;
-    if (courseName.isEmpty &&
-        teacher.isEmpty &&
+//    String courseName;
+//    String teacher;
+    _courseName = _courseNameController.text;
+    _teacher = _teacherController.text;
+    if (_courseName.isEmpty &&
+        _teacher.isEmpty &&
         _department == null &&
         _courseType == null) {
 //    ) ||
@@ -345,7 +347,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
           _isDisabled = true;
         });
         dynamic response = await loadEvaluationCourseList(
-            courseName, teacher, _courseType, _department);
+            _courseName, _teacher, _courseType, _department);
         setState(() {
           _evaluationList = response;
           _isDisabled = false;
@@ -408,6 +410,29 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   Widget _courseInformation(String bid, String courseName, String courseCredit,
       double courseScore, String department) {
     return new Card(
+        child: InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CourseEvaluationDetailPage(
+                      courseName: courseName,
+                      courseCredit: courseCredit,
+                      courseScore: courseScore,
+                      bid: bid,
+                    ))).then((value) {
+          _courseName = _courseNameController.text;
+          _teacher = _teacherController.text;
+          if (!(_courseName.isEmpty &&
+              _teacher.isEmpty &&
+              _department == null &&
+              _courseType == null)) {
+            searchEvaluationCourseList();
+          } else {
+            getDefaultList();
+          }
+        });
+      },
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -415,17 +440,6 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
               child: ListTile(
                 title: Text(courseName),
                 subtitle: Text(department + ' ' + courseCredit),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CourseEvaluationDetailPage(
-                                courseName: courseName,
-                                courseCredit: courseCredit,
-                                courseScore: courseScore,
-                                bid: bid,
-                              )));
-                },
               ),
             ),
             SizedBox(height: 20),
@@ -465,7 +479,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
             Text(courseScore.toString()),
             SizedBox(height: 20, width: 20),
           ]),
-    );
+    ));
   }
 
   @override
@@ -548,9 +562,9 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         '开课院系：',
                         style: new TextStyle(fontSize: 16),
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
+//                      SizedBox(
+//                        width: 10,
+//                      ),
                       DropdownButton(
                         underline: Container(
                           height: 2,
@@ -560,7 +574,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
                         iconEnabledColor: Colors.black,
-                        hint: Text('全部'),
+                        hint: Text('请选择'),
                         items: getDepartment(),
                         onChanged: (value) {
                           setState(() {
@@ -588,9 +602,9 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         '课程类别：',
                         style: new TextStyle(fontSize: 16),
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
+//                      SizedBox(
+//                        width: 10,
+//                      ),
                       DropdownButton(
                         underline: Container(
                           height: 2,
@@ -600,7 +614,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
                         iconEnabledColor: Colors.black,
-                        hint: Text('全部'),
+                        hint: Text('请选择'),
                         items: getCourseType(),
                         onChanged: (value) {
                           setState(() {
@@ -608,24 +622,27 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                           });
                         },
                       ),
-                      SizedBox(
-                        width: 80,
-                      ),
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.lightBlue,
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.search,
-                            size: 25,
-                            color: Colors.white,
-                          ),
-                          onPressed: _isDisabled
-                              ? null
-                              : () => searchEvaluationCourseList(),
-                        ),
+                      Expanded(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Colors.lightBlue,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: _isDisabled
+                                      ? null
+                                      : () => searchEvaluationCourseList(),
+                                ),
+                              )
+                            ]),
                       )
                     ]),
               ),

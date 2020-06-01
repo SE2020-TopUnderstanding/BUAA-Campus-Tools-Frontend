@@ -4,10 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
-import 'dart:io';
 import 'package:jiaowuassistent/encrypt.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
-import 'package:jpush_flutter/jpush_flutter.dart';
 
 class EmptyRoom {
   String _building;
@@ -748,7 +746,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
   var response;
   if (type == 0) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/up/',
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/',
         body: {
           "teacher": "$teacher",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -756,10 +754,10 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "action": "up"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/up/');
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/');
   } else if (type == 1) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/cancel_up/',
+        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/',
         body: {
           "teacher": "$teacher",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -767,7 +765,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "action": "cancel_up"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/cancel_up/');
+        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/');
   }
   print('teacher: $teacher');
   print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
