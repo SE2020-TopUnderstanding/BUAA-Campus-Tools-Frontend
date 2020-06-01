@@ -5,8 +5,6 @@ import 'package:jiaowuassistent/GlobalUser.dart';
 import '../encrypt.dart';
 import 'dart:async';
 
-import 'CourseEvaluationDetailPage.dart';
-
 class CourseCommentWritePage extends StatefulWidget {
   final String bname;
   final String bid;
@@ -263,7 +261,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
     try {
       showLoading(context);
       response = await dio.request(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
+        'http://114.115.208.32:8000/timetable/evaluation/student/',
         data: {
           "bid": widget.bid,
           "text": comment,

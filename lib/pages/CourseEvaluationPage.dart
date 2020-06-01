@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:jiaowuassistent/pages/CourseEvaluationDetailPage.dart';
 import 'package:jiaowuassistent/pages/User.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyRectClipper extends CustomClipper<Rect> {
   final double width;
@@ -38,6 +40,8 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   String _courseName;
   String _teacher;
   bool _firstIn = true;
+  UpdateInfo remoteInfo;
+  static int isUpdate = 1;
 
   //回到顶部悬浮按扭相关
   var _scrollController = ScrollController();
@@ -46,6 +50,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   @override
   void initState() {
     super.initState();
+    check(showInstallUpdateDialog);
     // 对 scrollController 进行监听
     _scrollController.addListener(() {
       // 当滚动距离大于 800 之后，显示回到顶部按钮
@@ -53,6 +58,97 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     });
     //获得已选课程评价列表
     getDefaultList();
+  }
+
+  check(Function showDialog) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    remoteInfo = await getUpdateInfo();
+//    print(packageInfo.version);
+//    print(remoteInfo.version);
+    if (packageInfo.version.hashCode == remoteInfo.version.hashCode) {
+//      print('无新版本');
+      setState(() {
+        isUpdate = 0;
+      });
+      return;
+    }
+//    print('有新版本');
+    showInstallUpdateDialog();
+  }
+
+  launchURL() {
+    launch(remoteInfo.address);
+  }
+
+  void showInstallUpdateDialog() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return WillPopScope(
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0),
+                    boxShadow: [
+                      //阴影
+                      BoxShadow(
+                        color: Colors.black12,
+                        //offset: Offset(2.0,2.0),
+                        blurRadius: 10.0,
+                      )
+                    ]),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+                      child: Text(
+                        '航胥 v${remoteInfo.version} 版本更新',
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新日期：${remoteInfo.date}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新内容：${remoteInfo.info}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: MaterialButton(
+                        color: Color(0x99FFFFFF),
+                        onPressed: launchURL,
+                        minWidth: double.infinity,
+                        child: Text(
+                          '点击下载',
+                          style: Theme.of(context).textTheme.body2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            onWillPop: () {
+              return new Future.value(false);
+            },
+          );
+        });
   }
 
   @override
@@ -720,15 +816,15 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
       ),
       floatingActionButton: _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
           ? FloatingActionButton(
-                onPressed: () {
-                  // scrollController 通过 animateTo 方法滚动到某个具体高度
-                  // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
-                  _scrollController.animateTo(0.0,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.decelerate);
-                },
-                child: Icon(Icons.vertical_align_top),
-              )
+              onPressed: () {
+                // scrollController 通过 animateTo 方法滚动到某个具体高度
+                // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
+                _scrollController.animateTo(0.0,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.decelerate);
+              },
+              child: Icon(Icons.vertical_align_top),
+            )
           : null,
     );
   }
