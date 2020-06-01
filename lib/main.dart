@@ -7,38 +7,38 @@ import 'package:jiaowuassistent/pages/HomePage.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
-import 'package:jpush_flutter/jpush_flutter.dart';
+//import 'package:jpush_flutter/jpush_flutter.dart';
 
 void main() async {
-  final JPush jPush = JPush();
-
-  Future<void> initPlatformState() async {
-    jPush.getRegistrationID().then((rid) {
-      print('---->rid: $rid');
-    });
-
-    jPush.setup(
-      appKey: "f0f9cce2a851456596e97378",
-      channel: "developer-default",
-      production: false,
-      debug: true,
-    );
-
-    jPush.applyPushAuthority(
-        NotificationSettingsIOS(sound: true, alert: true, badge: true));
-
-    try {
-      jPush.addEventHandler(
-          onReceiveNotification: (Map<String, dynamic> message) async {
-        print('---->接收到推送:$message');
-      });
-    } on Exception {
-      print("---->获取平台版本失败");
-    }
-  }
+//  final JPush jPush = JPush();
+//
+//  Future<void> initPlatformState() async {
+//    jPush.getRegistrationID().then((rid) {
+//      print('---->rid: $rid');
+//    });
+//
+//    jPush.setup(
+//      appKey: "f0f9cce2a851456596e97378",
+//      channel: "developer-default",
+//      production: false,
+//      debug: true,
+//    );
+//
+//    jPush.applyPushAuthority(
+//        NotificationSettingsIOS(sound: true, alert: true, badge: true));
+//
+//    try {
+//      jPush.addEventHandler(
+//          onReceiveNotification: (Map<String, dynamic> message) async {
+//        print('---->接收到推送:$message');
+//      });
+//    } on Exception {
+//      print("---->获取平台版本失败");
+//    }
+//  }
 
   WidgetsFlutterBinding.ensureInitialized();
-  initPlatformState();
+//  initPlatformState();
   await GlobalUser.init();
   runApp(MyApp());
   if (Platform.isAndroid) {

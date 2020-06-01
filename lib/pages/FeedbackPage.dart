@@ -10,7 +10,7 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPage extends State<FeedbackPage> {
-  List<String> items = ["课表", "DDL查询", "成绩查询", "空教室", "校历", "课程评价"];
+  List<String> items = ["课表", "DDL查询", "成绩查询", "空教室", "校历", "课程评价", "其他"];
 
   @override
   Widget build(BuildContext context) {

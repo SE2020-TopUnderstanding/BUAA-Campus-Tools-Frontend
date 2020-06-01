@@ -32,7 +32,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
     print('init');
     score = widget.score;
     if (score == null) {
-      score = 0.0;
+      score = 1.0;
     }
     iconsState = [false, false, false, false, false];
     for (int i = 0; i < score.round(); i++) {
@@ -286,6 +286,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
         print(e.response.statusCode);
         showError(context, "前端写错了");
       }
+      Navigator.of(context).pop();
     }
   }
 

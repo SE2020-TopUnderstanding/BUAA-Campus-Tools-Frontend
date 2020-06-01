@@ -234,9 +234,33 @@ class _CourseCenterPageState extends State<CourseCenterPage> {
                         height: 30,
                       ),
                       Text(
-                        "1. 爬虫努力爬取中，请稍后再试。\n\n"
-                        "2. 如果您本学期课程中心没有课程，请忽略上述提示，此时我们不再提供该功能。\n\n"
-                        "3. 您的课程中心没有“活跃站点”，请在学校“课程中心-我的工作空间-用户偏好”页面进行偏好设置，"
+                        "1. 努力获取数据中，请稍后再试。\n\n"
+                        "2. 如果您本学期课程中心没有课程，请忽略上述提示，此时我们不再提供该功能。\n\n",
+                        style: TextStyle(fontSize: 14),
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                );
+              }
+              if (snapshot.data.courses[0].name == "错误") {
+                return Container(
+                  padding: EdgeInsets.all(40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "抱歉，我们暂时无法获取您的课程信息,以下是可能的原因及解决办法：",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text(
+                        "您的课程中心没有“活跃站点”，请在学校“课程中心-我的工作空间-用户偏好”页面进行偏好设置，"
                         "保证希望获取ddl的课程都属于收藏站点或活跃站点，并且活跃站点不能为空。",
                         style: TextStyle(fontSize: 14),
                         textAlign: TextAlign.start,
