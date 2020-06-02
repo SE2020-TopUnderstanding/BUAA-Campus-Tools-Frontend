@@ -491,6 +491,8 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   //暂定先直接用网络请求
   Dio dio = new Dio();
   Response response;
+  print(
+      'http://114.115.208.32:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all');
   try {
     response = await dio.request(
       'http://114.115.208.32:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
@@ -755,8 +757,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "bid": "$bid",
           "action": "up"
         });
-    print(
-        'post -> http://114.115.208.32:8000/timetable/evaluation/teacher/');
+    print('post -> http://114.115.208.32:8000/timetable/evaluation/teacher/');
   } else if (type == 1) {
     response = await http.post(
         'http://114.115.208.32:8000/timetable/evaluation/teacher/',
@@ -766,8 +767,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "bid": "$bid",
           "action": "cancel_up"
         });
-    print(
-        'post -> http://114.115.208.32:8000/timetable/evaluation/teacher/');
+    print('post -> http://114.115.208.32:8000/timetable/evaluation/teacher/');
   }
   print('teacher: $teacher');
   print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
@@ -792,8 +792,7 @@ Future<void> deleteComment(String bid) async {
     },
     options: Options(method: "DELETE", responseType: ResponseType.json),
   );
-  print(
-      'delete -> http://114.115.208.32:8000/timetable/evaluation/student/');
+  print('delete -> http://114.115.208.32:8000/timetable/evaluation/student/');
   print('bid: $bid');
   print('student_id: ${Encrypt.encrypt2(GlobalUser.studentID)}');
   if (response.statusCode == 204) {
@@ -833,7 +832,7 @@ class EvaluationCourseList {
 
   factory EvaluationCourseList.fromJson(List<dynamic> parsedJson) {
     List<EvaluationCourse> courseList =
-    parsedJson.map((i) => EvaluationCourse.fromJson(i)).toList();
+        parsedJson.map((i) => EvaluationCourse.fromJson(i)).toList();
     return EvaluationCourseList(courseList);
   }
 }
@@ -844,26 +843,29 @@ class EvaluationCoursePage {
   final int currentPage;
   final int totalPage;
 
-  EvaluationCoursePage(this.evaluationCourseList, this.totalCourse, this.currentPage, this.totalPage);
+  EvaluationCoursePage(this.evaluationCourseList, this.totalCourse,
+      this.currentPage, this.totalPage);
 
   factory EvaluationCoursePage.fromJson(Map<String, dynamic> parsedJson) {
 //    print(parsedJson);
     int total = parsedJson['total'];
     int currentPage = parsedJson['cur_page'];
     int totalPage = parsedJson['total_page'];
-    EvaluationCourseList courseList = EvaluationCourseList.fromJson(parsedJson['info']);
+    EvaluationCourseList courseList =
+        EvaluationCourseList.fromJson(parsedJson['info']);
     return EvaluationCoursePage(courseList, total, currentPage, totalPage);
   }
 }
 
-Future<EvaluationCoursePage> loadEvaluationCoursePage(
-    String courseName, String teacher, String type, String department, int page) async {
+Future<EvaluationCoursePage> loadEvaluationCoursePage(String courseName,
+    String teacher, String type, String department, int page) async {
   Dio dio = new Dio();
   Response response;
   try {
     if (department == null || department == "全部") department = "";
     if (type == null || type == "全部") type = "";
-    print('http://114.115.208.32:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page');
+    print(
+        'http://114.115.208.32:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page');
     response = await dio.request(
         'http://114.115.208.32:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page',
         options: Options(method: "GET", responseType: ResponseType.json));
@@ -1022,6 +1024,8 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   }
   Dio dio = new Dio();
   Response response;
+  print(
+      'http://114.115.208.32:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear');
   try {
     response = await dio.request(
       'http://114.115.208.32:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear',

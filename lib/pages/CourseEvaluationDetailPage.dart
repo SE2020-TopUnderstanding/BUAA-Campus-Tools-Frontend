@@ -318,6 +318,7 @@ class _CourseEvaluationDetailPageState
                                     Text(
                                       '更新于 ${evaluationDetail.info.infoList[index].updateTime.replaceAll('T', ' ').substring(0, 16)}',
                                       style: new TextStyle(
+                                        color: Colors.grey[600],
                                         fontSize: 12,
                                       ),
                                     ),
@@ -332,8 +333,8 @@ class _CourseEvaluationDetailPageState
                                               child: Text(
                                                 '删除',
                                                 style: new TextStyle(
-                                                  fontSize: 12,
-                                                ),
+                                                    fontSize: 12,
+                                                    color: Colors.grey[600]),
                                               ),
                                               onTap: () {
                                                 deleteConfirm();

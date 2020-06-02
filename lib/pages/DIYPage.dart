@@ -17,7 +17,7 @@ class _DIYPage extends State<DIYPage> {
     final select = Provider.of<PageSelect>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('自定义主页', style: TextStyle(color: Colors.grey[100])),
+        title: Text('主页选择', style: TextStyle(color: Colors.grey[100])),
 //        backgroundColor: Colors.lightBlue,
       ),
       backgroundColor: Colors.grey[100],

@@ -5,14 +5,14 @@ import 'package:jiaowuassistent/pages/User.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:provider/provider.dart';
 
-class CalendarPage extends StatefulWidget{
+class CalendarPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _CalendarPage();
   }
 }
 
-class _CalendarPage extends State<CalendarPage>{
+class _CalendarPage extends State<CalendarPage> {
   RCalendarController controller;
   List<Ddl> ddlList;
   List<Holiday> holidayList;
@@ -22,7 +22,10 @@ class _CalendarPage extends State<CalendarPage>{
   void initState() {
     super.initState();
     print(DateTime.now());
-    controller = RCalendarController.single(mode: RCalendarMode.month,selectedDate: DateTime.now(),);
+    controller = RCalendarController.single(
+      mode: RCalendarMode.month,
+      selectedDate: DateTime.now(),
+    );
 //  controller = RCalendarController.single(selectedDate: DateTime.now(),isAutoSelect: true);
   }
 
@@ -32,7 +35,7 @@ class _CalendarPage extends State<CalendarPage>{
     super.dispose();
   }
 
-  @override  
+  @override
   Widget build(BuildContext context) {
     PageSelect page = Provider.of<PageSelect>(context);
     return Scaffold(
@@ -41,7 +44,7 @@ class _CalendarPage extends State<CalendarPage>{
         title: Text("校历", style: TextStyle(color: Colors.grey[100])),
       ),
       backgroundColor: Colors.grey[100],
-      body:FutureBuilder(
+      body: FutureBuilder(
           future: getSchoolCalendar(GlobalUser.studentID),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if ((snapshot.connectionState == ConnectionState.done) &&
@@ -50,15 +53,14 @@ class _CalendarPage extends State<CalendarPage>{
               holidayList = snapshot.data.holidays;
               weekNumber = snapshot.data.weekNumbers;
               return RCalendarWidget(
-                    controller: controller,
-                    customWidget: DefaultRCalendarCustomWidget(),
-                    firstDate: DateTime(1970, 1, 1),
-                    lastDate: DateTime(2055, 12, 31),
-                    weekNumberMap: weekNumber,
-                    holidays: holidayList,
-                    ddls: ddlList,
-                  );
-
+                controller: controller,
+                customWidget: DefaultRCalendarCustomWidget(),
+                firstDate: DateTime(1970, 1, 1),
+                lastDate: DateTime(2055, 12, 31),
+                weekNumberMap: weekNumber,
+                holidays: holidayList,
+                ddls: ddlList,
+              );
             } else {
               if (snapshot.hasError) {
                 if (snapshot.error == 401) {
@@ -99,7 +101,8 @@ class _CalendarPage extends State<CalendarPage>{
               return Container(
                   alignment: Alignment.center,
                   child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
                   ));
             }
           }),

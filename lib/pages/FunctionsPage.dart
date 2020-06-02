@@ -16,7 +16,7 @@ class FunctionsPage extends StatelessWidget {
       width: 600,
       decoration: BoxDecoration(
         border: new Border.all(width: 2.0, color: Colors.black12),
-        borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
+        borderRadius: new BorderRadius.all(new Radius.circular(12.0)),
       ),
       child: RaisedButton(
         color: Colors.grey[100],
