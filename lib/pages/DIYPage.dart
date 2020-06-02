@@ -24,8 +24,13 @@ class _DIYPage extends State<DIYPage> {
       body: Column(
         children: <Widget>[
           SizedBox(height: 30),
-          SizedBox(
-            child: Text('您可以自定义您的主页显示下方三个选项中的任一项'),
+          Container(
+            margin: const EdgeInsets.only(left: 27),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '您可以自定义您的主页显示下方三个选项中的任一项',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           SizedBox(height: 20),
           Flexible(
@@ -37,7 +42,6 @@ class _DIYPage extends State<DIYPage> {
                 setState(() {
                   choice = value;
                 });
-//                select.setPage(value);
               },
             ),
           ),
@@ -50,7 +54,6 @@ class _DIYPage extends State<DIYPage> {
                 setState(() {
                   choice = value;
                 });
-//                select.setPage(value);
               },
             ),
           ),
@@ -63,7 +66,30 @@ class _DIYPage extends State<DIYPage> {
                 setState(() {
                   choice = value;
                 });
-//                select.setPage(value);
+              },
+            ),
+          ),
+          Flexible(
+            child: RadioListTile(
+              title: Text('课程评价'),
+              value: 4,
+              groupValue: choice,
+              onChanged: (value) {
+                setState(() {
+                  choice = value;
+                });
+              },
+            ),
+          ),
+          Flexible(
+            child: RadioListTile(
+              title: Text('校历查询'),
+              value: 5,
+              groupValue: choice,
+              onChanged: (value) {
+                setState(() {
+                  choice = value;
+                });
               },
             ),
           ),

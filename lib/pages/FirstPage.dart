@@ -4,6 +4,8 @@ import '../GlobalUser.dart';
 import 'CourseCenterPage.dart';
 import 'CourseTablePage.dart';
 import 'ScorePage.dart';
+import 'CourseEvaluationPage.dart';
+import 'CalendarPage.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +32,10 @@ Widget getFirstPage(int type) {
       return ScorePage();
     case 3:
       return CourseCenterPage();
+    case 4:
+      return CourseEvaluationPage();
+    case 5:
+      return CalendarPage();
     default:
       return CourseTablePage();
   }

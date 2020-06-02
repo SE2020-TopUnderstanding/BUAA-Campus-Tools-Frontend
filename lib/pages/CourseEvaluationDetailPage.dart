@@ -29,7 +29,6 @@ class CourseEvaluationDetailPage extends StatefulWidget {
       this.bid})
       : super(key: key);
 
-
   @override
   _CourseEvaluationDetailPageState createState() =>
       _CourseEvaluationDetailPageState();
@@ -203,7 +202,6 @@ class _CourseEvaluationDetailPageState
                                       style: new TextStyle(
                                         fontSize: 16,
                                       ),
-//                                    ),
                                     ),
                                   ],
                                 ),
@@ -215,7 +213,7 @@ class _CourseEvaluationDetailPageState
                                             .teacherInfoList[index].hasUp
                                         ? new Icon(
                                             Icons.thumb_up,
-                                            color: Colors.red,
+                                            color: Colors.orangeAccent,
                                             size: 15,
                                           )
                                         : new Icon(
@@ -301,40 +299,50 @@ class _CourseEvaluationDetailPageState
                                           evaluationDetail
                                               .info.infoList[index].score,
                                       16),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        evaluationDetail.info.infoList[index]
-                                                    .studentId ==
-                                                Encrypt.encrypt2(
-                                                    GlobalUser.studentID)
-                                            ? Container(
-                                                margin: const EdgeInsets.only(
-                                                    right: 20.0),
-                                                child: GestureDetector(
-                                                  child: Text(
-                                                    '删除',
-                                                  ),
-                                                  onTap: () {
-                                                    deleteConfirm();
-                                                  },
-                                                ),
-                                              )
-                                            : Container(),
-                                      ],
-                                    ),
-                                  )
                                 ]),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text(
-                              evaluationDetail.info.infoList[index].content,
-                              style: new TextStyle(
-                                fontSize: 15,
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(left: 1.6, top: 5.0),
+                              child: Text(
+                                evaluationDetail.info.infoList[index].content,
+                                style: new TextStyle(
+                                  fontSize: 15,
+                                ),
                               ),
                             ),
+                            Container(
+                                margin:
+                                    const EdgeInsets.only(left: 1.6, top: 3.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      '更新于 ${evaluationDetail.info.infoList[index].updateTime.replaceAll('T', ' ').substring(0, 16)}',
+                                      style: new TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    evaluationDetail.info.infoList[index]
+                                                .studentId ==
+                                            Encrypt.encrypt2(
+                                                GlobalUser.studentID)
+                                        ? Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 20.0),
+                                            child: GestureDetector(
+                                              child: Text(
+                                                '删除',
+                                                style: new TextStyle(
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                              onTap: () {
+                                                deleteConfirm();
+                                              },
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                )),
                           ],
                         ),
                       ),
@@ -344,7 +352,7 @@ class _CourseEvaluationDetailPageState
                             icon: (evaluationDetail.info.infoList[index].hasUp
                                 ? new Icon(
                                     Icons.thumb_up,
-                                    color: Colors.red,
+                                    color: Colors.orangeAccent,
                                     size: 15,
                                   )
                                 : new Icon(
@@ -427,7 +435,8 @@ class _CourseEvaluationDetailPageState
           ? Container(
               alignment: Alignment(0.0, 0.0),
               child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
               ))
           : ListView(
               children: <Widget>[

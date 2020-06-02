@@ -28,7 +28,7 @@ class CourseEvaluationPage extends StatefulWidget {
 }
 
 class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
-  EvaluationCourseList _evaluationList;
+  EvaluationCoursePage _evaluationList;
   TextEditingController _courseNameController = new TextEditingController();
   FocusNode _focusNodeCourse = new FocusNode();
   TextEditingController _teacherController = new TextEditingController();
@@ -39,9 +39,15 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   String _courseType;
   String _courseName;
   String _teacher;
+  //下滑刷新相关
   bool _firstIn = true;
+
+  int _page = 1;
+  bool _isLoading = false;
+
   UpdateInfo remoteInfo;
   static int isUpdate = 1;
+
 
   //回到顶部悬浮按扭相关
   var _scrollController = ScrollController();
@@ -53,8 +59,20 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     check(showInstallUpdateDialog);
     // 对 scrollController 进行监听
     _scrollController.addListener(() {
-      // 当滚动距离大于 800 之后，显示回到顶部按钮
+      // 当滚动距离大于 500 之后，显示回到顶部按钮
       setState(() => _showBackTop = _scrollController.position.pixels >= 500);
+    });
+    _scrollController.addListener(() {
+      if (!_firstIn &&
+          !_isLoading &&
+          _scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent) {
+        setState(() {
+          _isLoading = true;
+          _page += 1;
+          refreshEvaluationCourseList();
+        });
+      }
     });
     //获得已选课程评价列表
     getDefaultList();
@@ -426,33 +444,56 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   }
 
   Future<void> searchEvaluationCourseList() async {
-//    String courseName;
-//    String teacher;
     _courseName = _courseNameController.text;
     _teacher = _teacherController.text;
     if (_courseName.isEmpty &&
         _teacher.isEmpty &&
         _department == null &&
         _courseType == null) {
-//    ) ||
-//        (_department == null && _courseType != null) ||
-//        (_department != null && _courseType == null)) {
       _showAlertDialog();
     } else {
       try {
         setState(() {
           _isDisabled = true;
         });
-        dynamic response = await loadEvaluationCourseList(
-            _courseName, _teacher, _courseType, _department);
+        dynamic response = await loadEvaluationCoursePage(
+            _courseName, _teacher, _courseType, _department, _page);
         setState(() {
           _evaluationList = response;
           _isDisabled = false;
           _firstIn = false;
+          _page = 1;
         });
       } catch (e) {
         throw (e);
       }
+    }
+  }
+
+  Future<void> refreshEvaluationCourseList() async {
+    try {
+      setState(() {
+        _isDisabled = true;
+      });
+      if (_evaluationList.totalPage >= _page) {
+//        await new Future.delayed(new Duration(seconds: 3));
+        dynamic response = await loadEvaluationCoursePage(
+            _courseName, _teacher, _courseType, _department, _page);
+        setState(() {
+          _evaluationList.evaluationCourseList.courseList
+              .addAll(response.evaluationCourseList.courseList);
+          _isDisabled = false;
+          _isLoading = false;
+        });
+      } else {
+        await new Future.delayed(new Duration(seconds: 2));
+        setState(() {
+          _isDisabled = false;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -756,7 +797,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                       ),
                     )
                   : Text(
-                      '共检索到 ${_evaluationList.evaluationCourseList.length} 门课程',
+                      '共检索到 ${_evaluationList.totalCourse} 门课程',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.normal,
@@ -764,50 +805,43 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                         color: Colors.black87,
                       ),
                     ),
-
-//              SizedBox(
-//              height: 5,
-//              ),
-//            Padding(
-//              padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
-//              child: ConstrainedBox(
-//                constraints: BoxConstraints.expand(height: 40),
-//                child: RaisedButton(
-//                  color: Colors.lightBlue,
-//                  disabledColor: Colors.grey,
-//                  shape: RoundedRectangleBorder(
-//                    borderRadius: BorderRadius.all(Radius.circular(30)),
-//                  ),
-//                  child: Text(
-//                    '查询课程评价',
-//                    textAlign: TextAlign.center,
-//                    style: TextStyle(
-//                        letterSpacing: 8,
-//                        fontWeight: FontWeight.normal,
-//                        fontSize: 24,
-//                        color: Colors.white),
-//                  ),
-//                  onPressed:
-//                      _isDisabled ? null : () => searchEvaluationCourseList(),
-//                ),
-//              ),
-//            ),
               Container(
                 child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: _evaluationList == null
                         ? 0
-                        : _evaluationList.evaluationCourseList.length,
+                        : _evaluationList
+                                .evaluationCourseList.courseList.length +
+                            1,
                     itemBuilder: (BuildContext context, int index) {
+                      if (index ==
+                          _evaluationList
+                              .evaluationCourseList.courseList.length) {
+                        return new Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(5.0),
+                          child: new SizedBox(
+                            height: 40.0,
+                            width: 40.0,
+                            child: new Opacity(
+                              opacity: _isLoading ? 1.0 : 0.0,
+                              child: new CircularProgressIndicator(),
+                            ),
+                          ),
+                        );
+                      }
                       return _courseInformation(
-                          _evaluationList.evaluationCourseList[index].bid,
                           _evaluationList
-                              .evaluationCourseList[index].courseName,
-                          _evaluationList.evaluationCourseList[index].credit,
-                          _evaluationList.evaluationCourseList[index].score,
+                              .evaluationCourseList.courseList[index].bid,
+                          _evaluationList.evaluationCourseList.courseList[index]
+                              .courseName,
                           _evaluationList
-                              .evaluationCourseList[index].department);
+                              .evaluationCourseList.courseList[index].credit,
+                          _evaluationList
+                              .evaluationCourseList.courseList[index].score,
+                          _evaluationList.evaluationCourseList.courseList[index]
+                              .department);
                     }),
               )
             ],
