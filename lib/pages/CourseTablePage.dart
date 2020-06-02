@@ -436,6 +436,7 @@ class _CourseGridTable extends State {
               '${_beginTime[index]}\n${index + 1}',
               softWrap: true,
               textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -720,7 +721,7 @@ class CourseBlock extends StatelessWidget {
       child: Container(
         height: height * size,
         margin: EdgeInsets.all(0),
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.fromLTRB(4, 2, 4, 2),
         decoration: BoxDecoration(
           color: backgroundColor,
 //          borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -735,7 +736,7 @@ Widget getCourseBlocks(List<CourseT> list) {
   if (list.length == 1) {
     return Text(
       '${list.first.name}@${list.first.location}',
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.white,),
     );
   } else {
     return Text(

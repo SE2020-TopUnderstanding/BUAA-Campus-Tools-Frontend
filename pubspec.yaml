@@ -49,6 +49,7 @@ flutter:
 
   assets:
     - assets/images/head.png
+    - assets/images/hangxu2.jpg
     - assets/images/welcome.png
     - assets/data/grade.json
     - assets/data/courseTable1.json
