@@ -64,22 +64,25 @@ class _LoginPageStateBody extends State<LoginPageBody> {
           _focusNodeUserName.unfocus();
           _focusNodePassword.unfocus();
         },
-        child: Center(
-          child: Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(50),
-            child: SingleChildScrollView(
-              child: Form(
+        child: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
+          child: SingleChildScrollView(child:
+            Form(
                 key: _formkey,
                 autovalidate: false,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
+                    Image.asset("assets/images/hangxu2.jpg",width: 100.0,
+                      height: 100.0,),
+                    SizedBox(height: 50,),
                     TextFormField(
                       //  autofocus: _autoUserNameFocus,
                       focusNode: _focusNodeUserName,
                       controller: _userNameController,
                       validator: (v) =>
-                          v.trim().isNotEmpty ? Null : '请输入统一认证账号',
+                      v.trim().isNotEmpty ? Null : '请输入统一认证账号',
                       decoration: InputDecoration(
                         hintText: '统一认证账号',
                         //labelText: userName,
@@ -135,12 +138,15 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 30,),
+                    Text("您的账户密码在传输过程中已被加密保护\n目前仅支持北航本科生使用",style: TextStyle(
+                        fontSize: 10.0,fontWeight: FontWeight.w100,color: Colors.grey),),
                   ],
                 ),
-              ),
             ),
           ),
-        ));
+        ),
+    );
   }
 
   void _login() async {
@@ -192,7 +198,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
         //切换页面
         Navigator.pushReplacementNamed(context, '/homePage');
       } on DioError catch (e) {
-        print("error type:${e.type},");
+        print("error type:${e.type},${e.response.statusCode}");
         Navigator.of(context).pop();
         if ((e.type == DioErrorType.CONNECT_TIMEOUT) ||
             (e.type == DioErrorType.RECEIVE_TIMEOUT) ||
@@ -201,9 +207,11 @@ class _LoginPageStateBody extends State<LoginPageBody> {
         } else if (e.type == DioErrorType.RESPONSE) {
           if (e.response.statusCode == 401) {
             showError(context, "账号或密码错误");
-          } else if(e.response.statusCode == 402){
+          } else if(e.response.statusCode == 460){
             showError(context, "您的账号被锁定，请十分钟后再试");
-          } else {
+          } else if(e.response.statusCode == 462){
+            showError(context, "服务器出问题了，过会儿再试吧");
+          } else{
             showError(context, "服务器错误");
           }
         } else if (e.type == DioErrorType.CANCEL) {
