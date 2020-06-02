@@ -195,26 +195,31 @@ class _RCalendarWidgetState extends State<RCalendarWidget> {
         c.ddlDay.day==selectTime.day))&&
         (c.ddlDay.month==selectTime.month)&&
         (c.ddlDay.day == selectTime.day));
+    //ddl按时间排序
+    List<Ddl> listForDay = ddlForDay.toList();
+    listForDay.sort((left,rigth)=>left.ddlSecond.compareTo(rigth.ddlSecond));
     List<Widget> ddlList = new List();
     for (int i = 0; i < ddlForDay.length; i++){
-      ddlList.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text("${ddlForDay.elementAt(i).course}",
-            style: TextStyle(letterSpacing: 2,fontSize: 20),),
-          Text(
-            "${ddlForDay.elementAt(i).ddlSecond} ",
-            style: TextStyle(color: Colors.red,fontSize: 20),
-            textAlign: TextAlign.start,
-          )
+      List<String> timeStr = listForDay[i].ddlSecond.split(':');
+      String time = timeStr[0] + ':'+ timeStr[1];
+      ddlList.add(SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child:Row(
+            children: <Widget>[
+              SizedBox(width: 5,),
+              Text(time,style: TextStyle(color: Colors.red),),
+              SizedBox(width: 20,),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(listForDay[i].course),
+                    Text(listForDay[i].homework),
+              ],
+            ),
+          ),
         ],
-      ));
-
-      ddlList.add(Text(
-        "${ddlForDay.elementAt(i).homework} ",
-        style: TextStyle(color: Colors.black,fontSize: 18),
-        textAlign: TextAlign.start,
-      ));
+      )));
       ddlList.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
     }
     //ddlList.removeLast();
