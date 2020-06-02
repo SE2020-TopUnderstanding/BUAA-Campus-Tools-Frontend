@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 class CalendarPage extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _CalendarPage();
   }
 }
@@ -36,12 +35,12 @@ class _CalendarPage extends State<CalendarPage>{
   @override  
   Widget build(BuildContext context) {
     PageSelect page = Provider.of<PageSelect>(context);
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue,
-        title: Text("校历"),
+//        backgroundColor: Colors.lightBlue,
+        title: Text("校历", style: TextStyle(color: Colors.grey[100])),
       ),
+      backgroundColor: Colors.grey[100],
       body:FutureBuilder(
           future: getSchoolCalendar(GlobalUser.studentID),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -100,7 +99,7 @@ class _CalendarPage extends State<CalendarPage>{
               return Container(
                   alignment: Alignment.center,
                   child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
                   ));
             }
           }),

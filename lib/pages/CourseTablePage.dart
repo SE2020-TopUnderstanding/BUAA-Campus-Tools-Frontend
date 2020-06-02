@@ -238,8 +238,8 @@ class _CourseTablePage extends State<CourseTablePage> {
       curWeek: curWeekValue,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.lightBlue,
-          title: Text('课程表'),
+//          backgroundColor: Colors.lightBlue,
+          title: Text('课程表', style: TextStyle(color: Colors.grey[100])),
           actions: <Widget>[
             DropdownButton(
               value: weekValue,
@@ -382,7 +382,7 @@ class _CourseGridTable extends State {
               return Container(
                   alignment: Alignment.center,
                   child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
                   ));
             }
           }),
@@ -550,15 +550,18 @@ class _CourseGridTable extends State {
       ));
       l.add(Container(
           alignment: Alignment.center,
-          child:RaisedButton(child: Text("查看课程评价"),onPressed: ()=>Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CourseEvaluationDetailPage(
-                  courseName: temp.name,
-                  courseCredit: 'good',
-                  courseScore: 3.0,
-                  bid: temp.bid,
-                ))),)));
+          child: RaisedButton(
+            child: Text("查看课程评价"),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CourseEvaluationDetailPage(
+                          courseName: temp.name,
+                          courseCredit: 'good',
+                          courseScore: 3.0,
+                          bid: temp.bid,
+                        ))),
+          )));
       l.add(Divider(height: 1.0, indent: 0.0, color: Colors.black87));
     }
     l.removeLast();

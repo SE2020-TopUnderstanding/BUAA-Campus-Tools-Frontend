@@ -11,9 +11,10 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: new AppBar(
         automaticallyImplyLeading: false,
-        title: new Text("登录"),
-        backgroundColor: Colors.lightBlue,
+        title: new Text("登录", style: TextStyle(color: Colors.grey[100])),
+//        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: new LoginPageBody(),
     );
   }
@@ -114,7 +115,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                       child: ConstrainedBox(
                         constraints: BoxConstraints.expand(height: 50),
                         child: RaisedButton(
-                          color: Colors.lightBlue,
+                          color: Color(0xFF1565C0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                           ),
@@ -172,7 +173,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
       Dio dio = new Dio(options);
       try {
         showLoading(context);
-        response = await dio.request('http://hangxu.sharinka.top:8000/login/',
+        response = await dio.request('http://114.115.208.32:8000/login/',
             data: {
               "usr_name": _userNameController.text,
               "usr_password": Encrypt.encrypt2(_passwordController.text)

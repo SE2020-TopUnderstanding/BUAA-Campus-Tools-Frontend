@@ -78,7 +78,7 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
 
     if (types.contains(RCalendarType.today)) {
       childStyle = TextStyle(
-        color: Colors.blue,
+        color: Color(0xFF1565C0),
         fontSize: 18,
       );
     }
@@ -90,7 +90,7 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
       );
       decoration = BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.blue,
+        color: Color(0xFF1565C0),
       );
     }
 

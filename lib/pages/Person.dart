@@ -76,22 +76,22 @@ class _PersonPageState extends State<PersonPage> {
   Widget build(BuildContext context) {
     PageSelect page = Provider.of<PageSelect>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        //backgroundColor: Colors.white,
-        title: Text('个人中心'),
+//        backgroundColor: Colors.white,
+        title: Text(' '),
         elevation: 0,
-        backgroundColor: Colors.lightBlue,
+//        backgroundColor: Colors.lightBlue,
         automaticallyImplyLeading: false,
       ),
+      backgroundColor: Colors.grey[100],
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Column(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.all(32.0),
-                color: Colors.white,
+                padding: EdgeInsets.fromLTRB(30, 10, 30, 30),
+                color: Color(0xFF1565C0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -102,9 +102,20 @@ class _PersonPageState extends State<PersonPage> {
                           _name,
                           style: TextStyle(
                             fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[100],
+                            letterSpacing: 2,
                           ),
                         ),
-                        subtitle: Text("学号:${GlobalUser.studentID}"),
+                        subtitle: Container(
+                          margin: const EdgeInsets.only(left: 1.5, top: 3.0),
+                          child: Text(
+                            "学号: ${GlobalUser.studentID}",
+                            style: TextStyle(
+                              color: Colors.grey[100],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     /*
@@ -132,13 +143,16 @@ class _PersonPageState extends State<PersonPage> {
               ),
               Container(
                 child: ListTile(
-                  leading: Icon(
-                    Icons.help_outline,
-                    size: 20,
+                  leading: Container(
+                    margin: const EdgeInsets.only(top: 5.0),
+                    child: Icon(
+                      Icons.help_outline,
+                      color: Color(0xFF1565C0),
+                      size: 20,
+                    ),
                   ),
                   title: Text(
                     "帮助中心",
-                    style: TextStyle(fontSize: 20),
                   ),
                   trailing: Icon(
                     Icons.keyboard_arrow_right,
@@ -159,13 +173,16 @@ class _PersonPageState extends State<PersonPage> {
               ),
               Container(
                 child: ListTile(
-                  leading: Icon(
-                    Icons.view_stream,
-                    size: 20,
+                  leading: Container(
+                    margin: const EdgeInsets.only(top: 5.0),
+                    child: Icon(
+                      Icons.view_stream,
+                      color: Color(0xFF1565C0),
+                      size: 20,
+                    ),
                   ),
                   title: Text(
                     "主页选择",
-                    style: TextStyle(fontSize: 20),
                   ),
                   trailing: Icon(
                     Icons.keyboard_arrow_right,
@@ -184,13 +201,15 @@ class _PersonPageState extends State<PersonPage> {
               ),
               Container(
                 child: ListTile(
-                  leading: Icon(
-                    Icons.chat_bubble_outline,
-                    size: 20,
-                  ),
+                  leading: Container(
+                      margin: const EdgeInsets.only(top: 5.0),
+                      child: Icon(
+                        Icons.chat_bubble_outline,
+                        color: Color(0xFF1565C0),
+                        size: 20,
+                      )),
                   title: Text(
                     "使用反馈",
-                    style: TextStyle(fontSize: 20),
                   ),
                   trailing: Icon(
                     Icons.keyboard_arrow_right,
@@ -217,7 +236,6 @@ class _PersonPageState extends State<PersonPage> {
                   height: 50,
                   child: Text(
                     "退出登录",
-                    style: TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
                   onPressed: () {

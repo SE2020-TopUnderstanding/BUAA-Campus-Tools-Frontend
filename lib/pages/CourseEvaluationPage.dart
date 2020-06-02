@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'package:jiaowuassistent/pages/CourseEvaluationDetailPage.dart';
 import 'package:jiaowuassistent/pages/User.dart';
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyRectClipper extends CustomClipper<Rect> {
   final double width;
@@ -37,6 +39,9 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   String _courseType;
   String _courseName;
   String _teacher;
+  bool _firstIn = true;
+  UpdateInfo remoteInfo;
+  static int isUpdate = 1;
 
   //回到顶部悬浮按扭相关
   var _scrollController = ScrollController();
@@ -45,6 +50,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   @override
   void initState() {
     super.initState();
+    check(showInstallUpdateDialog);
     // 对 scrollController 进行监听
     _scrollController.addListener(() {
       // 当滚动距离大于 800 之后，显示回到顶部按钮
@@ -52,6 +58,97 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
     });
     //获得已选课程评价列表
     getDefaultList();
+  }
+
+  check(Function showDialog) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    remoteInfo = await getUpdateInfo();
+//    print(packageInfo.version);
+//    print(remoteInfo.version);
+    if (packageInfo.version.hashCode == remoteInfo.version.hashCode) {
+//      print('无新版本');
+      setState(() {
+        isUpdate = 0;
+      });
+      return;
+    }
+//    print('有新版本');
+    showInstallUpdateDialog();
+  }
+
+  launchURL() {
+    launch(remoteInfo.address);
+  }
+
+  void showInstallUpdateDialog() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return WillPopScope(
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3.0),
+                    boxShadow: [
+                      //阴影
+                      BoxShadow(
+                        color: Colors.black12,
+                        //offset: Offset(2.0,2.0),
+                        blurRadius: 10.0,
+                      )
+                    ]),
+                padding: EdgeInsets.all(16),
+                margin: EdgeInsets.all(16),
+                constraints: BoxConstraints(minHeight: 120, minWidth: 180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+                      child: Text(
+                        '航胥 v${remoteInfo.version} 版本更新',
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新日期：${remoteInfo.date}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        '更新内容：${remoteInfo.info}',
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: MaterialButton(
+                        color: Color(0x99FFFFFF),
+                        onPressed: launchURL,
+                        minWidth: double.infinity,
+                        child: Text(
+                          '点击下载',
+                          style: Theme.of(context).textTheme.body2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            onWillPop: () {
+              return new Future.value(false);
+            },
+          );
+        });
   }
 
   @override
@@ -351,6 +448,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
         setState(() {
           _evaluationList = response;
           _isDisabled = false;
+          _firstIn = false;
         });
       } catch (e) {
         throw (e);
@@ -486,9 +584,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('课程列表'),
-        backgroundColor: Colors.lightBlue,
+        title: Text('课程列表', style: TextStyle(color: Colors.grey[100])),
+//        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: Scrollbar(
         child: SingleChildScrollView(
           controller: _scrollController,
@@ -566,10 +665,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
 //                        width: 10,
 //                      ),
                       DropdownButton(
-                        underline: Container(
-                          height: 2,
-                          color: Colors.deepPurpleAccent,
-                        ),
+//                        underline: Container(
+//                          height: 2,
+//                          color: Colors.deepPurpleAccent,
+//                        ),
                         value: _department,
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
@@ -606,10 +705,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
 //                        width: 10,
 //                      ),
                       DropdownButton(
-                        underline: Container(
-                          height: 2,
-                          color: Colors.deepPurpleAccent,
-                        ),
+//                        underline: Container(
+//                          height: 2,
+//                          color: Colors.deepPurpleAccent,
+//                        ),
                         value: _courseType,
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 20,
@@ -628,7 +727,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                             children: <Widget>[
                               Ink(
                                 decoration: const ShapeDecoration(
-                                  color: Colors.lightBlue,
+                                  color: Color(0xFF1565C0),
                                   shape: CircleBorder(),
                                 ),
                                 child: IconButton(
@@ -646,9 +745,29 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
                       )
                     ]),
               ),
-              SizedBox(
-                height: 5,
-              ),
+              _firstIn
+                  ? Text(
+                      '默认展示本学期选课课程评价信息',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
+                    )
+                  : Text(
+                      '共检索到 ${_evaluationList.evaluationCourseList.length} 门课程',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
+                    ),
+
+//              SizedBox(
+//              height: 5,
+//              ),
 //            Padding(
 //              padding: const EdgeInsets.fromLTRB(50, 10, 50, 0),
 //              child: ConstrainedBox(

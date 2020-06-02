@@ -206,9 +206,10 @@ class _ScorePageState extends State<ScorePage> {
     }
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('成绩查询'),
-        backgroundColor: Colors.lightBlue,
+        title: new Text('成绩查询', style: TextStyle(color: Colors.grey[100])),
+//        backgroundColor: Colors.lightBlue,
       ),
+      backgroundColor: Colors.grey[100],
       body: quit == 1
           ? Container(
               alignment: Alignment.center,
@@ -235,7 +236,7 @@ class _ScorePageState extends State<ScorePage> {
               ? Container(
                   alignment: Alignment(0.0, 0.0),
                   child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
                   ))
               : SingleChildScrollView(
                   scrollDirection: Axis.vertical,
