@@ -3,7 +3,7 @@ import 'package:encrypt/encrypt.dart';
 class Encrypt {
   static String encrypt(String str) {
     try {
-      final key = Key.fromUtf8('hangxu@buaase_20');
+      final key = Key.fromUtf8('2020042820200428');
       final encrypter = Encrypter(AES(key, mode: AESMode.ecb));
       final encrypted = encrypter.encrypt(str);
       return Uri.encodeComponent(encrypted.base64);
@@ -15,7 +15,7 @@ class Encrypt {
 
   static String encrypt2(String str) {
     try {
-      final key = Key.fromUtf8('hangxu@buaase_20');
+      final key = Key.fromUtf8('2020042820200428');
       final encrypter = Encrypter(AES(key, mode: AESMode.ecb));
       final encrypted = encrypter.encrypt(str);
       return encrypted.base64;

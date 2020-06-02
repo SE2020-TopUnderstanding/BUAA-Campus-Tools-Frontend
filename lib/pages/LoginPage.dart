@@ -140,7 +140,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
                     ),
                     SizedBox(height: 30,),
                     Text("您的账户密码在传输过程中已被加密保护\n目前仅支持北航本科生使用",style: TextStyle(
-                        fontSize: 10.0,fontWeight: FontWeight.w100,color: Colors.grey),),
+                        fontSize: 10.0,fontWeight: FontWeight.w100,color: Colors.grey,),textAlign: TextAlign.center),
                   ],
                 ),
             ),
