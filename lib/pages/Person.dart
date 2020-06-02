@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiaowuassistent/pages/FeedbackPage.dart';
-import 'package:jiaowuassistent/pages/HelpCenterPage.dart';
+import 'package:jiaowuassistent/pages/AboutUsPage.dart';
 import 'package:jiaowuassistent/GlobalUser.dart';
 import 'DIYPage.dart';
 import 'package:provider/provider.dart';
@@ -85,40 +85,37 @@ class _PersonPageState extends State<PersonPage> {
       ),
       backgroundColor: Colors.grey[100],
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.fromLTRB(30, 10, 30, 30),
-                color: Color(0xFF1565C0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(0),
-                        title: Text(
-                          _name,
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[100],
-                            letterSpacing: 2,
-                          ),
-                        ),
-                        subtitle: Container(
-                          margin: const EdgeInsets.only(left: 1.5, top: 3.0),
-                          child: Text(
-                            "学号: ${GlobalUser.studentID}",
-                            style: TextStyle(
-                              color: Colors.grey[100],
-                            ),
-                          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(30, 10, 30, 30),
+            color: Color(0xFF1565C0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text(
+                      _name,
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[100],
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    subtitle: Container(
+                      margin: const EdgeInsets.only(left: 1.5, top: 3.0),
+                      child: Text(
+                        "学号: ${GlobalUser.studentID}",
+                        style: TextStyle(
+                          color: Colors.grey[100],
                         ),
                       ),
                     ),
-                    /*
+                  ),
+                ),
+                /*
                 IconButton(
                   padding: EdgeInsets.all(0),
                   icon: Icon(Icons.edit, size: 15,),
@@ -128,142 +125,127 @@ class _PersonPageState extends State<PersonPage> {
                 ),
 
                  */
-                    SizedBox(
-                      width: 100,
-                    ),
-                    CircleAvatar(
-                      backgroundImage: AssetImage("assets/images/head.png"),
-                      radius: 40,
-                    ),
-                  ],
+                SizedBox(
+                  width: 100,
+                ),
+                CircleAvatar(
+                  backgroundImage: AssetImage("assets/images/head.png"),
+                  radius: 40,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 40,
+          ),
+          Container(
+            child: ListTile(
+              leading: Container(
+                margin: const EdgeInsets.only(top: 5.0),
+                child: Icon(
+                  Icons.view_stream,
+                  color: Color(0xFF1565C0),
+                  size: 20,
                 ),
               ),
-              SizedBox(
-                height: 40,
+              title: Text(
+                "主页选择",
               ),
-              Container(
-                child: ListTile(
-                  leading: Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Icon(
-                      Icons.help_outline,
-                      color: Color(0xFF1565C0),
-                      size: 20,
-                    ),
-                  ),
-                  title: Text(
-                    "帮助中心",
-                  ),
-                  trailing: Icon(
-                    Icons.keyboard_arrow_right,
-                    size: 20,
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HelpCenterPage()));
-                  },
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-                ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right,
+                size: 20,
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => DIYPage()));
+              },
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+            ),
 //            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                child: ListTile(
-                  leading: Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Icon(
-                      Icons.view_stream,
-                      color: Color(0xFF1565C0),
-                      size: 20,
-                    ),
-                  ),
-                  title: Text(
-                    "主页选择",
-                  ),
-                  trailing: Icon(
-                    Icons.keyboard_arrow_right,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            child: ListTile(
+              leading: Container(
+                  margin: const EdgeInsets.only(top: 5.0),
+                  child: Icon(
+                    Icons.chat_bubble_outline,
+                    color: Color(0xFF1565C0),
                     size: 20,
-                  ),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => DIYPage()));
-                  },
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-                ),
+                  )),
+              title: Text(
+                "使用反馈",
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right,
+                size: 20,
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => FeedbackPage()));
+              },
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+            ),
 //            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                child: ListTile(
-                  leading: Container(
-                      margin: const EdgeInsets.only(top: 5.0),
-                      child: Icon(
-                        Icons.chat_bubble_outline,
-                        color: Color(0xFF1565C0),
-                        size: 20,
-                      )),
-                  title: Text(
-                    "使用反馈",
-                  ),
-                  trailing: Icon(
-                    Icons.keyboard_arrow_right,
-                    size: 20,
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FeedbackPage()));
-                  },
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            child: ListTile(
+              leading: Container(
+                margin: const EdgeInsets.only(top: 5.0),
+                child: Icon(
+                  Icons.help_outline,
+                  color: Color(0xFF1565C0),
+                  size: 20,
                 ),
+              ),
+              title: Text(
+                "关于我们",
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right,
+                size: 20,
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AboutUsPage()));
+              },
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+            ),
 //            decoration: BoxDecoration(border: Border(top: BorderSide(width: 1, color: Colors.grey[300]))),
+          ),
+          SizedBox(
+            height: 40,
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+            child: MaterialButton(
+              color: Color(0x99FFFFFF),
+              minWidth: double.infinity,
+              height: 50,
+              child: Text(
+                "退出登录",
+                textAlign: TextAlign.center,
               ),
-              SizedBox(
-                height: 40,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-                child: MaterialButton(
-                  color: Color(0x99FFFFFF),
-                  minWidth: double.infinity,
-                  height: 50,
-                  child: Text(
-                    "退出登录",
-                    textAlign: TextAlign.center,
-                  ),
-                  onPressed: () {
-                    GlobalUser.setIsLogin(false);
-                    page.setPage(1);
+              onPressed: () {
+                GlobalUser.setIsLogin(false);
+                page.setPage(1);
 //                Navigator.pushAndRemoveUntil(
 //                  context,
 //                  MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
 //                      (Route<dynamic> route) => false,
 //                );
-                    Navigator.pushNamedAndRemoveUntil(context, '/loginPage',
-                        ModalRoute.withName("/loginPage"));
-                    //Navigator.popUntil(context, ModalRoute.withName("/loginPage"));
-                  },
-                ),
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/loginPage', ModalRoute.withName("/loginPage"));
+                //Navigator.popUntil(context, ModalRoute.withName("/loginPage"));
+              },
+            ),
 //            decoration: BoxDecoration(border: Border.all(width: 1)),
-              )
-            ],
-          ),
-          packageInfo != null
-              ? Container(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                  child: Text("v ${packageInfo.version}",
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center),
-                  alignment: Alignment.center,
-                )
-              : Container(),
+          )
         ],
       ),
     );

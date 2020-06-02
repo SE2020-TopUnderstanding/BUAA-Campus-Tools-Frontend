@@ -60,92 +60,103 @@ class _LoginPageStateBody extends State<LoginPageBody> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-          _focusNodeUserName.unfocus();
-          _focusNodePassword.unfocus();
-        },
-        child: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
-          child: SingleChildScrollView(child:
-            Form(
-                key: _formkey,
-                autovalidate: false,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Image.asset("assets/images/hangxu2.jpg",width: 100.0,
-                      height: 100.0,),
-                    SizedBox(height: 50,),
-                    TextFormField(
-                      //  autofocus: _autoUserNameFocus,
-                      focusNode: _focusNodeUserName,
-                      controller: _userNameController,
-                      validator: (v) =>
-                      v.trim().isNotEmpty ? Null : '请输入统一认证账号',
-                      decoration: InputDecoration(
-                        hintText: '统一认证账号',
-                        //labelText: userName,
-                        prefixIcon: Icon(Icons.person),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      focusNode: _focusNodePassword,
-                      controller: _passwordController,
-                      obscureText: !showPassword,
-                      validator: (v) => v.trim().isNotEmpty ? Null : '请输入密码',
-                      decoration: InputDecoration(
-                        hintText: '密码',
-                        //labelText: password,
-                        prefixIcon: Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(showPassword
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () {
-                            setState(() {
-                              showPassword = !showPassword;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(50, 50, 50, 0),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints.expand(height: 50),
-                        child: RaisedButton(
-                          color: Color(0xFF1565C0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                          ),
-                          child: Text(
-                            '登录',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                letterSpacing: 20,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                                color: Colors.white),
-                          ),
-                          onPressed: () {
-                            _login();
-                          },
-                          disabledColor: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 30,),
-                    Text("您的账户密码在传输过程中已被加密保护\n目前仅支持北航本科生使用",style: TextStyle(
-                        fontSize: 10.0,fontWeight: FontWeight.w100,color: Colors.grey,),textAlign: TextAlign.center),
-                  ],
+      onTap: () {
+        _focusNodeUserName.unfocus();
+        _focusNodePassword.unfocus();
+      },
+      child: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formkey,
+            autovalidate: false,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Image.asset(
+                  "assets/images/hangxu2.jpg",
+                  width: 100.0,
+                  height: 100.0,
                 ),
+                SizedBox(
+                  height: 50,
+                ),
+                TextFormField(
+                  //  autofocus: _autoUserNameFocus,
+                  focusNode: _focusNodeUserName,
+                  controller: _userNameController,
+                  validator: (v) => v.trim().isNotEmpty ? Null : '请输入统一认证账号',
+                  decoration: InputDecoration(
+                    hintText: '统一认证账号',
+                    //labelText: userName,
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  focusNode: _focusNodePassword,
+                  controller: _passwordController,
+                  obscureText: !showPassword,
+                  validator: (v) => v.trim().isNotEmpty ? Null : '请输入密码',
+                  decoration: InputDecoration(
+                    hintText: '密码',
+                    //labelText: password,
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(showPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          showPassword = !showPassword;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(50, 50, 50, 0),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints.expand(height: 50),
+                    child: RaisedButton(
+                      color: Color(0xFF1565C0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: Text(
+                        '登录',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            letterSpacing: 20,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            color: Colors.white),
+                      ),
+                      onPressed: () {
+                        _login();
+                      },
+                      disabledColor: Colors.grey,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Text("您的账户密码在传输过程中已被加密保护\n目前仅支持北航本科生使用",
+                    style: TextStyle(
+                      fontSize: 10.0,
+                      fontWeight: FontWeight.w100,
+                      color: Colors.grey,
+                    ),
+                    textAlign: TextAlign.center),
+              ],
             ),
           ),
         ),
+      ),
     );
   }
 
@@ -192,7 +203,7 @@ class _LoginPageStateBody extends State<LoginPageBody> {
         GlobalUser.setUser(_userNameController.text, _passwordController.text,
             response.data['name'], response.data['student_id']);
 
-      //  GlobalUser.setUser(_userNameController.text, _passwordController.text, "张艺璇", "17373182");
+        //  GlobalUser.setUser(_userNameController.text, _passwordController.text, "张艺璇", "17373182");
         GlobalUser.setIsLogin(true);
         GlobalUser.setChoice(1); //默认课表
         //切换页面
@@ -207,11 +218,11 @@ class _LoginPageStateBody extends State<LoginPageBody> {
         } else if (e.type == DioErrorType.RESPONSE) {
           if (e.response.statusCode == 401) {
             showError(context, "账号或密码错误");
-          } else if(e.response.statusCode == 460){
+          } else if (e.response.statusCode == 460) {
             showError(context, "您的账号被锁定，请十分钟后再试");
-          } else if(e.response.statusCode == 462){
+          } else if (e.response.statusCode == 462) {
             showError(context, "服务器出问题了，过会儿再试吧");
-          } else{
+          } else {
             showError(context, "服务器错误");
           }
         } else if (e.type == DioErrorType.CANCEL) {

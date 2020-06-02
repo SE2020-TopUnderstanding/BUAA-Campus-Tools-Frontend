@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
             PersonPage(),
           ],
           controller: _controller,
-         // onPageChanged: onPageChanged,
+          // onPageChanged: onPageChanged,
         ),
         bottomNavigationBar: new BottomNavigationBar(
           selectedItemColor: Colors.grey,

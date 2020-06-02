@@ -8,6 +8,7 @@ import 'calendar.dart';
 
 class RCalendarMonthItem extends StatelessWidget {
   final DateTime monthDate;
+
   const RCalendarMonthItem({Key key, this.monthDate}) : super(key: key);
 
   @override
@@ -15,22 +16,24 @@ class RCalendarMonthItem extends StatelessWidget {
     RCalendarMarker data = RCalendarMarker.of(context);
     RCalendarController controller = data.notifier;
     Map<DateTime, String> weekMap = data.weekNumberMap;
-    Map<DateTime ,String> holidayMap = new Map();
-    for(int i = 0; i < data.holidays.length; i++){
+    Map<DateTime, String> holidayMap = new Map();
+    for (int i = 0; i < data.holidays.length; i++) {
       holidayMap[data.holidays[i].date] = data.holidays[i].holiday;
     }
     Map<DateTime, int> ddlMap = new Map();
-    for(int i = 0; i < data.ddls.length; i++){
-      ddlMap[data.ddls[i].ddlDay] = data.ddls.where((c)=>c.ddlDay == data.ddls[i].ddlDay).length;
+    for (int i = 0; i < data.ddls.length; i++) {
+      ddlMap[data.ddls[i].ddlDay] =
+          data.ddls.where((c) => c.ddlDay == data.ddls[i].ddlDay).length;
     }
     //获取星期的第一天
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations =
+        MaterialLocalizations.of(context);
     final int year = monthDate.year;
     final int month = monthDate.month;
     final int dayInMonth = RCalendarUtils.getDaysInMonth(year, month);
     //第一天的偏移
     final int firstDayOffset =
-    RCalendarUtils.computeFirstDayOffset(year, month, localizations);
+        RCalendarUtils.computeFirstDayOffset(year, month, localizations);
 
     final List<Widget> labels = [];
 
@@ -42,7 +45,7 @@ class RCalendarMonthItem extends StatelessWidget {
         //小于当月的日期
         List<RCalendarType> types = [RCalendarType.differentMonth];
         final DateTime dayToBuild =
-        DateTime(year, month, 1).subtract(Duration(days: (day * -1) + 1));
+            DateTime(year, month, 1).subtract(Duration(days: (day * -1) + 1));
 
         final bool disabled = dayToBuild.isAfter(controller.lastDate) ||
             dayToBuild.isBefore(controller.firstDate) ||
@@ -62,11 +65,12 @@ class RCalendarMonthItem extends StatelessWidget {
               }
               data.onChanged(dayToBuild);
             },
-            child: data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap),
+            child: data.customWidget
+                .buildDateTime(context, dayToBuild, types, holidayMap, ddlMap),
           ));
         } else {
-          labels
-              .add(data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap));
+          labels.add(data.customWidget
+              .buildDateTime(context, dayToBuild, types, holidayMap, ddlMap));
         }
       } else if (day > dayInMonth) {
         //大于当月的日期
@@ -92,11 +96,12 @@ class RCalendarMonthItem extends StatelessWidget {
               }
               data.onChanged(dayToBuild);
             },
-            child: data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap),
+            child: data.customWidget
+                .buildDateTime(context, dayToBuild, types, holidayMap, ddlMap),
           ));
         } else {
-          labels
-              .add(data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap));
+          labels.add(data.customWidget
+              .buildDateTime(context, dayToBuild, types, holidayMap, ddlMap));
         }
       } else {
         List<RCalendarType> types = [RCalendarType.disable];
@@ -111,11 +116,11 @@ class RCalendarMonthItem extends StatelessWidget {
         bool isSelectedDay = false;
         try {
           isSelectedDay = controller.selectedDates
-              .where((selectedDate) =>
-          selectedDate.year == year &&
-              selectedDate.month == month &&
-              selectedDate.day == day)
-              .length !=
+                  .where((selectedDate) =>
+                      selectedDate.year == year &&
+                      selectedDate.month == month &&
+                      selectedDate.day == day)
+                  .length !=
               0;
         } catch (_) {}
         if (isSelectedDay) {
@@ -141,43 +146,54 @@ class RCalendarMonthItem extends StatelessWidget {
               }
               data.onChanged(dayToBuild);
             },
-            child: data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap),
+            child: data.customWidget
+                .buildDateTime(context, dayToBuild, types, holidayMap, ddlMap),
           ));
         } else {
-          labels
-              .add(data.customWidget.buildDateTime(context, dayToBuild, types, holidayMap,ddlMap));
+          labels.add(data.customWidget
+              .buildDateTime(context, dayToBuild, types, holidayMap, ddlMap));
         }
       }
     }
 
-    DateTime mondayDate = monthDate.add(Duration(days: -monthDate.weekday +1 ));
+    DateTime mondayDate = monthDate.add(Duration(days: -monthDate.weekday + 1));
+
     ///添加周号
-    int lines = labels.length~/7;
+    int lines = labels.length ~/ 7;
     List<Widget> weekNumbers = [];
-    for(int i = 0; i < lines; i++){
-      if(weekMap.containsKey(mondayDate)){
-        weekNumbers.add(
-            Container(
-              alignment: Alignment.center,
-              child: Text('${weekMap[mondayDate]}\n',
-                style: TextStyle(fontSize: 16,color: Colors.deepOrange),),
-            )
-        );
-      }else{
-        weekNumbers.add(
-            Container(
-              alignment: Alignment.center,
-              child: Text(' ',
-                style: TextStyle(fontSize: 16,color: Colors.deepOrange),),
-            )
-        );
+    for (int i = 0; i < lines; i++) {
+      if (weekMap.containsKey(mondayDate)) {
+        weekNumbers.add(Container(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                '${weekMap[mondayDate]}',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              Text(
+                " ",
+                style: TextStyle(fontSize: 14.5),
+              ),
+            ],
+          ),
+        ));
+      } else {
+        weekNumbers.add(Container(
+          alignment: Alignment.center,
+          child: Text(
+            ' ',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ));
       }
       mondayDate = mondayDate.add(Duration(days: 7));
     }
     List<Widget> labelss = [];
-    for(int i = 0; i < lines; i++){
+    for (int i = 0; i < lines; i++) {
       labelss.add(weekNumbers[i]);
-      labelss..addAll(labels.sublist(7*i,7*(i+1)));
+      labelss..addAll(labels.sublist(7 * i, 7 * (i + 1)));
     }
 
     return GridView.custom(
@@ -186,7 +202,7 @@ class RCalendarMonthItem extends StatelessWidget {
       padding: EdgeInsets.zero,
       gridDelegate: _DayPickerGridDelegate(data.customWidget.childHeight ?? 42),
       childrenDelegate:
-      SliverChildListDelegate(labelss, addRepaintBoundaries: true),
+          SliverChildListDelegate(labelss, addRepaintBoundaries: true),
     );
   }
 }
@@ -204,7 +220,7 @@ class RCalendarWeekItem extends StatelessWidget {
     final List<Widget> labels = [];
     for (int i = 0; i < 7; i += 1) {
       final DateTime dayToBuild =
-      DateTime(weekDate.year, weekDate.month, weekDate.day + i);
+          DateTime(weekDate.year, weekDate.month, weekDate.day + i);
       final int year = dayToBuild.year;
       final int month = dayToBuild.month;
       final int day = dayToBuild.day;
@@ -219,11 +235,11 @@ class RCalendarWeekItem extends StatelessWidget {
       bool isSelectedDay = false;
       try {
         isSelectedDay = controller.selectedDates
-            .where((selectedDate) =>
-        selectedDate.year == year &&
-            selectedDate.month == month &&
-            selectedDate.day == day)
-            .length !=
+                .where((selectedDate) =>
+                    selectedDate.year == year &&
+                    selectedDate.month == month &&
+                    selectedDate.day == day)
+                .length !=
             0;
       } catch (_) {}
       if (isSelectedDay) {
@@ -261,7 +277,7 @@ class RCalendarWeekItem extends StatelessWidget {
       padding: EdgeInsets.zero,
       gridDelegate: _DayPickerGridDelegate(data.customWidget.childHeight ?? 42),
       childrenDelegate:
-      SliverChildListDelegate(labels, addRepaintBoundaries: true),
+          SliverChildListDelegate(labels, addRepaintBoundaries: true),
     );
   }
 }

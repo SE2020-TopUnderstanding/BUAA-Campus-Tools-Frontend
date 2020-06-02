@@ -17,7 +17,7 @@ class _DIYPage extends State<DIYPage> {
     final select = Provider.of<PageSelect>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('自定义主页', style: TextStyle(color: Colors.grey[100])),
+        title: Text('主页选择', style: TextStyle(color: Colors.grey[100])),
 //        backgroundColor: Colors.lightBlue,
       ),
       backgroundColor: Colors.grey[100],
@@ -28,7 +28,7 @@ class _DIYPage extends State<DIYPage> {
             margin: const EdgeInsets.only(left: 27),
             alignment: Alignment.centerLeft,
             child: Text(
-              '您可以自定义您的主页显示下方三个选项中的任一项',
+              '您可以自定义您的主页显示下方几个选项中的任一项',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
