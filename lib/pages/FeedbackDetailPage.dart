@@ -40,7 +40,7 @@ class _FeedbackDetailPage extends State<FeedbackDetailPage> {
                   focusNode: commentNode,
                   decoration: InputDecoration(
                     hoverColor: Color(0xFF1565C0),
-                    hintText: '请描述详情',
+                    hintText: '请描述详情（至少8个字）',
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (String str) {
@@ -67,32 +67,50 @@ class _FeedbackDetailPage extends State<FeedbackDetailPage> {
                           color: Colors.white),
                     ),
                     onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text('确定反馈?'),
-                              actions: <Widget>[
-                                RaisedButton(
-                                  child: Text("发送"),
-                                  onPressed: () {
-                                    //此处添加向后端的put操作。
-                                    Navigator.of(context).pop();
-                                    postMessage(widget.kind, content);
-                                    Navigator.of(context).pop();
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text("反馈成功"),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                          });
+                      if (content == null || content.length < 8) {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: Text("反馈内容过少（至少8个字）"),
+                                actions: <Widget>[
+                                  RaisedButton(
+                                    child: Text("确定"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('确定反馈?'),
+                                actions: <Widget>[
+                                  RaisedButton(
+                                    child: Text("发送"),
+                                    onPressed: () {
+                                      //此处添加向后端的put操作。
+                                      Navigator.of(context).pop();
+                                      postMessage(widget.kind, content);
+                                      Navigator.of(context).pop();
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("反馈成功"),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      }
                     },
                     disabledColor: Colors.grey,
                   ),

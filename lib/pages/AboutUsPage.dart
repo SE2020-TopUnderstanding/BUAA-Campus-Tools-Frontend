@@ -39,35 +39,37 @@ class _AboutUsPage extends State<AboutUsPage> {
         backgroundColor: Colors.grey[100],
         body: Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              SizedBox(
-                height: 60,
-              ),
               CircleAvatar(
                 backgroundImage: AssetImage("assets/images/head.png"),
                 radius: 50,
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                child: Text("航  胥",
-                    style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Column(
+                  children: <Widget>[
+                    Text("航  胥",
+                        style: TextStyle(
+                            fontSize: 35, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center),
+                    packageInfo != null
+                        ? Container(
+                            height: 30,
+                            child: Text("v ${packageInfo.version}",
+                                style: TextStyle(fontSize: 18),
+                                textAlign: TextAlign.center),
+                            alignment: Alignment.center,
+                          )
+                        : Container(
+                            height: 30,
+                          ),
+                  ],
+                ),
                 alignment: Alignment.center,
               ),
-              packageInfo != null
-                  ? Container(
-                      height: 30,
-                      child: Text("v ${packageInfo.version}",
-                          style: TextStyle(fontSize: 18),
-                          textAlign: TextAlign.center),
-                      alignment: Alignment.center,
-                    )
-                  : Container(
-                      height: 30,
-                    ),
               Container(
-                padding: EdgeInsets.fromLTRB(0, 50, 0, 50),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Text(
                     "Powered by 顶级理解团队\n\n北航2020年春季软件工程\n指导老师：罗杰 任健\n\n团队博客：\nhttps://www.cnblogs.com/se2020djlj/",
                     style: TextStyle(fontSize: 18),
@@ -75,7 +77,7 @@ class _AboutUsPage extends State<AboutUsPage> {
                 alignment: Alignment.center,
               ),
               Container(
-                  margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 40),
                   child: MaterialButton(
                     onPressed: launchURL,
                     child: Text("点击进入博客首页"),
