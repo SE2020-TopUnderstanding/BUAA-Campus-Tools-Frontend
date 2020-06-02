@@ -28,7 +28,7 @@ class _DIYPage extends State<DIYPage> {
             margin: const EdgeInsets.only(left: 27),
             alignment: Alignment.centerLeft,
             child: Text(
-              '您可以自定义您的主页显示下方三个选项中的任一项',
+              '您可以自定义您的主页显示下方几个选项中的任一项',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
