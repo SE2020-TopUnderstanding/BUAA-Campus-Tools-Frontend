@@ -35,12 +35,12 @@ Future<EmptyRoom> getEmptyRoom(BuildContext context, String campus, String date,
     String section, String building) async {
   try {
     Response response = await Dio().get(
-        'http://hangxu.sharinka.top:8000/classroom/?campus=$campus &date=$date &section=$section',
+        'http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section',
         options: Options(
             responseType: ResponseType
                 .plain)); // http://www.mocky.io/v2/5e9a690133000021bf7b3008
     print(
-        'Request(http://hangxu.sharinka.top:8000/classroom/?campus=$campus &date=$date &section=$section)');
+        'Request(http://114.115.208.32:8000/classroom/?campus=$campus &date=$date &section=$section)');
     Map<String, dynamic> data = json.decode(response.data.toString());
     print(response);
     if (data == null) {
@@ -175,9 +175,9 @@ Future<CourseCenter> getCourseCenter(String studentID) async {
 //      await rootBundle.loadString('assets/data/courseCenter.json');
 //  return CourseCenter.fromJson(json.decode(response));
   final response = await http.get(
-      'http://hangxu.sharinka.top:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+      'http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
   print(
-      'http://hangxu.sharinka.top:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
+      'http://114.115.208.32:8000/ddl/?student_id=${Encrypt.encrypt(studentID)}');
 //  throw 401;
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -258,17 +258,17 @@ Future<GradeCenter> getGrade(String studentID, String semester) async {
 //  return temp;
 
   final response = await http.get(
-      'http://hangxu.sharinka.top:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
+      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
   print(
-      'http://hangxu.sharinka.top:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
+      'http://114.115.208.32:8000/score/?student_id=${Encrypt.encrypt(studentID)}&semester=$semester');
   final averageScore = await http.get(
-      'http://hangxu.sharinka.top:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+      'http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
   print(
-      'http://hangxu.sharinka.top:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
+      'http://114.115.208.32:8000/score/avg_score/?student_id=${Encrypt.encrypt(studentID)}');
   final gpa = await http.get(
-      'http://hangxu.sharinka.top:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+      'http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
   print(
-      'http://hangxu.sharinka.top:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
+      'http://114.115.208.32:8000/score/gpa/?student_id=${Encrypt.encrypt(studentID)}');
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -305,8 +305,8 @@ class UpdateInfo {
 }
 
 Future<UpdateInfo> getUpdateInfo() async {
-  final response = await http.get('http://hangxu.sharinka.top:8000/version');
-  print('http://hangxu.sharinka.top:8000/version');
+  final response = await http.get('http://114.115.208.32:8000/version');
+  print('http://114.115.208.32:8000/version');
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -321,12 +321,12 @@ Future<UpdateInfo> getUpdateInfo() async {
 
 Future<void> postMessage(String kind, String content) async {
   final response =
-      await http.post('http://hangxu.sharinka.top:8000/feedback/', body: {
+      await http.post('http://114.115.208.32:8000/feedback/', body: {
     "student_id": "${Encrypt.encrypt2(GlobalUser.studentID)}",
     "kind": "$kind",
     "content": "$content"
   });
-  print('post -> http://hangxu.sharinka.top:8000/feedback/');
+  print('post -> http://114.115.208.32:8000/feedback/');
   print('student_id: ${Encrypt.encrypt2(GlobalUser.studentID)}');
   print('kind: $kind');
   print('content: $content');
@@ -493,7 +493,7 @@ Future<WeekCourseTable> loadCourse(int week, String studentID) async {
   Response response;
   try {
     response = await dio.request(
-      'http://hangxu.sharinka.top:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
+      'http://114.115.208.32:8000/timetable/?student_id=${Encrypt.encrypt(studentID)}&week=all',
       options: Options(method: "GET", responseType: ResponseType.plain),
     );
     //cancelToken: _can);//测试错误
@@ -529,7 +529,7 @@ Future<int> getWeek() async {
   DateTime now = DateTime.now();
   try {
     response = await dio.request(
-        'http://hangxu.sharinka.top:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
+        'http://114.115.208.32:8000/timetable/?date=${now.year}-${now.month}-${now.day}',
         options: Options(method: "GET", responseType: ResponseType.json));
   } catch (e) {
     e.toString();
@@ -656,9 +656,9 @@ class EvaluationDetail {
 Future<EvaluationDetail> getEvaluationDetail(
     String bid, String studentID) async {
   final response = await http.get(
-      'http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=${Encrypt.encrypt(studentID)}');
+      'http://114.115.208.32:8000/timetable/evaluation/student/?bid=$bid&student_id=${Encrypt.encrypt(studentID)}');
   print(
-      'GET http://hangxu.sharinka.top:8000/timetable/evaluation/student/?bid=$bid&student_id=${Encrypt.encrypt(studentID)}');
+      'GET http://114.115.208.32:8000/timetable/evaluation/student/?bid=$bid&student_id=${Encrypt.encrypt(studentID)}');
   print(response.statusCode);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -678,24 +678,24 @@ Future<void> postAgree(String student, String bid, int type) async {
   var response;
   if (type == 0) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/up/',
+        'http://114.115.208.32:8000/timetable/evaluation/student/up/',
         body: {
           "student_id": "$student",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
           "bid": "$bid"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/up/');
+        'post -> http://114.115.208.32:8000/timetable/evaluation/student/up/');
   } else if (type == 1) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up/',
+        'http://114.115.208.32:8000/timetable/evaluation/student/cancel_up/',
         body: {
           "student_id": "$student",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
           "bid": "$bid"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_up/');
+        'post -> http://114.115.208.32:8000/timetable/evaluation/student/cancel_up/');
   }
   print('student_id: $student');
   print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
@@ -713,24 +713,24 @@ Future<void> postDisagree(String student, String bid, int type) async {
   var response;
   if (type == 0) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/down/',
+        'http://114.115.208.32:8000/timetable/evaluation/student/down/',
         body: {
           "student_id": "$student",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
           "bid": "$bid"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/down/');
+        'post -> http://114.115.208.32:8000/timetable/evaluation/student/down/');
   } else if (type == 1) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_down/',
+        'http://114.115.208.32:8000/timetable/evaluation/student/cancel_down/',
         body: {
           "student_id": "$student",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
           "bid": "$bid"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/cancel_down/');
+        'post -> http://114.115.208.32:8000/timetable/evaluation/student/cancel_down/');
   }
   print('student_id: $student');
   print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
@@ -748,7 +748,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
   var response;
   if (type == 0) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/',
+        'http://114.115.208.32:8000/timetable/evaluation/teacher/',
         body: {
           "teacher": "$teacher",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -756,10 +756,10 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "action": "up"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/');
+        'post -> http://114.115.208.32:8000/timetable/evaluation/teacher/');
   } else if (type == 1) {
     response = await http.post(
-        'http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/',
+        'http://114.115.208.32:8000/timetable/evaluation/teacher/',
         body: {
           "teacher": "$teacher",
           "actor": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -767,7 +767,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
           "action": "cancel_up"
         });
     print(
-        'post -> http://hangxu.sharinka.top:8000/timetable/evaluation/teacher/');
+        'post -> http://114.115.208.32:8000/timetable/evaluation/teacher/');
   }
   print('teacher: $teacher');
   print('actor: ${Encrypt.encrypt2(GlobalUser.studentID)}');
@@ -785,7 +785,7 @@ Future<void> postTeacherAgree(String teacher, String bid, int type) async {
 Future<void> deleteComment(String bid) async {
   Dio dio = new Dio();
   var response = await dio.request(
-    'http://hangxu.sharinka.top:8000/timetable/evaluation/student/',
+    'http://114.115.208.32:8000/timetable/evaluation/student/',
     data: {
       "bid": "$bid",
       "student_id": "${Encrypt.encrypt2(GlobalUser.studentID)}",
@@ -793,7 +793,7 @@ Future<void> deleteComment(String bid) async {
     options: Options(method: "DELETE", responseType: ResponseType.json),
   );
   print(
-      'delete -> http://hangxu.sharinka.top:8000/timetable/evaluation/student/');
+      'delete -> http://114.115.208.32:8000/timetable/evaluation/student/');
   print('bid: $bid');
   print('student_id: ${Encrypt.encrypt2(GlobalUser.studentID)}');
   if (response.statusCode == 204) {
@@ -863,10 +863,9 @@ Future<EvaluationCoursePage> loadEvaluationCoursePage(
   try {
     if (department == null || department == "全部") department = "";
     if (type == null || type == "全部") type = "";
-    print(
-        'http://hangxu.sharinka.top:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page');
+    print('http://114.115.208.32:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page');
     response = await dio.request(
-        'http://hangxu.sharinka.top:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page',
+        'http://114.115.208.32:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page',
         options: Options(method: "GET", responseType: ResponseType.json));
   } catch (e) {
     print(e);
@@ -885,9 +884,9 @@ Future<EvaluationCoursePage> loadDefaultEvaluationCourseList(
   Response response;
   try {
     print(
-        'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}');
+        'http://114.115.208.32:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}');
     response = await dio.request(
-        'http://hangxu.sharinka.top:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}',
+        'http://114.115.208.32:8000/timetable/search/default/?student_id=${Encrypt.encrypt(studentID)}',
         options: Options(method: "GET", responseType: ResponseType.json));
   } catch (e) {
     throw ('参数名称或者数目错误');
@@ -1025,7 +1024,7 @@ Future<schoolCalendar> getSchoolCalendar(String studentID) async {
   Response response;
   try {
     response = await dio.request(
-      'http://hangxu.sharinka.top:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear',
+      'http://114.115.208.32:8000/ddl/Calendar/?student_id=${Encrypt.encrypt(studentID)}&school_year=$schoolYear',
       options: Options(method: "GET", responseType: ResponseType.plain),
     );
   } on DioError catch (e) {
