@@ -827,41 +827,59 @@ class EvaluationCourse {
 }
 
 class EvaluationCourseList {
-  final List<EvaluationCourse> evaluationCourseList;
+  final List<EvaluationCourse> courseList;
 
-  EvaluationCourseList(this.evaluationCourseList);
+  EvaluationCourseList(this.courseList);
 
   factory EvaluationCourseList.fromJson(List<dynamic> parsedJson) {
     List<EvaluationCourse> courseList =
-        parsedJson.map((i) => EvaluationCourse.fromJson(i)).toList();
+    parsedJson.map((i) => EvaluationCourse.fromJson(i)).toList();
     return EvaluationCourseList(courseList);
   }
 }
 
-Future<EvaluationCourseList> loadEvaluationCourseList(
-    String courseName, String teacher, String type, String department) async {
+class EvaluationCoursePage {
+  final EvaluationCourseList evaluationCourseList;
+  final int totalCourse;
+  final int currentPage;
+  final int totalPage;
+
+  EvaluationCoursePage(this.evaluationCourseList, this.totalCourse, this.currentPage, this.totalPage);
+
+  factory EvaluationCoursePage.fromJson(Map<String, dynamic> parsedJson) {
+//    print(parsedJson);
+    int total = parsedJson['total'];
+    int currentPage = parsedJson['cur_page'];
+    int totalPage = parsedJson['total_page'];
+    EvaluationCourseList courseList = EvaluationCourseList.fromJson(parsedJson['info']);
+    return EvaluationCoursePage(courseList, total, currentPage, totalPage);
+  }
+}
+
+Future<EvaluationCoursePage> loadEvaluationCoursePage(
+    String courseName, String teacher, String type, String department, int page) async {
   Dio dio = new Dio();
   Response response;
   try {
     if (department == null || department == "全部") department = "";
     if (type == null || type == "全部") type = "";
     print(
-        'http://hangxu.sharinka.top:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department');
+        'http://hangxu.sharinka.top:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page');
     response = await dio.request(
-        'http://hangxu.sharinka.top:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department',
+        'http://hangxu.sharinka.top:8000/timetable/search/?course=$courseName&teacher=$teacher&type=$type&department=$department&page=$page',
         options: Options(method: "GET", responseType: ResponseType.json));
   } catch (e) {
     print(e);
     throw ('参数名称或者数目错误');
   }
   try {
-    return EvaluationCourseList.fromJson(response.data);
+    return EvaluationCoursePage.fromJson(response.data);
   } catch (e) {
     throw ('课程评价列表解析错误');
   }
 }
 
-Future<EvaluationCourseList> loadDefaultEvaluationCourseList(
+Future<EvaluationCoursePage> loadDefaultEvaluationCourseList(
     String studentID) async {
   Dio dio = new Dio();
   Response response;
@@ -875,7 +893,7 @@ Future<EvaluationCourseList> loadDefaultEvaluationCourseList(
     throw ('参数名称或者数目错误');
   }
   try {
-    return EvaluationCourseList.fromJson(response.data);
+    return EvaluationCoursePage.fromJson(response.data);
   } catch (e) {
     throw ('课程评价列表解析错误');
   }
