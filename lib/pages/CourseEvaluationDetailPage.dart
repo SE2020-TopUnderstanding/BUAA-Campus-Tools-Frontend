@@ -447,17 +447,43 @@ class _CourseEvaluationDetailPageState
                   child: new Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      new Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(5.0),
-                        child: new Text(
-                          widget.courseName,
-                          textAlign: TextAlign.center,
-                          style: new TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
+                      new Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: new Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(5.0),
+                              child: new Text(
+                                widget.courseName,
+                                textAlign: TextAlign.center,
+                                style: new TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          IconButton(
+                            padding: EdgeInsets.all(0),
+                            icon: Icon(
+                              Icons.edit,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CourseCommentWritePage(
+                                            bname: widget.courseName,
+                                            bid: widget.bid,
+                                            score: score,
+                                            commentText: commentText,
+                                          )))
+                                  .then((value) => searchEvaluationDetail());
+                            },
+                          ), // zyx add modify icon
+                        ],
                       ),
                       new Row(
                         children: <Widget>[
@@ -469,7 +495,8 @@ class _CourseEvaluationDetailPageState
                                 evaluationDetail.averageScore.toString(),
                                 style: new TextStyle(
                                   color: Colors.grey[900],
-                                  fontSize: 44,
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold
                                 ),
                               ),
                               Text(
@@ -484,26 +511,6 @@ class _CourseEvaluationDetailPageState
                               ),
                             ],
                           )),
-                          IconButton(
-                            padding: EdgeInsets.all(0),
-                            icon: Icon(
-                              Icons.edit,
-                              size: 30,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              CourseCommentWritePage(
-                                                bname: widget.courseName,
-                                                bid: widget.bid,
-                                                score: score,
-                                                commentText: commentText,
-                                              )))
-                                  .then((value) => searchEvaluationDetail());
-                            },
-                          ), // zyx add modify icon
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
