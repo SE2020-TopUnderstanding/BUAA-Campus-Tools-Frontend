@@ -566,6 +566,10 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
               _teacher.isEmpty &&
               _department == null &&
               _courseType == null)) {
+            _page = 1;
+            _scrollController.animateTo(0.0,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.decelerate);
             searchEvaluationCourseList();
           } else {
             getDefaultList();
