@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 ///一个月有多少天
 const List<int> _daysInMonth = <int>[
   31,
@@ -52,7 +53,7 @@ class RCalendarUtils {
   static DateTime addWeeksToWeeksDate(
       DateTime weekDate, int weeksToAdd, MaterialLocalizations localizations) {
     final firstDayOffset =
-    computeFirstDayOffset(weekDate.year, weekDate.month, localizations);
+        computeFirstDayOffset(weekDate.year, weekDate.month, localizations);
     DateTime weekFirstDate = weekDate.subtract(Duration(days: firstDayOffset));
     return weekFirstDate.add(Duration(days: weeksToAdd * DateTime.daysPerWeek));
   }
@@ -68,11 +69,10 @@ class RCalendarUtils {
   static int weekDelta(DateTime startDate, DateTime endDate,
       MaterialLocalizations localizations) {
     final int firstDayOffset =
-    computeFirstDayOffset(startDate.year, startDate.month, localizations);
+        computeFirstDayOffset(startDate.year, startDate.month, localizations);
     Duration diff = DateTime(endDate.year, endDate.month, endDate.day)
         .difference(DateTime(startDate.year, startDate.month, startDate.day));
     int days = diff.inDays + firstDayOffset + 1;
     return (days / 7).ceil() - 1;
   }
-
 }

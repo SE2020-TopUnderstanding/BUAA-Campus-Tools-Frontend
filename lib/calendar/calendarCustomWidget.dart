@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +27,11 @@ abstract class RCalendarCustomWidget {
   // 1 2 3 4 5 6 7
   //构建普通的日期
   Widget buildDateTime(
-      BuildContext context, DateTime time, List<RCalendarType> types,
-      Map<DateTime, String> holidayMap, Map<DateTime, int> ddlCount);
+      BuildContext context,
+      DateTime time,
+      List<RCalendarType> types,
+      Map<DateTime, String> holidayMap,
+      Map<DateTime, int> ddlCount);
 
   // <  2019年 11月 >
   //构建年份和月份,指示器
@@ -48,8 +50,11 @@ abstract class RCalendarCustomWidget {
 class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
   @override
   Widget buildDateTime(
-      BuildContext context, DateTime time, List<RCalendarType> types,
-      Map<DateTime, String> holidayMap, Map<DateTime, int> ddlCount) {
+      BuildContext context,
+      DateTime time,
+      List<RCalendarType> types,
+      Map<DateTime, String> holidayMap,
+      Map<DateTime, int> ddlCount) {
     TextStyle childStyle;
     BoxDecoration decoration;
 
@@ -62,12 +67,14 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
       decoration = BoxDecoration();
     }
     if (types.contains(RCalendarType.normal)) {
-      if(time.weekday == 7 || time.weekday == 6 || holidayMap.containsKey(time)){
+      if (time.weekday == 7 ||
+          time.weekday == 6 ||
+          holidayMap.containsKey(time)) {
         childStyle = TextStyle(
           color: Colors.pink,
           fontSize: 18,
         );
-      }else{
+      } else {
         childStyle = TextStyle(
           color: Colors.black,
           fontSize: 18,
@@ -94,7 +101,7 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
       );
     }
 
-    if(!ddlCount.containsKey(time)){
+    if (!ddlCount.containsKey(time)) {
       return Tooltip(
         message: MaterialLocalizations.of(context).formatFullDate(time),
         child: Container(
@@ -107,11 +114,15 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
                 time.day.toString(),
                 style: childStyle,
               ),
+              Text(
+                " ",
+                style: TextStyle(color: childStyle.color, fontSize: 12),
+              ),
             ],
           ),
         ),
       );
-    } else{
+    } else {
       return Tooltip(
         message: MaterialLocalizations.of(context).formatFullDate(time),
         child: Container(
@@ -126,7 +137,7 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
               ),
               Text(
                 "${ddlCount[time]}个待办",
-                style: TextStyle(color: childStyle.color,fontSize: 10),
+                style: TextStyle(color: childStyle.color, fontSize: 10),
               ),
             ],
           ),
@@ -149,38 +160,44 @@ class DefaultRCalendarCustomWidget extends RCalendarCustomWidget {
       '日',
     ];
     //list = localizations.narrowWeekdays
-    list = weekdayText.map(
+    list = weekdayText
+        .map(
           (d) => Expanded(
-             child: ExcludeSemantics(
-                child: Container(
-                  height: 60,
-                  alignment: Alignment.center,
-                  child: Text(
-                    d,
-                    style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w100),
-                  ),
+            child: ExcludeSemantics(
+              child: Container(
+                height: 40,
+                alignment: Alignment.topCenter,
+                child: Text(
+                  d,
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w100),
                 ),
               ),
+            ),
           ),
-        ).toList();
-    list.insert(0, Expanded(//表头
-      child: ExcludeSemantics(
-        child: Container(
-          height: 60,
-          alignment: Alignment.center,
-          child: Text(
-            "周号",
-            style: TextStyle(
-                color: Colors.grey,
-                fontSize: 16,
-                fontWeight: FontWeight.w100),
+        )
+        .toList();
+    list.insert(
+      0,
+      Expanded(
+        //表头
+        child: ExcludeSemantics(
+          child: Container(
+            height: 40,
+            alignment: Alignment.topCenter,
+            child: Text(
+              "周号",
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w100),
+            ),
           ),
         ),
       ),
-    ),);
+    );
     return list;
   }
 

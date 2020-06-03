@@ -178,7 +178,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                       color: Color(0xFF1565C0),
                       disabledColor: Colors.grey,
                       onPressed: () {
-                        if(score == 0.0) {
+                        if (score == 0.0) {
                           showDialog(
                               context: context,
                               builder: (context) {
@@ -194,7 +194,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                                   ],
                                 );
                               });
-                        }else if (commentController.text.length == 0) {
+                        } else if (commentController.text.length == 0) {
                           showDialog(
                               context: context,
                               builder: (context) {
@@ -224,7 +224,6 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
                                         Navigator.of(context).pop();
                                         putComment(
                                             commentController.text, score);
-
                                       },
                                     ),
                                     RaisedButton(
@@ -303,7 +302,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
           showError(context, "您的账户不存在于我们的数据库");
         } else if (e.response.statusCode == 404) {
           showError(context, "课程不存在");
-        } else if(e.response.statusCode == 500){
+        } else if (e.response.statusCode == 500) {
           showError(context, "评论存在不合法字符\n请不要出现表情包等特殊字符");
         } else {
           print(e.response.statusCode);
@@ -314,7 +313,7 @@ class _CourseCommentWritePage extends State<CourseCommentWritePage> {
       } else {
         showError(context, "http ${e.response.statusCode}");
       }
-    } catch(e){
+    } catch (e) {
       print("未知错误");
     }
   }
