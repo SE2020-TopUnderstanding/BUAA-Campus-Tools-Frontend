@@ -455,6 +455,7 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
       try {
         setState(() {
           _isDisabled = true;
+          _page = 1;
         });
         dynamic response = await loadEvaluationCoursePage(
             _courseName, _teacher, _courseType, _department, _page);
@@ -462,7 +463,6 @@ class _CourseEvaluationPageState extends State<CourseEvaluationPage> {
           _evaluationList = response;
           _isDisabled = false;
           _firstIn = false;
-          _page = 1;
         });
       } catch (e) {
         throw (e);

@@ -14,7 +14,7 @@ class ScorePage extends StatefulWidget {
 
 class _ScorePageState extends State<ScorePage> {
   GradeCenter gradeCenter;
-  var semester = 10;
+  var semester = 11;
   var quit = 0;
   UpdateInfo remoteInfo;
   static int isUpdate = 1;
